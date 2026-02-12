@@ -6,12 +6,16 @@
         <file>Images/avatar.png</file>
         <file>Images/logoHeader1.png</file>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> gestion_stock
         <file>Images/dashhhresize.png</file>
         <file>Images/testport.png</file>
         <file>Images/staffdash.png</file>
         <file>Images/cvdash.png</file>
         <file>Images/bestresized.png</file>
         <file>Images/profile.jpg</file>
+<<<<<<< HEAD
         <file>Images/zoneimage.png</file>
 =======
         <file>Images/bateau.png</file>
@@ -22,5 +26,7 @@
         <file>Images/zone 3.png</file>
         <file>Images/zone4.png</file>
 >>>>>>> zonepeche
+=======
+>>>>>>> gestion_stock
     </qresource>
 </RCC>
