@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #include "Bort.h"
+=======
+#include "fishingzone.h"
+>>>>>>> zonepeche
 
 #include <QApplication>
 
@@ -9,3 +13,7 @@ int main(int argc, char *argv[])
     w.show();
     return a.exec();
 }
+<<<<<<< HEAD
+=======
+//test push lel github
+>>>>>>> zonepeche
