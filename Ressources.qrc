@@ -7,13 +7,17 @@
         <file>Images/logoHeader1.png</file>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> gestion_stock
+=======
+>>>>>>> gestion_clients
         <file>Images/dashhhresize.png</file>
         <file>Images/testport.png</file>
         <file>Images/staffdash.png</file>
         <file>Images/cvdash.png</file>
         <file>Images/bestresized.png</file>
+<<<<<<< HEAD
         <file>Images/profile.jpg</file>
 <<<<<<< HEAD
         <file>Images/zoneimage.png</file>
@@ -28,5 +32,7 @@
 >>>>>>> zonepeche
 =======
 >>>>>>> gestion_stock
+=======
+>>>>>>> gestion_clients
     </qresource>
 </RCC>
