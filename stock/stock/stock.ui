@@ -1,0 +1,1827 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SignIn</class>
+ <widget class="QMainWindow" name="SignIn">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1017</width>
+    <height>724</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>BORT-SignIn</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* ===== RESET COMPLET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* ===== FENÊTRE PRINCIPALE ===== */
+QMainWindow {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, 
+        stop:0 #0a1929, 
+        stop:0.5 #0c2b46,
+        stop:1 #0a2338);
+}
+
+/* ===== CONTENEUR CENTRAL ===== */
+#centralwidget {
+    background-color: transparent;
+    border: none;
+}
+
+/* ===== STACKED WIDGET ===== */
+QStackedWidget {
+    background-color: transparent;
+    border: none;
+    min-width: 400px;
+    min-height: 600px;
+}
+
+/* ===== PAGE DE LOGIN (page_1) ===== */
+#page_1 {
+    background-color: rgba(16, 32, 48, 0.95);
+    border-radius: 20px;
+    border: 2px solid #1e3a5f;
+    width: 380px;
+    height: 580px;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===== LOGO - PARFAITEMENT CENTRÉ ===== */
+#logo {
+    qproperty-alignment: 'AlignCenter';
+    qproperty-scaledContents: true;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    min-height: 70px;
+    max-height: 70px;
+    min-width: 380px;
+}
+
+/* ===== TITRE PRINCIPAL ===== */
+#title {
+    color: #4fc3f7;
+    font-size: 26px;
+    font-weight: bold;
+    font-family: 'Segoe UI', 'Arial Rounded MT Bold';
+    qproperty-alignment: 'AlignCenter';
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(79, 195, 247, 0.3);
+    text-shadow: 0 0 8px rgba(79, 195, 247, 0.4);
+    min-width: 380px;
+}
+
+/* ===== LABELS DES CHAMPS ===== */
+#UserNameLabel, 
+QLabel[objectName*=&quot;password&quot;] {
+    color: #90caf9;
+    font-size: 13px;
+    font-weight: bold;
+    margin-left: 50px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    text-align: left;
+    min-width: 280px;
+    max-width: 280px;
+}
+
+/* ===== CHAMPS DE SAISIE (BIEN ALIGNÉS) ===== */
+#UserNameEdit,
+QLineEdit[objectName*=&quot;password&quot;] {
+    background-color: rgba(30, 58, 95, 0.8);
+    border: 2px solid #2d5278;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 14px;
+    color: #e3f2fd;
+    min-height: 42px;
+    max-height: 42px;
+    min-width: 280px;
+    max-width: 280px;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 10px;
+    selection-background-color: #0288d1;
+    selection-color: white;
+}
+
+QLineEdit:focus {
+    border: 2px solid #29b6f6;
+    background-color: rgba(41, 182, 246, 0.1);
+}
+
+QLineEdit:hover {
+    border: 2px solid #0288d1;
+}
+
+/* ===== CHECKBOX REMEMBER ME (CORRIGÉE) ===== */
+#remembercheck {
+    color: #bbdefb;
+    font-size: 12px;
+    spacing: 8px;
+    margin-left: 50px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    min-width: 280px;
+}
+
+#remembercheck::indicator {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 2px solid #64b5f6;
+    background-color: rgba(30, 58, 95, 0.9);
+}
+
+#remembercheck::indicator:checked {
+    background-color: #0288d1;
+    border-color: #4fc3f7;
+    /* COCHE BLANCHE */
+    image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEwIDNMNC41IDguNUwyIDUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=);
+}
+
+#remembercheck::indicator:hover {
+    border: 2px solid #4fc3f7;
+}
+
+/* ===== BOUTON FORGOT PASSWORD ===== */
+#btnForgotmdp {
+    background-color: transparent;
+    color: #29b6f6;
+    border: none;
+    font-size: 11px;
+    text-decoration: none;
+    padding: 0;
+    margin-left: 50px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: left;
+    min-width: 280px;
+}
+
+#btnForgotmdp:hover {
+    color: #4fc3f7;
+    text-decoration: underline;
+}
+
+/* ===== BOUTON SIGN IN (LARGEUR RÉDUITE) ===== */
+#signinbtn {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #0277bd,
+        stop:0.5 #01579b,
+        stop:1 #003f6b);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 14px;
+    font-weight: bold;
+    min-height: 44px;
+    max-height: 44px;
+    min-width: 280px;
+    max-width: 280px;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+#signinbtn:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #0288d1,
+        stop:0.5 #0277bd,
+        stop:1 #01579b);
+    border: 1px solid #4fc3f7;
+}
+
+#signinbtn:pressed {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #01579b,
+        stop:0.5 #013a63,
+        stop:1 #002642);
+    padding-top: 15px;
+    padding-bottom: 13px;
+}
+
+/* ===== BOUTON FACE ID (LARGEUR RÉDUITE) ===== */
+#withfacebtn {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #00897b,
+        stop:0.5 #00695c,
+        stop:1 #004d40);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    min-height: 40px;
+    max-height: 40px;
+    min-width: 280px;
+    max-width: 280px;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 25px;
+}
+
+#withfacebtn:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #009688,
+        stop:0.5 #00796b,
+        stop:1 #005b4f);
+    border: 1px solid #4db6ac;
+}
+
+/* ===== CONTENEURS POUR ALIGNEMENT ===== */
+/* Force l'alignement vertical */
+QWidget {
+    margin: 0;
+    padding: 0;
+}
+
+/* Espaceurs invisibles pour alignement */
+QSpacerItem {
+    min-height: 10px;
+    max-height: 10px;
+}
+
+/* ===== BARRES INUTILES (CACHÉES) ===== */
+QMenuBar, QStatusBar {
+    background-color: transparent;
+    color: transparent;
+    border: none;
+    height: 0;
+    min-height: 0;
+    max-height: 0;
+}
+
+/* ===== ÉTATS SPÉCIAUX ===== */
+QLineEdit:invalid {
+    border: 2px solid #ff5252;
+    background-color: rgba(255, 82, 82, 0.1);
+}
+
+QLineEdit:disabled,
+QPushButton:disabled,
+QCheckBox:disabled {
+    opacity: 0.5;
+}
+
+/* ===== TRANSITIONS ===== */
+QLineEdit, QPushButton {
+    transition: border 0.2s ease, background-color 0.2s ease;
+}
+
+/* ===== MESSAGES D'ERREUR ===== */
+QLabel[objectName*=&quot;error&quot;] {
+    color: #ff6b6b;
+    font-size: 11px;
+    font-style: italic;
+    margin-left: 50px;
+    margin-top: -8px;
+    margin-bottom: 8px;
+    min-width: 280px;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget_stock">
+   <widget class="QStackedWidget" name="stackedWidget_stock">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1021</width>
+      <height>741</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="currentIndex">
+     <number>2</number>
+    </property>
+    <widget class="QWidget" name="pageSignIn">
+     <property name="styleSheet">
+      <string notr="true">/* ===== RESET ET STYLE GLOBAL ===== */
+* {
+    background-color: transparent;
+    border: none;
+}
+
+QMainWindow {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:1, 
+        stop:0 #0a1929, 
+        stop:0.5 #0c2b46,
+        stop:1 #0a2338);
+}
+
+/* ===== CONTENEUR PRINCIPAL (StackedWidget) ===== */
+QStackedWidget {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Page de login (page_1) */
+QWidget#page_1, QWidget[objectName=&quot;page_1&quot;], QWidget#centralwidget {
+    background-color: rgba(16, 32, 48, 0.95);
+    border-radius: 20px;
+    border: 2px solid #1e3a5f;
+    min-width: 380px;
+    max-width: 380px;
+    min-height: 520px;
+    margin: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* ===== LOGO - CENTRALISÉ ===== */
+QLabel#logo {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    qproperty-alignment: 'AlignCenter';
+    qproperty-scaledContents: true;
+    min-height: 80px;
+    max-height: 80px;
+}
+
+/* ===== TITRE ===== */
+QLabel#title {
+    color: #4fc3f7;
+    font-size: 28px;
+    font-weight: bold;
+    font-family: 'Segoe UI', 'Arial Rounded MT Bold';
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(79, 195, 247, 0.3);
+    text-shadow: 0 0 8px rgba(79, 195, 247, 0.5);
+}
+
+/* ===== LABELS ===== */
+QLabel[objectName=&quot;UserNameLabel&quot;], 
+QLabel[objectName*=&quot;password&quot;], 
+QLabel[objectName*=&quot;Password&quot;] {
+    color: #90caf9;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: 'Segoe UI', Arial;
+    margin-left: 20px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    letter-spacing: 0.5px;
+}
+
+/* ===== CHAMPS DE SAISIE (LARGEUR RÉDUITE) ===== */
+QLineEdit {
+    background-color: rgba(30, 58, 95, 0.8);
+    border: 2px solid #2d5278;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 14px;
+    color: #e3f2fd;
+    font-family: 'Segoe UI', 'Arial';
+    selection-background-color: #0288d1;
+    selection-color: white;
+    min-height: 42px;
+    max-height: 42px;
+    min-width: 280px;
+    max-width: 280px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+QLineEdit:focus {
+    border: 2px solid #29b6f6;
+    background-color: rgba(41, 182, 246, 0.1);
+    box-shadow: 0 0 10px rgba(41, 182, 246, 0.2);
+}
+
+QLineEdit:hover {
+    border: 2px solid #0288d1;
+}
+
+/* ===== BOUTONS (LARGEUR RÉDUITE) ===== */
+/* Bouton SIGN IN principal */
+QPushButton#signinbtn {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #0277bd,
+        stop:0.5 #01579b,
+        stop:1 #003f6b);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    font-family: 'Segoe UI', Arial;
+    margin-top: 20px;
+    min-height: 46px;
+    max-height: 46px;
+    min-width: 280px;
+    max-width: 280px;
+    margin-left: 20px;
+    margin-right: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+QPushButton#signinbtn:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #0288d1,
+        stop:0.5 #0277bd,
+        stop:1 #01579b);
+    border: 1px solid #4fc3f7;
+    box-shadow: 0 0 15px rgba(79, 195, 247, 0.3);
+}
+
+QPushButton#signinbtn:pressed {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #01579b,
+        stop:0.5 #013a63,
+        stop:1 #002642);
+}
+
+/* Bouton Face ID */
+QPushButton#withfacebtn {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #00897b,
+        stop:0.5 #00695c,
+        stop:1 #004d40);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    font-family: 'Segoe UI', Arial;
+    margin-top: 10px;
+    min-height: 42px;
+    max-height: 42px;
+    min-width: 280px;
+    max-width: 280px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+QPushButton#withfacebtn:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 #009688,
+        stop:0.5 #00796b,
+        stop:1 #005b4f);
+    border: 1px solid #4db6ac;
+    box-shadow: 0 0 10px rgba(77, 182, 172, 0.2);
+}
+
+QCheckBox#remembercheck {
+    color: rgba(220, 232, 242, 0.80);
+    font-size: 10.5pt;
+    font-weight: 600;
+    spacing: 10px;
+}
+
+QCheckBox#remembercheck::indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    border: 2px solid rgba(77, 159, 254, 0.70);
+    background-color: rgba(0, 44, 114, 0.10);
+}
+
+QCheckBox#remembercheck::indicator:checked {
+    background-color: #4D9FFE;
+    border: 2px solid #4D9FFE;
+}
+
+/* ---------- Forgot link (PLUS DISCRET) ---------- */
+QPushButton#btnForgetmdp {
+    background: transparent;
+    border: none;
+    padding: 4px 0px;
+    color: rgba(220, 232, 242, 0.55);   /* gris clair, pas jaune */
+    font-size: 10.5pt;
+    font-weight: 600;
+    text-align: left;
+}
+
+QPushButton#btnForgetmdp:hover {
+    color: #FEBF00;                      /* jaune seulement au hover */
+    text-decoration: underline;
+}
+
+/* ===== ESPACEURS ET ALIGNEMENT ===== */
+/* Pour forcer l'alignement vertical */
+QWidget {
+    margin: 0;
+    padding: 0;
+}
+
+/* Container pour centrer horizontalement */
+QWidget &gt; QLabel,
+QWidget &gt; QLineEdit,
+QWidget &gt; QPushButton,
+QWidget &gt; QCheckBox {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ===== STYLE POUR ÉLÉMENTS INVISIBLES ===== */
+/* Cacher les éléments inutiles */
+QMenuBar, QStatusBar {
+    background-color: transparent;
+    color: transparent;
+    border: none;
+    height: 0;
+    min-height: 0;
+    max-height: 0;
+}
+
+/* ===== STYLES SPÉCIAUX POUR ÉTATS ===== */
+QLineEdit:invalid {
+    border: 2px solid #ff5252;
+    background-color: rgba(255, 82, 82, 0.1);
+}
+
+QLineEdit:disabled,
+QPushButton:disabled {
+    background-color: rgba(66, 66, 66, 0.5);
+    color: #757575;
+    border-color: #424242;
+    opacity: 0.6;
+}
+
+/* ===== ANIMATIONS ET TRANSITIONS ===== */
+QLineEdit, QPushButton, QCheckBox::indicator {
+    transition: all 0.2s ease;
+}
+
+/* ===== STYLE POUR LES MESSAGES ===== */
+QLabel[objectName*=&quot;message&quot;], 
+QLabel[objectName*=&quot;status&quot;] {
+    color: #81d4fa;
+    font-size: 11px;
+    font-style: italic;
+    text-align: center;
+    margin: 5px 20px;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: rgba(33, 150, 243, 0.1);
+}</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="pageForgetpass">
+     <property name="styleSheet">
+      <string notr="true">/* ===== FORGOT PAGE ===== */
+QFrame#leftpanelForget {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #0d2c4a,
+        stop:0.5 #0a375b,
+        stop:1 #073052);
+    border-radius: 22px;
+    border: 1px solid rgba(79,195,247,0.16);
+}
+
+QFrame#rightpanelForget {
+    background-color: rgba(255,255,255,0.06);
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.14);
+}
+
+/* Title of forgot page */
+QLabel#ForgotTitle {
+    color: #4fc3f7;
+    font-size: 36px;
+    font-weight: 900;
+    qproperty-alignment: AlignCenter;
+}
+
+/* Instruction label */
+QLabel#resetlabel {
+    background: transparent;
+    color: rgba(234,243,255,0.80);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Input */
+QLineEdit#resetlineEdit {
+    min-height: 46px;
+    min-width: 420px;
+    max-width: 420px;
+    background-color: rgba(25,45,65,0.65);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 14px;
+    padding: 10px 14px;
+    color: white;
+}
+QLineEdit#resetlineEdit:focus {
+    border: 1px solid #4fc3f7;
+}
+
+/* Buttons */
+QPushButton#resetbtn {
+    min-height: 54px;
+    min-width: 420px;
+    max-width: 420px;
+    border-radius: 16px;
+    background-color: #0A66FF;
+    color: white;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+QPushButton#resetbtn:hover { background-color: rgba(10,102,255,0.86); }
+
+QPushButton#backsigninBTN {
+    min-height: 52px;
+    min-width: 420px;
+    max-width: 420px;
+    border-radius: 16px;
+    background-color: rgba(255,255,255,0.08);
+    color: rgba(234,243,255,0.85);
+    border: 1px solid rgba(255,255,255,0.14);
+    font-weight: 800;
+}
+QPushButton#backsigninBTN:hover {
+    border: 1px solid rgba(79,195,247,0.35);
+    color: #4fc3f7;
+}
+</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="pageFishStock">
+     <property name="styleSheet">
+      <string notr="true">/* =================================================
+   PAGE STAFF MANAGEMENT - BACKGROUND
+   ================================================= */
+QWidget#pageSFishStock {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+        stop:0 #071a2c,
+        stop:0.35 #082136,
+        stop:0.7 #071c2d,
+        stop:1 #040f1a);
+    font-family: &quot;Segoe UI&quot;;
+    color: #EAF0FF;
+}
+
+/* =================================================
+   HEADER + SIDEBAR (SAME STYLE)
+   ================================================= */
+QFrame#header_stock,
+QFrame#sidebarMenu_stock {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 rgba(12, 42, 75, 0.95),
+        stop:0.55 rgba(8, 30, 55, 0.95),
+        stop:1 rgba(6, 22, 40, 0.95));
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+}
+
+QFrame#header_stock {
+    padding: 10px 16px;
+}
+
+QFrame#sidebarMenu_stock {
+    padding: 12px;
+}
+
+/* =================================================
+   HEADER CONTENT
+   ================================================= */
+QLabel#titreHeader_stock {
+    color: #EAF0FF;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+QLabel#avatar_stock {
+    min-width: 42px;
+    max-width: 42px;
+    min-height: 42px;
+    max-height: 42px;
+    border-radius: 21px;
+    border: 2px solid rgba(88,184,255,0.6);
+    background-color: rgba(255,255,255,0.06);
+}
+
+/* User profile button */
+QCommandLinkButton#userprofiledetails_stock {
+    background-color: rgba(8, 18, 38, 0.55);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 8px 14px;
+    color: #EAF0FF;
+    font-weight: 700;
+}
+
+QCommandLinkButton#userprofiledetails_stock:hover {
+    background-color: rgba(88,184,255,0.15);
+    border: 1px solid rgba(88,184,255,0.45);
+}
+
+QCommandLinkButton#userprofiledetails_stock:pressed {
+    background-color: rgba(88,184,255,0.25);
+}
+
+/* =================================================
+   SIDEBAR GROUP
+   ================================================= */
+QGroupBox#groupBox_stock {
+    border: none;
+    margin-top: 6px;
+}
+
+/* =================================================
+   SIDEBAR BUTTONS (BASE)
+   ================================================= */
+QPushButton#clientsmanagementBTN_stock,
+QPushButton#equipmentmanagementBTN_stock,
+QPushButton#fishingzonemanagementBTN_stock,
+QPushButton#staffmanagementBTN_stock,
+QPushButton#stockmanagementBTN_stock {
+    background: transparent;
+    border: none;
+    color: rgba(234,240,255,0.80);
+    padding: 12px 14px;
+    border-radius: 12px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+/* Hover effect */
+QPushButton#clientsmanagementBTN_stock:hover,
+QPushButton#equipmentmanagementBTN_stock:hover,
+QPushButton#fishingzonemanagementBTN_stock:hover,
+QPushButton#staffmanagementBTN_stock:hover,
+QPushButton#stockmanagementBTN_stock:hover {
+    background-color: rgba(88,184,255,0.14);
+    border: 1px solid rgba(88,184,255,0.25);
+    color: #FFFFFF;
+}
+
+/* Pressed */
+QPushButton#clientsmanagementBTN_stock:pressed,
+QPushButton#equipmentmanagementBTN_stock:pressed,
+QPushButton#fishingzonemanagementBTN_stock:pressed,
+QPushButton#staffmanagementBTN_stock:pressed,
+QPushButton#stockmanagementBTN_stock:pressed {
+    background-color: rgba(88,184,255,0.25);
+}
+
+/* =================================================
+   ACTIVE / SELECTED BUTTON (Staff Management)
+   ================================================= */
+QPushButton[active=&quot;true&quot;] {
+    background-color: rgba(10, 102, 255, 0.28);
+    border: 1px solid rgba(10, 102, 255, 0.55);
+    color: #FFFFFF;
+    padding-left: 18px;
+}
+QPushButton#staffmanagementBTN_stock[active=&quot;true&quot;] {
+    background-color: rgba(10, 102, 255, 0.35);
+    border-left: 4px solid #4FC3F7;
+    color: white;
+    font-weight: 600;
+}
+
+/* =================================================
+   LOG OUT BUTTON
+   ================================================= */
+QPushButton#logOutBTN_stock {
+    background: transparent;
+    border: none;
+    color: rgba(234,240,255,0.65);
+    padding: 12px 14px;
+    border-radius: 12px;
+    text-align: left;
+    font-weight: 650;
+}
+
+QPushButton#logOutBTN_stock:hover {
+    background-color: rgba(255, 120, 120, 0.12);
+    border: 1px solid rgba(255, 120, 120, 0.25);
+    color: #FFC1C1;
+}
+
+/* =================================================
+   MAIN CONTENT AREA
+   ================================================= */
+QFrame#contenumain_stock {
+    background-color: transparent;
+}
+
+/* =================================================
+   MENUBAR + STATUSBAR
+   ================================================= */
+QMenuBar_stock {
+    background-color: rgba(6, 22, 40, 0.95);
+    color: rgba(234,240,255,0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    padding: 6px;
+}
+
+QStatusBar_stock {
+    background-color: rgba(6, 22, 40, 0.95);
+    color: rgba(234,240,255,0.70);
+    border-top: 1px solid rgba(255,255,255,0.12);
+}
+/* =======================
+   FORM CARD (LEFT)
+   objectName: formAddSpecies
+   ======================= */
+QFrame#formAddSpecies {
+    background-color: rgba(255,255,255,0.06);
+    border: 1px solid rgba(79,195,247,0.18);
+    border-radius: 16px;
+}
+
+/* Title label (labeladdstaff) */
+QLabel#labeladdspecies_stock {
+    color: #E3F2FD;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 8px 0;
+}
+
+/* All labels inside the form */
+QFrame#formAddSpecies QLabel_stock {
+    color: rgba(227,242,253,0.88);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Inputs (LineEdits) */
+QLineEdit {
+    background-color: rgba(10, 35, 55, 0.65);
+    color: #E3F2FD;
+    border: 1px solid rgba(79,195,247,0.25);
+    border-radius: 10px;
+    padding: 8px 12px;
+    min-height: 36px;
+    font-size: 13px;
+}
+
+QLineEdit:focus {
+    border: 1px solid #4FC3F7;
+    background-color: rgba(10, 35, 55, 0.85);
+}
+
+/* ComboBoxes (role, cvstat) */
+QComboBox {
+    background-color: rgba(10, 35, 55, 0.65);
+    color: #E3F2FD;
+    border: 1px solid rgba(79,195,247,0.25);
+    border-radius: 10px;
+    padding: 7px 12px;
+    min-height: 36px;
+    font-size: 13px;
+}
+
+QComboBox:hover {
+    border: 1px solid rgba(79,195,247,0.45);
+}
+
+QComboBox:focus {
+    border: 1px solid #4FC3F7;
+    background-color: rgba(10, 35, 55, 0.85);
+}
+
+QComboBox::drop-down {
+    width: 36px;
+    border: none;
+}
+
+QComboBox::down-arrow {
+    image: none;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid rgba(227,242,253,0.8);
+    margin-right: 10px;
+}
+
+/* Upload CV Button (uploadcvbtn) */
+QPushButton#uploadcvbtn_stock {
+    background-color: rgba(255,255,255,0.08);
+    color: #E3F2FD;
+    border: 1px dashed rgba(79,195,247,0.6);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-weight: 600;
+}
+
+/* Hover Upload */
+QPushButton#uploadcvbtn_stock:hover {
+    background-color: rgba(79,195,247,0.2);
+    border-color: #4FC3F7;
+}
+
+/* Add Staff Button (addstaffbtn) */
+QPushButton#addstaffbtn_stock {
+    background-color: #0288D1;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    min-height: 40px;
+    font-weight: bold;
+}
+
+QPushButton#addstaffbtn_stock:hover {
+    background-color: #039BE5;
+}
+
+QPushButton#addstaffbtn_stock:pressed {
+    background-color: #01579B;
+}
+/* ================================================= */
+/* ============ STAFF LIST CONTAINER =============== */
+/* ================================================= */
+
+#liststock {
+    background-color: rgba(12, 32, 52, 0.95);
+    border: 1px solid rgba(79, 195, 247, 0.25);
+    border-radius: 18px;
+    padding: 15px;
+    margin-left: 10px;
+}
+
+#liststock::title {
+    subcontrol-origin: margin;
+    left: 15px;
+    top: 8px;
+    padding: 0 8px;
+    color: #4fc3f7;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+/* ================================================= */
+/* ================= SEARCH BAR ==================== */
+/* ================================================= */
+
+#search_stock {
+    background-color: rgba(20, 45, 70, 0.9);
+    border: 1px solid rgba(79, 195, 247, 0.4);
+    border-radius: 14px;
+    padding: 10px 15px;
+    color: white;
+    font-size: 13px;
+}
+
+#search_stock:focus {
+    border: 1px solid #4fc3f7;
+    background-color: rgba(30, 75, 120, 0.9);
+}
+
+/* ================================================= */
+/* ================= SORT COMBO ==================== */
+/* ================================================= */
+
+#sort_stock {
+    background-color: rgba(20, 45, 70, 0.9);
+    border: 1px solid rgba(79, 195, 247, 0.4);
+    border-radius: 12px;
+    padding: 6px 12px;
+    color: #e3f2fd;
+}
+
+#sort_stock:hover {
+    background-color: rgba(79, 195, 247, 0.25);
+}
+
+/* ================================================= */
+/* ================== TABLE ======================== */
+/* ================================================= */
+
+#table_stock {
+    background-color: rgba(10, 25, 40, 0.95);
+    border: 1px solid rgba(79, 195, 247, 0.3);
+    border-radius: 14px;
+    gridline-color: rgba(79, 195, 247, 0.15);
+    color: #e3f2fd;
+    font-size: 12px;
+}
+
+#table_stock::item {
+    padding: 8px;
+}
+
+#table_stock::item:selected {
+    background-color: rgba(79, 195, 247, 0.35);
+    color: white;
+}
+
+QHeaderView_stock::section {
+    background-color: rgba(15, 55, 90, 0.95);
+    color: #4fc3f7;
+    padding: 8px;
+    border: none;
+    font-weight: bold;
+}
+
+/* Scrollbars table */
+QTableWidget QScrollBar:vertical {
+    background: transparent;
+    width: 8px;
+}
+
+QTableWidget QScrollBar::handle:vertical {
+    background: #4fc3f7;
+    border-radius: 4px;
+}
+
+QTableWidget QScrollBar::add-line,
+QTableWidget QScrollBar::sub-line {
+    height: 0;
+}
+
+/* ================================================= */
+/* ================= BUTTONS ======================= */
+/* ================================================= */
+
+
+#cvanalysebtn_stock,
+#staticbtn_stock,
+#exportpdfstaffbtn_stock {
+    background-color: rgba(20, 60, 95, 0.9);
+    border: 1px solid rgba(79, 195, 247, 0.4);
+    border-radius: 12px;
+    color: #e3f2fd;
+    padding: 10px 16px;
+    font-weight: 600;
+}
+
+
+#cvanalysebtn_stock:hover,
+#staticbtn_stock:hover,
+#exportpdfstaffbtn_stock:hover {
+    background-color: rgba(79, 195, 247, 0.35);
+    color: white;
+}
+
+/* ===== DELETE BUTTON ===== */
+#deletespecies_stock {
+    background-color: rgba(183, 28, 28, 0.9);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 10px 16px;
+    font-weight: 600;
+}
+
+#deletespecies_stock:hover {
+    background-color: #e53935;
+    box-shadow: 0 0 15px rgba(244, 67, 54, 0.6);
+}
+/* ======================================= */
+/* ========= MODIFY STAFF BUTTON ========= */
+/* ======================================= */
+
+#Editstock {
+    background-color: #f9a825;            /* Jaune principal */
+    color: #1a1a1a;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Hover */
+#Editstock:hover {
+    background-color: #fbc02d;            /* Jaune plus clair */
+    box-shadow: 0 0 15px rgba(251, 192, 45, 0.6);
+}
+
+/* Click (pressed) */
+#Editstock:pressed {
+    background-color: #f57f17;            /* Jaune foncé */
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.35);
+}
+</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1491</width>
+        <height>761</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QFrame" name="sidebarMenu_stock">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Shape::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+         <widget class="QGroupBox" name="groupBox_stock">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>100</y>
+            <width>200</width>
+            <height>581</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string/>
+          </property>
+          <widget class="QPushButton" name="staffmanagementBTN_stock">
+           <property name="geometry">
+            <rect>
+             <x>-10</x>
+             <y>220</y>
+             <width>181</width>
+             <height>61</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>🐟 Stock Management</string>
+           </property>
+           <property name="active" stdset="0">
+            <bool>true</bool>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="clientsmanagementBTN_stock">
+           <property name="geometry">
+            <rect>
+             <x>-10</x>
+             <y>170</y>
+             <width>191</width>
+             <height>51</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>💰Clients Management</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="stockmanagementBTN_stock">
+           <property name="geometry">
+            <rect>
+             <x>-10</x>
+             <y>120</y>
+             <width>171</width>
+             <height>51</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>👩🏻‍💼Staff Management</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="fishingzonemanagementBTN_stock">
+           <property name="geometry">
+            <rect>
+             <x>-10</x>
+             <y>320</y>
+             <width>221</width>
+             <height>51</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>🗺️ Fishing Zone Management</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="equipmentmanagementBTN_stock">
+           <property name="geometry">
+            <rect>
+             <x>-10</x>
+             <y>280</y>
+             <width>201</width>
+             <height>41</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>⚓Equipment Management</string>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QLabel" name="logoheader_stock">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>10</y>
+            <width>181</width>
+            <height>151</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="Ressources.qrc">:/Images/logoHeader1.png</pixmap>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="logOutBTN_stock">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>650</y>
+            <width>121</width>
+            <height>61</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>⏻ Log Out</string>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="contenumain">
+         <property name="frameShape">
+          <enum>QFrame::Shape::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+         <property name="active" stdset="0">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="verticalLayoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>-270</x>
+            <y>0</y>
+            <width>1431</width>
+            <height>101</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QFrame" name="header_stock">
+             <property name="frameShape">
+              <enum>QFrame::Shape::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Shadow::Raised</enum>
+             </property>
+             <widget class="QLabel" name="titreHeader_stock">
+              <property name="geometry">
+               <rect>
+                <x>220</x>
+                <y>20</y>
+                <width>461</width>
+                <height>61</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>BORT- Smart Fishing Port Application</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+             </widget>
+             <widget class="QCommandLinkButton" name="userprofiledetails_stock">
+              <property name="geometry">
+               <rect>
+                <x>830</x>
+                <y>20</y>
+                <width>211</width>
+                <height>51</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Despacito</string>
+              </property>
+             </widget>
+             <widget class="QLabel" name="avatar_stock">
+              <property name="geometry">
+               <rect>
+                <x>990</x>
+                <y>20</y>
+                <width>46</width>
+                <height>46</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="Ressources.qrc">:/Images/avatar.png</pixmap>
+              </property>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="layoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>-10</x>
+            <y>100</y>
+            <width>831</width>
+            <height>621</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QFrame" name="listfish">
+             <property name="frameShape">
+              <enum>QFrame::Shape::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Shadow::Raised</enum>
+             </property>
+             <widget class="QGroupBox" name="liststock">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>821</width>
+                <height>621</height>
+               </rect>
+              </property>
+              <property name="title">
+               <string/>
+              </property>
+              <widget class="QLineEdit" name="search_stock">
+               <property name="geometry">
+                <rect>
+                 <x>30</x>
+                 <y>80</y>
+                 <width>361</width>
+                 <height>58</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>🔍Search</string>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="sort_stock">
+               <property name="geometry">
+                <rect>
+                 <x>240</x>
+                 <y>20</y>
+                 <width>151</width>
+                 <height>54</height>
+                </rect>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Sort with:</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Fish species</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Quantity</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Zone</string>
+                </property>
+               </item>
+              </widget>
+              <widget class="QLabel" name="fish_stock">
+               <property name="geometry">
+                <rect>
+                 <x>-20</x>
+                 <y>20</y>
+                 <width>191</width>
+                 <height>51</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Fish Stock</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+              </widget>
+              <widget class="QTableWidget" name="table_stock">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>150</y>
+                 <width>421</width>
+                 <height>271</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">/* QScrollBar */
+QScrollBar {
+    background: #2e3b4e;
+    border-radius: 10px;
+}
+
+QScrollBar::handle {
+    background: #2563EB;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:hover {
+    background: #4B8BFB;
+}
+
+QScrollBar::add-line, QScrollBar::sub-line {
+    background: none;
+    border: none;
+}
+
+QTableWidget::horizontalHeader {
+    background-color: rgba(15, 55, 90, 0.95);
+    color: #4fc3f7;
+    font-weight: bold;
+}
+
+QHeaderView::section {
+    background-color: rgba(15, 55, 90, 0.95);
+    color: #4fc3f7;
+    padding: 8px;
+    border: none;
+    font-weight: bold;
+}
+#table_stock {
+    background-color: rgba(10, 25, 40, 0.95);
+    border: 1px solid rgba(79, 195, 247, 0.3);
+    border-radius: 14px;
+    gridline-color: rgba(79, 195, 247, 0.15);
+    color: #e3f2fd;
+    font-size: 14px;          /* Larger font size */
+    font-family: &quot;Segoe UI&quot;;  /* Clearer font */
+}
+
+#table_stock::item {
+    padding: 10px;
+    text-align: center;  /* Centers text in cells */
+}
+
+QHeaderView_stock::section {
+    background-color: rgba(15, 55, 90, 0.95);
+    color: #4fc3f7;
+    padding: 12px;
+    border: none;
+    font-weight: bold;
+    font-size: 16px;  /* Larger font for headers */
+}
+
+/* Adjust column width */
+#table_stock QHeaderView::section {
+    min-width: 100px;
+}
+
+/* Adjust Row Height */
+QTableWidget::item {
+    height: 40px;  /* Sets row height */
+}
+</string>
+               </property>
+               <property name="verticalScrollBarPolicy">
+                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+               </property>
+               <property name="rowCount">
+                <number>2</number>
+               </property>
+               <property name="columnCount">
+                <number>3</number>
+               </property>
+               <row/>
+               <row/>
+               <column>
+                <property name="text">
+                 <string>Species</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Quantity</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Zone</string>
+                </property>
+               </column>
+              </widget>
+              <widget class="QPushButton" name="deletespecies_stock">
+               <property name="geometry">
+                <rect>
+                 <x>20</x>
+                 <y>490</y>
+                 <width>171</width>
+                 <height>41</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Delete Species</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="Editstock">
+               <property name="geometry">
+                <rect>
+                 <x>220</x>
+                 <y>490</y>
+                 <width>161</width>
+                 <height>41</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Edit Species</string>
+               </property>
+              </widget>
+             </widget>
+             <widget class="QGroupBox" name="form_stock">
+              <property name="geometry">
+               <rect>
+                <x>440</x>
+                <y>0</y>
+                <width>401</width>
+                <height>601</height>
+               </rect>
+              </property>
+              <property name="title">
+               <string/>
+              </property>
+              <widget class="QFrame" name="formAddSpecies">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>411</width>
+                 <height>381</height>
+                </rect>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Shadow::Raised</enum>
+               </property>
+               <widget class="QLabel" name="zone_stocklabel">
+                <property name="geometry">
+                 <rect>
+                  <x>40</x>
+                  <y>220</y>
+                  <width>141</width>
+                  <height>20</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Zone</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="Specieslabel">
+                <property name="geometry">
+                 <rect>
+                  <x>30</x>
+                  <y>80</y>
+                  <width>131</width>
+                  <height>20</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Species name</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="quantity_stocklabel">
+                <property name="geometry">
+                 <rect>
+                  <x>40</x>
+                  <y>140</y>
+                  <width>111</width>
+                  <height>20</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Quantity</string>
+                </property>
+               </widget>
+               <widget class="QPushButton" name="addspecies_stock">
+                <property name="geometry">
+                 <rect>
+                  <x>50</x>
+                  <y>280</y>
+                  <width>261</width>
+                  <height>60</height>
+                 </rect>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">#addspecies_stock {
+    background-color: #0288d1;
+    border: none;
+    color: white;
+    font-size: 14px;
+}
+
+#addspecies_stock:hover {
+    background-color: #039be5;
+    box-shadow: 0 0 20px rgba(79, 195, 247, 0.6);
+}</string>
+                </property>
+                <property name="text">
+                 <string>➕Add Species</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="addspecies_stocklabel">
+                <property name="geometry">
+                 <rect>
+                  <x>100</x>
+                  <y>20</y>
+                  <width>151</width>
+                  <height>41</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Add Species</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignmentFlag::AlignCenter</set>
+                </property>
+               </widget>
+               <widget class="QLineEdit" name="speciesname_stock">
+                <property name="geometry">
+                 <rect>
+                  <x>130</x>
+                  <y>70</y>
+                  <width>221</width>
+                  <height>54</height>
+                 </rect>
+                </property>
+               </widget>
+               <widget class="QLineEdit" name="quantity_stock">
+                <property name="geometry">
+                 <rect>
+                  <x>130</x>
+                  <y>130</y>
+                  <width>221</width>
+                  <height>54</height>
+                 </rect>
+                </property>
+               </widget>
+               <widget class="QLineEdit" name="zone_stock">
+                <property name="geometry">
+                 <rect>
+                  <x>130</x>
+                  <y>200</y>
+                  <width>221</width>
+                  <height>54</height>
+                 </rect>
+                </property>
+               </widget>
+              </widget>
+              <widget class="QPushButton" name="recognition_stock">
+               <property name="geometry">
+                <rect>
+                 <x>60</x>
+                 <y>410</y>
+                 <width>231</width>
+                 <height>41</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#recognition_stock {
+    background-color: rgba(20, 60, 95, 0.9);
+    border: 1px solid rgba(79, 195, 247, 0.4);
+    border-radius: 12px;
+    color: #e3f2fd;
+    padding: 10px 16px;
+    font-weight: 600;
+}
+
+
+#recognition_stock:hover {
+    background-color: rgba(79, 195, 247, 0.35);
+    color: white;
+}</string>
+               </property>
+               <property name="text">
+                <string>Object recognition</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="exportpdf_stock">
+               <property name="geometry">
+                <rect>
+                 <x>180</x>
+                 <y>480</y>
+                 <width>191</width>
+                 <height>41</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#exportpdf_stock {
+    background-color: rgba(20, 60, 95, 0.9);
+    border: 1px solid rgba(79, 195, 247, 0.4);
+    border-radius: 12px;
+    color: #e3f2fd;
+    padding: 10px 16px;
+    font-weight: 600;
+}
+
+
+#exportpdf_stock:hover {
+    background-color: rgba(79, 195, 247, 0.35);
+    color: white;
+}</string>
+               </property>
+               <property name="text">
+                <string>Export To PDF</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="visual_stock">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>480</y>
+                 <width>161</width>
+                 <height>41</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#visual_stock {
+    background-color: rgba(20, 60, 95, 0.9);
+    border: 1px solid rgba(79, 195, 247, 0.4);
+    border-radius: 12px;
+    color: #e3f2fd;
+    padding: 10px 16px;
+    font-weight: 600;
+}
+
+
+#visual_stock:hover {
+    background-color: rgba(79, 195, 247, 0.35);
+    color: white;
+}</string>
+               </property>
+               <property name="text">
+                <string>3D Visualization</string>
+               </property>
+              </widget>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1017</width>
+     <height>0</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources>
+  <include location="Ressources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
