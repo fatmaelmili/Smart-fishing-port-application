@@ -11,7 +11,6 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-<<<<<<< HEAD
     Bort.cpp \
     main.cpp
 
@@ -20,16 +19,6 @@ HEADERS += \
 
 FORMS += \
     Bort.ui
-=======
-    main.cpp \
-    signin.cpp
-
-HEADERS += \
-    signin.h
-
-FORMS += \
-    signin.ui
->>>>>>> gestion_stock
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
