@@ -11,5 +11,6 @@
         <file>Images/cvdash.png</file>
         <file>Images/bestresized.png</file>
         <file>Images/profile.jpg</file>
+        <file>Images/zoneimage.png</file>
     </qresource>
 </RCC>
