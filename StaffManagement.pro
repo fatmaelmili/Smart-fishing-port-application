@@ -1,6 +1,6 @@
 QT       += core gui
 QT += core gui widgets charts
-
+QT+=sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,10 +12,12 @@ CONFIG += c++17
 
 SOURCES += \
     Bort.cpp \
+    connection.cpp \
     main.cpp
 
 HEADERS += \
-    Bort.h
+    Bort.h \
+    connection.h
 
 FORMS += \
     Bort.ui
