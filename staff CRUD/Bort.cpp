@@ -22,6 +22,11 @@ SignIn::SignIn(QWidget *parent)
     ui->fishingzonemanagementBTNZ->style()->unpolish(ui->fishingzonemanagementBTNZ);
     ui->fishingzonemanagementBTNZ->style()->polish(ui->fishingzonemanagementBTNZ);
     ui->fishingzonemanagementBTNZ->update();
+    ui->PasswordEdit->setEchoMode(QLineEdit::Password);
+}
+void SignIn::on_showPassCheck_toggled(bool checked)
+{
+    ui->PasswordEdit->setEchoMode(checked ? QLineEdit::Normal: QLineEdit::Password);
 }
 void SignIn::refreshStaffTable()
 {
@@ -144,6 +149,44 @@ void SignIn::on_ubploaAvatarbtn_clicked()
 
 void SignIn::on_signinbtn_clicked()
 {
+    QString mail = ui->UserNameEdit->text().trimmed();
+    QString pass = ui->PasswordEdit->text();
+
+    if (mail.isEmpty() || pass.isEmpty()) {
+        QMessageBox::warning(this, "Sign In", "Please enter email and password.");
+        return;
+    }
+
+    QString role, cvStatus;
+    const auto res = Personnel::authenticateByMailEx(mail, pass, &role, &cvStatus);
+
+    if (res != Personnel::LoginResult::Ok) {
+        switch (res) {
+        case Personnel::LoginResult::UserNotFound:
+            QMessageBox::critical(this, "Sign In", "No account found with this email.");
+            break;
+
+        case Personnel::LoginResult::WrongPassword:
+            QMessageBox::critical(this, "Sign In", "Incorrect password.");
+            break;
+
+        case Personnel::LoginResult::CvNotAccepted:
+            QMessageBox::warning(this, "Sign In",
+                                 "Your account is not approved yet.\n"
+                                 "CV Status: " + cvStatus + "\n"
+                                                  "Please wait for acceptance.");
+            break;
+
+        case Personnel::LoginResult::DbError:
+        default:
+            QMessageBox::critical(this, "Sign In", "Database error. Please try again.");
+            break;
+        }
+        return;
+    }
+
+    m_currentRole = role;
+    applyRolePermissions(m_currentRole);
     ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
 }
 
@@ -189,6 +232,7 @@ void SignIn::on_staticbtn_U_clicked()
 
 void SignIn::on_modifystaffbtn_clicked()
 {
+    refreshStaffTable_U();
     ui->stackedWidget->setCurrentWidget(ui->pageupdate);
 
 }
@@ -616,6 +660,15 @@ void SignIn::on_addstaffbtn_clicked()
         QMessageBox::warning(this, "Warning", "Full name is required.");
         return;
     }
+    QRegularExpression reName("^[\\p{L}]+(?:\\s+[\\p{L}]+)*$");
+    if (!reName.match(fullName).hasMatch()) {
+        QMessageBox::warning(this,
+                             "Invalid name",
+                             "Full name must contain only letters and spaces (no numbers or special characters).");
+        ui->staffnameedit->setFocus();
+        ui->staffnameedit->selectAll();
+        return;
+    }
     if (adresse.isEmpty()) {
         QMessageBox::warning(this, "Warning", "adress is required.");
         return;
@@ -624,8 +677,12 @@ void SignIn::on_addstaffbtn_clicked()
         QMessageBox::warning(this, "Warning", "mail is required.");
         return;
     }
-    if (!mail.contains("@")) {
-        QMessageBox::warning(this, "Warning", "Invalid email.");
+    QRegularExpression reMail("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+    if (!reMail.match(mail).hasMatch()) {
+        QMessageBox::warning(this, "Invalid email",
+                             "Email must be like: name@example.com");
+        ui->mailedit->setFocus();
+        ui->mailedit->selectAll();
         return;
     }
     if (tel.isEmpty()) {
@@ -720,6 +777,7 @@ void SignIn::on_addstaffbtn_clicked()
         m_cvBlob.clear();
         m_avatarBlob.clear();
         refreshStaffTable();
+        refreshStaffTable_U();
 
     } else {
         QMessageBox::critical(this, "Error", "Add staff failed!");
@@ -848,6 +906,104 @@ void SignIn::on_addstaffbtn_U_clicked()
     QString mdp      = ui->passlab_U_2->text();
     QString role     = ui->role_U->currentText();
     QString cvStatus = ui->cvstat_U->currentText();
+    if (fullName.isEmpty()) {
+        QMessageBox::warning(this, "Warning", "Full name is required.");
+        return;
+    }
+
+    QRegularExpression reName("^[\\p{L}]+(?:\\s+[\\p{L}]+)*$");
+    if (!reName.match(fullName).hasMatch()) {
+        QMessageBox::warning(this,
+                             "Invalid name",
+                             "Full name must contain only letters and spaces (no numbers or special characters).");
+        ui->staffnameedit_U->setFocus();
+        ui->staffnameedit_U->selectAll();
+        return;
+    }
+
+    if (adresse.isEmpty()) {
+        QMessageBox::warning(this, "Warning", "adress is required.");
+        return;
+    }
+
+    if (mail.isEmpty()) {
+        QMessageBox::warning(this, "Warning", "mail is required.");
+        return;
+    }
+
+    QRegularExpression reMail("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+    if (!reMail.match(mail).hasMatch()) {
+        QMessageBox::warning(this, "Invalid email",
+                             "Email must be like: name@example.com");
+        ui->mailedit_U->setFocus();
+        ui->mailedit_U->selectAll();
+        return;
+    }
+
+    if (tel.isEmpty()) {
+        QMessageBox::warning(this, "Warning", "phone number is required.");
+        return;
+    }
+
+    QString telClean = tel;
+    telClean.remove(' ');
+
+    QRegularExpression reTel("^\\d{8}$");
+    if (!reTel.match(telClean).hasMatch()) {
+        QMessageBox::warning(this, "Invalid phone number",
+                             "The phone number should contain exactly 8 digits.\n"
+                             "Example : 22123456");
+        ui->teledit_U->setFocus();
+        ui->teledit_U->selectAll();
+        return;
+    }
+    tel = telClean;
+    if (!mdp.trimmed().isEmpty()) {
+        QRegularExpression reMdp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$");
+        if (!reMdp.match(mdp).hasMatch()) {
+            QMessageBox::warning(this,
+                                 "Invalid password",
+                                 "Password must be at least 8 characters and contain:\n"
+                                 "- at least one uppercase letter (A-Z)\n"
+                                 "- at least one lowercase letter (a-z)\n"
+                                 "- at least one number (0-9)\n"
+                                 "- at least one special character (ex: !@#$%^&*)");
+            ui->passlab_U_2->setFocus();
+            ui->passlab_U_2->selectAll();
+            return;
+        }
+    }
+
+    if (role == "Staff Role") {
+        QMessageBox::warning(this, "Role is required", "Choose an item from the list.");
+        ui->role_U->setFocus();
+        return;
+    }
+
+    if (cvStatus == "CvStatus") {
+        QMessageBox::warning(this, "CV Status is required", "choose one item from the list.");
+        ui->cvstat_U->setFocus();
+        return;
+    }
+
+
+    QString hasCv = ui->tablestaff_U->item(row, 8)->text();
+    QString hasAv = ui->tablestaff_U->item(row, 9)->text();
+    if (m_cvBlob.isEmpty() && hasCv != "Yes") {
+        QMessageBox::warning(this,
+                             "CV required",
+                             "Please upload a CV file before updating staff.");
+        ui->cvpathEdit_U->setFocus();
+        return;
+    }
+    if (m_avatarBlob.isEmpty() && hasAv != "Yes") {
+        QMessageBox::warning(this,
+                             "Avatar required",
+                             "Please upload an avatar image before updating staff.");
+        ui->avatarpathEdit_U->setFocus();
+        return;
+    }
+
     auto rep = QMessageBox::question(
         this,
         "Confirm update",
@@ -980,5 +1136,50 @@ void SignIn::on_ubploavatarbtn_U_clicked()
 
     ui->avatarpathEdit_U->setText(QFileInfo(filePath).fileName());
 
+}
+
+void SignIn::setModuleAccess(const QString& prefix, bool allowed, bool hide)
+{
+    const auto buttons = this->findChildren<QPushButton*>();
+    for (QPushButton* b : buttons) {
+        if (!b) continue;
+        if (b->objectName().startsWith(prefix)) {
+            b->setEnabled(allowed);
+            if (hide) b->setVisible(allowed);
+        }
+    }
+}
+
+void SignIn::applyRolePermissions(const QString& role)
+{
+    setModuleAccess("staffmanagementBTN", false);
+    setModuleAccess("clientsmanagementBTN", false);
+    setModuleAccess("stockmanagementBTN", false);
+    setModuleAccess("equipmentmanagementBTN", false);
+    setModuleAccess("fishingzonemanagementBTN", false);
+    if (role == "Admin") {
+        setModuleAccess("staffmanagementBTN", true);
+        setModuleAccess("clientsmanagementBTN", true);
+        setModuleAccess("stockmanagementBTN", true);
+        setModuleAccess("equipmentmanagementBTN", true);
+        setModuleAccess("fishingzonemanagementBTN", true);
+    }
+    else if (role == "Human resource") {
+        setModuleAccess("staffmanagementBTN", true);
+    }
+    else if (role == "An accountant") {
+        setModuleAccess("stockmanagementBTN", true);
+        setModuleAccess("clientsmanagementBTN", true);
+        setModuleAccess("equipmentmanagementBTN", true);
+    }
+    else if (role == "Regulatory manager") {
+        setModuleAccess("fishingzonemanagementBTN", true);
+    }
+    else if (role == "Fisherman") {
+        setModuleAccess("fishingzonemanagementBTN", true);
+    }
+    else if (role == "Security") {
+        setModuleAccess("equipmentmanagementBTN", true);
+    }
 }
 

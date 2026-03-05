@@ -309,7 +309,7 @@ QLabel[objectName*=&quot;error&quot;] {
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>5</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="pageSignIn">
      <property name="styleSheet">
@@ -486,8 +486,28 @@ QPushButton#withfacebtn:hover {
     border: 1px solid #4db6ac;
     box-shadow: 0 0 10px rgba(77, 182, 172, 0.2);
 }
+QCheckBox#showPassCheck  {
+    color: rgba(220, 232, 242, 0.80);
+    font-size: 10.5pt;
+    font-weight: 600;
+    spacing: 10px;
+}
 
-QCheckBox#remembercheck {
+QCheckBox#showPassCheck::indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    border: 2px solid rgba(77, 159, 254, 0.70);
+    background-color: rgba(0, 44, 114, 0.10);
+}
+
+QCheckBox#showPassCheck::indicator:checked {
+    background-color: #4D9FFE;
+    border: 2px solid #4D9FFE;
+}
+
+
+QCheckBox#remembercheck  {
     color: rgba(220, 232, 242, 0.80);
     font-size: 10.5pt;
     font-weight: 600;
@@ -692,10 +712,10 @@ QLabel[objectName*=&quot;status&quot;] {
      <widget class="QCheckBox" name="remembercheck">
       <property name="geometry">
        <rect>
-        <x>650</x>
-        <y>330</y>
-        <width>411</width>
-        <height>71</height>
+        <x>550</x>
+        <y>350</y>
+        <width>354</width>
+        <height>51</height>
        </rect>
       </property>
       <property name="text">
@@ -716,6 +736,19 @@ QLabel[objectName*=&quot;status&quot;] {
       </property>
       <property name="pixmap">
        <pixmap resource="Ressources.qrc">:/Images/logo.png</pixmap>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="showPassCheck">
+      <property name="geometry">
+       <rect>
+        <x>760</x>
+        <y>350</y>
+        <width>354</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Show Password</string>
       </property>
      </widget>
     </widget>
@@ -4419,21 +4452,6 @@ QComboBox::down-arrow {
     margin-right: 10px;
 }
 
-/* Upload CV Button (uploadcvbtn) */
-QPushButton#uploadcvbtn {
-    background-color: rgba(255,255,255,0.08);
-    color: #E3F2FD;
-    border: 1px dashed rgba(79,195,247,0.6);
-    border-radius: 10px;
-    padding: 8px 12px;
-    font-weight: 600;
-}
-
-/* Hover Upload */
-QPushButton#uploadcvbtn:hover {
-    background-color: rgba(79,195,247,0.2);
-    border-color: #4FC3F7;
-}
 
 /* Add Staff Button (addstaffbtn) */
 QPushButton#addstaffbtn {
@@ -4561,6 +4579,8 @@ QTableWidget QScrollBar::sub-line {
 
 #cvanalysebtn,
 #staticbtn,
+#uploadcvbtn,
+#uploadAvatarbtn,
 #exportpdfstaffbtn {
     background-color: rgba(20, 60, 95, 0.9);
     border: 1px solid rgba(79, 195, 247, 0.4);
@@ -4570,7 +4590,8 @@ QTableWidget QScrollBar::sub-line {
     font-weight: 600;
 }
 
-
+#uploadcvbtn:hover,
+#uploadAvatarbtn:hover,
 #cvanalysebtn:hover,
 #staticbtn:hover,
 #exportpdfstaffbtn:hover {
@@ -5192,6 +5213,23 @@ QPushButton#backWbtn:disabled {
                   <width>90</width>
                   <height>29</height>
                  </rect>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">#uploadcvbtn
+ {
+    background-color: rgba(20, 60, 95, 0.9);
+    border: 1px solid rgba(79, 195, 247, 0.4);
+    border-radius: 12px;
+    color: #e3f2fd;
+    padding: 10px 16px;
+    font-weight: 600;
+}
+
+#uploadcvbtn:hover
+ {
+    background-color: rgba(79, 195, 247, 0.35);
+    color: white;
+}</string>
                 </property>
                 <property name="text">
                  <string>Upload Cv</string>

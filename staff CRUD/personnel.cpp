@@ -145,7 +145,7 @@ bool Personnel::modifierStaff(int IdPers)
     q.bindValue(":cvstatus", CvStatus);
     q.bindValue(":cv", Cv.isEmpty() ? QVariant() : QVariant::fromValue(Cv));
     q.bindValue(":avatar", Avatar.isEmpty() ? QVariant() : QVariant::fromValue(Avatar));
-    q.bindValue(":mdp", hashPassword(Mdp));
+    q.bindValue(":mdp", Mdp);
     q.bindValue(":id", IdPers);
     if (!q.exec()) {
         qDebug() << "modifierStaff error:" << q.lastError().text();
@@ -153,6 +153,50 @@ bool Personnel::modifierStaff(int IdPers)
     }
     return true;
 }
+bool Personnel::verifyPassword(const QString& plain, const QString& storedSaltHash)
+{
+    const QStringList parts = storedSaltHash.split(':');
+    if (parts.size() != 2) return false;
+    const QByteArray salt = QByteArray::fromBase64(parts[0].toLatin1());
+    const QByteArray storedHashHex = parts[1].toLatin1().toLower();
+    const QByteArray input = salt + plain.toUtf8();
+    const QByteArray computedHashHex =QCryptographicHash::hash(input, QCryptographicHash::Sha256).toHex().toLower();
+    return computedHashHex == storedHashHex;
+}
 
+Personnel::LoginResult Personnel::authenticateByMailEx(const QString& mail,const QString& plainPassword,QString* outRole,QString* outCvStatus)
+{
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT MDP, ROLE, CVSTATUS
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail);
 
+    if (!q.exec()) {
+        qDebug() << "Auth DB error:" << q.lastError().text();
+        return LoginResult::DbError;
+    }
 
+    if (!q.next()) {
+        return LoginResult::UserNotFound;
+    }
+
+    const QString stored   = q.value(0).toString();
+    const QString role     = q.value(1).toString();
+    const QString cvStatus = q.value(2).toString();
+
+    if (outRole) *outRole = role;
+    if (outCvStatus) *outCvStatus = cvStatus;
+
+    if (!verifyPassword(plainPassword, stored)) {
+        return LoginResult::WrongPassword;
+    }
+
+    if (cvStatus.trimmed().compare("Accepted", Qt::CaseInsensitive) != 0) {
+        return LoginResult::CvNotAccepted;
+    }
+
+    return LoginResult::Ok;
+}

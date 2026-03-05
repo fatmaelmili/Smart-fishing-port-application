@@ -195,11 +195,15 @@ private slots:
     void on_ubploacvbtn_U_clicked();
 
     void on_ubploavatarbtn_U_clicked();
+    void on_showPassCheck_toggled(bool checked);
 
 private:
     Ui::SignIn *ui;
     QByteArray m_cvBlob;
     QByteArray m_avatarBlob;
+    QString m_currentRole;
+    void applyRolePermissions(const QString& role);
+    void setModuleAccess(const QString& prefix, bool allowed, bool hide = true);
 };
 
 #endif // BORT_H

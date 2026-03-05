@@ -23,6 +23,13 @@ private:
     QByteArray Cv;
     QByteArray Avatar;
 public:
+    enum class LoginResult {
+        Ok,
+        UserNotFound,
+        WrongPassword,
+        CvNotAccepted,
+        DbError
+    };
     Personnel();
     Personnel(QString Nom,QString Prenom,QString Adresse,QString Tel,QString Mail,QString Role,QString Mdp,QString CvStatus,QByteArray Cv,QByteArray Avatar);
     void setIdPers(int IdPers){this->IdPers=IdPers;}
@@ -52,7 +59,8 @@ public:
     bool modifierStaff(int IdPers);
     bool supprimerStaff(int IdPers);
     QVector<QStringList> getStaffRows();
-
+    static bool verifyPassword(const QString& plain, const QString& storedSaltHash);
+    static LoginResult authenticateByMailEx(const QString& mail,const QString& plainPassword,QString* outRole = nullptr,QString* outCvStatus = nullptr);
 
 
 };
