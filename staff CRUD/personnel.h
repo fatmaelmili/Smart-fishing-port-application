@@ -30,6 +30,15 @@ public:
         CvNotAccepted,
         DbError
     };
+    struct UserProfile {
+        int idPers = -1;
+        QString nom;
+        QString prenom;
+        QString role;
+        QByteArray avatar;
+    };
+
+    static bool fetchProfileByMail(const QString& mail, UserProfile* out);
     Personnel();
     Personnel(QString Nom,QString Prenom,QString Adresse,QString Tel,QString Mail,QString Role,QString Mdp,QString CvStatus,QByteArray Cv,QByteArray Avatar);
     void setIdPers(int IdPers){this->IdPers=IdPers;}
@@ -46,7 +55,7 @@ public:
     QString getMail(){return Mail;}
     void setRole(QString Role){this->Role=Role;}
     QString getRole(){ return Role;}
-    void setMdp(QString Mdp){this->Mdp = Personnel::hashPassword(Mdp);}
+    void setMdp(QString Mdp){this->Mdp = Mdp.trimmed().isEmpty() ? "" : Personnel::hashPassword(Mdp);}
     QString getMdp(){return Mdp;}
     void setCvStatus(QString CvStatus){this->CvStatus=CvStatus;}
     QString getCvStatus(){return CvStatus;}
@@ -54,13 +63,18 @@ public:
     QByteArray getCv(){return Cv;}
     void setAvatar(QByteArray Avatar){this->Avatar=Avatar;}
     QByteArray getAvatar(){return Avatar;}
-    QString hashPassword(const QString& plain);
+    static QString hashPassword(const QString& plain);
     bool ajouterStaff();
     bool modifierStaff(int IdPers);
     bool supprimerStaff(int IdPers);
     QVector<QStringList> getStaffRows();
     static bool verifyPassword(const QString& plain, const QString& storedSaltHash);
     static LoginResult authenticateByMailEx(const QString& mail,const QString& plainPassword,QString* outRole = nullptr,QString* outCvStatus = nullptr);
+    static bool findUserByMail(const QString& mail, QString* fullName = nullptr);
+    static QString generateResetToken();
+    static bool saveResetToken(const QString& mail, const QString& token, int expiryMinutes = 15);
+    static bool validateResetToken(const QString& token);
+    static bool resetPasswordByToken(const QString& token, const QString& newPlainPassword);
 
 
 };

@@ -2,6 +2,7 @@
 #define BORT_H
 
 #include <QMainWindow>
+#include <QSslSocket>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -197,13 +198,21 @@ private slots:
     void on_ubploavatarbtn_U_clicked();
     void on_showPassCheck_toggled(bool checked);
 
+    void on_newbtn_clicked();
+
+    void on_backsigninBTNR_clicked();
+
 private:
     Ui::SignIn *ui;
     QByteArray m_cvBlob;
     QByteArray m_avatarBlob;
     QString m_currentRole;
+    void updateUserProfileUI(const QString& fullName, const QByteArray& avatarBytes);
     void applyRolePermissions(const QString& role);
     void setModuleAccess(const QString& prefix, bool allowed, bool hide = true);
+    bool showCaptchaPuzzle();
+    bool sendSmtpCommand(QSslSocket& socket, const QString& command, const QString& expectedCode);
+    bool sendResetEmail(const QString& toMail, const QString& fullName, const QString& token);
 };
 
 #endif // BORT_H

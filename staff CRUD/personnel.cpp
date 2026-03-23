@@ -11,6 +11,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include <QDateTime>
 Personnel::Personnel() {
 }
 QString Personnel::hashPassword(const QString& plain)
@@ -200,3 +201,154 @@ Personnel::LoginResult Personnel::authenticateByMailEx(const QString& mail,const
 
     return LoginResult::Ok;
 }
+
+bool Personnel::fetchProfileByMail(const QString& mail, UserProfile* out)
+{
+    if (!out) return false;
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT IDPERS, NOM, PRENOM, ROLE, AVATAR
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail);
+
+    if (!q.exec()) {
+        qDebug() << "fetchProfileByMail error:" << q.lastError().text();
+        return false;
+    }
+    if (!q.next()) return false;
+
+    out->idPers  = q.value(0).toInt();
+    out->nom     = q.value(1).toString();
+    out->prenom  = q.value(2).toString();
+    out->role    = q.value(3).toString();
+    out->avatar  = q.value(4).toByteArray();
+    return true;
+}
+
+
+bool Personnel::findUserByMail(const QString& mail, QString* fullName)
+{
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT PRENOM, NOM
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail);
+
+    if (!q.exec()) {
+        qDebug() << "findUserByMail error:" << q.lastError().text();
+        return false;
+    }
+
+    if (!q.next()) {
+        return false;
+    }
+
+    if (fullName) {
+        *fullName = (q.value(0).toString() + " " + q.value(1).toString()).trimmed();
+    }
+
+    return true;
+}
+
+
+QString Personnel::generateResetToken()
+{
+    QByteArray randomBytes(32, Qt::Uninitialized);
+    for (int i = 0; i < randomBytes.size(); ++i) {
+        randomBytes[i] = static_cast<char>(QRandomGenerator::global()->bounded(0, 256));
+    }
+
+    return QString::fromLatin1(randomBytes.toHex());
+}
+
+bool Personnel::saveResetToken(const QString& mail, const QString& token, int expiryMinutes)
+{
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET RESET_TOKEN = :token,
+            RESET_TOKEN_EXPIRY = :expiry
+        WHERE MAIL = :mail
+    )");
+
+    q.bindValue(":token", token);
+    q.bindValue(":expiry", QDateTime::currentDateTime().addSecs(expiryMinutes * 60));
+    q.bindValue(":mail", mail);
+
+    if (!q.exec()) {
+        qDebug() << "saveResetToken error:" << q.lastError().text();
+        return false;
+    }
+
+    return q.numRowsAffected() > 0;
+}
+
+bool Personnel::validateResetToken(const QString& token)
+{
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT COUNT(*)
+        FROM FATMA.PERSONNEL
+        WHERE RESET_TOKEN = :token
+          AND RESET_TOKEN_EXPIRY IS NOT NULL
+          AND RESET_TOKEN_EXPIRY >= :now_value
+    )");
+
+    q.bindValue(":token", token);
+    q.bindValue(":now_value", QDateTime::currentDateTime());
+
+    if (!q.exec()) {
+        qDebug() << "validateResetToken error:" << q.lastError().text();
+        return false;
+    }
+
+    if (!q.next()) {
+        return false;
+    }
+
+    return q.value(0).toInt() > 0;
+}
+bool Personnel::resetPasswordByToken(const QString& token, const QString& newPlainPassword)
+{
+    if (newPlainPassword.trimmed().isEmpty()) {
+        return false;
+    }
+
+    if (!validateResetToken(token)) {
+        return false;
+    }
+
+    const QString newHashedPassword = Personnel::hashPassword(newPlainPassword);
+
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET MDP = :mdp,
+            RESET_TOKEN = NULL,
+            RESET_TOKEN_EXPIRY = NULL
+        WHERE RESET_TOKEN = :token
+          AND RESET_TOKEN_EXPIRY >= :now_value
+    )");
+
+    q.bindValue(":mdp", newHashedPassword);
+    q.bindValue(":token", token);
+    q.bindValue(":now_value", QDateTime::currentDateTime());
+
+    if (!q.exec()) {
+        qDebug() << "resetPasswordByToken error:" << q.lastError().text();
+        return false;
+    }
+
+    return q.numRowsAffected() > 0;
+}
+
+
+
+
+
+

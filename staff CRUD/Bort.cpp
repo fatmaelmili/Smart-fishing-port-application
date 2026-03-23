@@ -7,6 +7,14 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QTableWidgetItem>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QRandomGenerator>
+#include <QDateTime>
+#include <QSslSocket>
 SignIn::SignIn(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SignIn)
@@ -23,6 +31,7 @@ SignIn::SignIn(QWidget *parent)
     ui->fishingzonemanagementBTNZ->style()->polish(ui->fishingzonemanagementBTNZ);
     ui->fishingzonemanagementBTNZ->update();
     ui->PasswordEdit->setEchoMode(QLineEdit::Password);
+    ui->resetlabel->setText("");
 }
 void SignIn::on_showPassCheck_toggled(bool checked)
 {
@@ -86,19 +95,191 @@ void SignIn::on_backsigninBTN_clicked()
 
 void SignIn::on_resetbtn_clicked()
 {
+    QString mail = ui->resetlineEdit->text().trimmed();
 
-        QString input = ui->resetlineEdit->text().trimmed();
+    if (mail.isEmpty()) {
+        ui->resetlabel->setText("Please enter your email.");
+        return;
+    }
 
-        if (input.isEmpty()) {
-            ui->resetlabel->setText("Please enter your email or username.");
-            return;
-        }
+    QRegularExpression reMail("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+    if (!reMail.match(mail).hasMatch()) {
+        ui->resetlabel->setText("Please enter a valid email address.");
+        return;
+    }
 
-        ui->resetlabel->setText("Reset link sent. Check your email.");
+    QString fullName;
+    if (!Personnel::findUserByMail(mail, &fullName)) {
+        ui->resetlabel->setText("No account found with this email.");
+        return;
+    }
 
+    if (!showCaptchaPuzzle()) {
+        ui->resetlabel->setText("Captcha failed. Please try again.");
+        return;
+    }
 
+    const QString token = Personnel::generateResetToken();
+
+    if (!Personnel::saveResetToken(mail, token, 15)) {
+        ui->resetlabel->setText("Could not generate reset request.");
+        return;
+    }
+
+    if (!sendResetEmail(mail, fullName, token)) {
+        ui->resetlabel->setText("Token saved, but email sending failed.");
+        return;
+    }
+
+    ui->resetlabel->setText("Reset link sent successfully. Please check your email.");
+    ui->stackedWidget->setCurrentWidget(ui->pageresetmdp);
+    ui->tokenlineEdit->clear();
+    ui->NewEdit->clear();
+    ui->tokenlineEdit->setFocus();
 }
 
+bool SignIn::showCaptchaPuzzle()
+{
+    QDialog dialog(this);
+    dialog.setWindowTitle("Anti-robot verification");
+    dialog.setModal(true);
+    dialog.setMinimumSize(360, 220);
+    dialog.setStyleSheet(R"(
+        QDialog {
+            background-color: #0E3150;
+            color: white;
+            border-radius: 10px;
+        }
+        QLabel {
+            color: white;
+            font-size: 14px;
+        }
+        QPushButton {
+            background-color: #1E66F5;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 44px;
+        }
+        QPushButton:hover {
+            background-color: #3B82F6;
+        }
+    )");
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(&dialog);
+
+    QLabel *title = new QLabel("Mini puzzle: click the numbers in order 1 → 2 → 3 → 4");
+    title->setWordWrap(true);
+    title->setAlignment(Qt::AlignCenter);
+    mainLayout->addWidget(title);
+
+    QGridLayout *grid = new QGridLayout();
+    mainLayout->addLayout(grid);
+
+    QList<int> values = {1, 2, 3, 4};
+    for (int i = values.size() - 1; i > 0; --i) {
+        int j = QRandomGenerator::global()->bounded(i + 1);
+        values.swapItemsAt(i, j);
+    }
+
+    int expected = 1;
+
+    for (int i = 0; i < values.size(); ++i) {
+        QPushButton *btn = new QPushButton(QString::number(values[i]));
+        grid->addWidget(btn, i / 2, i % 2);
+
+        connect(btn, &QPushButton::clicked, &dialog, [&, btn, value = values[i]]() mutable {
+            if (value == expected) {
+                btn->setEnabled(false);
+                expected++;
+                if (expected == 5) {
+                    dialog.accept();
+                }
+            } else {
+                QMessageBox::warning(&dialog, "Wrong order",
+                                     "Wrong order. Please restart the verification.");
+                dialog.reject();
+            }
+        });
+    }
+
+    QPushButton *cancelBtn = new QPushButton("Cancel");
+    mainLayout->addWidget(cancelBtn);
+    connect(cancelBtn, &QPushButton::clicked, &dialog, &QDialog::reject);
+
+    return dialog.exec() == QDialog::Accepted;
+}
+
+bool SignIn::sendSmtpCommand(QSslSocket& socket, const QString& command, const QString& expectedCode)
+{
+    if (!command.isEmpty()) {
+        socket.write(command.toUtf8());
+        if (!socket.waitForBytesWritten(10000))
+            return false;
+    }
+
+    if (!socket.waitForReadyRead(10000))
+        return false;
+
+    const QByteArray response = socket.readAll();
+    qDebug() << "SMTP:" << response;
+
+    return response.startsWith(expectedCode.toUtf8());
+}
+
+bool SignIn::sendResetEmail(const QString& toMail, const QString& fullName, const QString& token)
+{
+
+    const QString smtpHost = "smtp.gmail.com";
+    const int smtpPort = 465;
+    const QString senderEmail = "bortapplication@gmail.com";
+    const QString senderPassword = "azqf mjxk jdlq qbyl";
+
+    QString subject = "BORT Password Reset";
+    QString body =
+        "Hello " + fullName + ",\r\n\r\n"
+                              "We received a request to reset your BORT account password.\r\n\r\n"
+                              "Your reset code:\r\n" + token + "\r\n\r\n"
+                  "Please return to the application and enter this code to reset your password.\r\n\r\n"
+                  "This code will expire in 15 minutes.\r\n"
+                  "If you did not request this reset, please ignore this email.\r\n\r\n"
+                  "Best regards,\r\n"
+                  "BORT - Smart Fishing Port Application";
+
+    QSslSocket socket;
+    socket.connectToHostEncrypted(smtpHost, smtpPort);
+
+    if (!socket.waitForEncrypted(15000)) {
+        qDebug() << "SSL connection failed:" << socket.errorString();
+        return false;
+    }
+
+    if (!sendSmtpCommand(socket, "", "220")) return false;
+    if (!sendSmtpCommand(socket, "EHLO localhost\r\n", "250")) return false;
+    if (!sendSmtpCommand(socket, "AUTH LOGIN\r\n", "334")) return false;
+    if (!sendSmtpCommand(socket, senderEmail.toUtf8().toBase64() + "\r\n", "334")) return false;
+    if (!sendSmtpCommand(socket, senderPassword.toUtf8().toBase64() + "\r\n", "235")) return false;
+    if (!sendSmtpCommand(socket, "MAIL FROM:<" + senderEmail + ">\r\n", "250")) return false;
+    if (!sendSmtpCommand(socket, "RCPT TO:<" + toMail + ">\r\n", "250")) return false;
+    if (!sendSmtpCommand(socket, "DATA\r\n", "354")) return false;
+
+    QString data;
+    data += "From: BORT <" + senderEmail + ">\r\n";
+    data += "To: <" + toMail + ">\r\n";
+    data += "Subject: " + subject + "\r\n";
+    data += "MIME-Version: 1.0\r\n";
+    data += "Content-Type: text/plain; charset=UTF-8\r\n";
+    data += "\r\n";
+    data += body + "\r\n";
+    data += ".\r\n";
+
+    if (!sendSmtpCommand(socket, data, "250")) return false;
+    if (!sendSmtpCommand(socket, "QUIT\r\n", "221")) return false;
+
+    return true;
+}
 
 void SignIn::on_ubploacvbtn_clicked()
 {
@@ -187,6 +368,11 @@ void SignIn::on_signinbtn_clicked()
 
     m_currentRole = role;
     applyRolePermissions(m_currentRole);
+    Personnel::UserProfile prof;
+    if (Personnel::fetchProfileByMail(mail, &prof)) {
+        QString fullName = (prof.prenom + " " + prof.nom).trimmed();
+        updateUserProfileUI(fullName, prof.avatar);
+    }
     ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
 }
 
@@ -1030,6 +1216,8 @@ void SignIn::on_addstaffbtn_U_clicked()
 }
 
 
+
+
 void SignIn::on_deletestaffbtn_U_clicked()
 {
     int row = ui->tablestaff_U->currentRow();
@@ -1181,5 +1369,57 @@ void SignIn::applyRolePermissions(const QString& role)
     else if (role == "Security") {
         setModuleAccess("equipmentmanagementBTN", true);
     }
+}
+void SignIn::updateUserProfileUI(const QString& fullName, const QByteArray& avatarBytes)
+{
+
+    const auto profileBtns = this->findChildren<QCommandLinkButton*>();
+    for (QCommandLinkButton* btn : profileBtns) {
+        if (!btn) continue;
+        if (btn->objectName().startsWith("userprofiledetails")) {
+            btn->setText(fullName);
+        }
+    }
+
+    if (!avatarBytes.isEmpty()) {
+        QPixmap px;
+        px.loadFromData(avatarBytes);
+        if (!px.isNull()) {
+            const auto avatarLabels = this->findChildren<QLabel*>();
+            for (QLabel* lab : avatarLabels) {
+                if (!lab) continue;
+                if (lab->objectName().startsWith("avatar")) {
+                    lab->setPixmap(px.scaled(lab->size(),
+                                             Qt::KeepAspectRatioByExpanding,
+                                             Qt::SmoothTransformation));
+                    lab->setScaledContents(true);
+                }
+            }
+        }
+    }
+}
+
+void SignIn::on_newbtn_clicked()
+{
+    QString token = ui->tokenlineEdit->text().trimmed();
+    QString newPassword = ui->NewEdit->text();
+
+    if (token.isEmpty()) {
+        ui->tokenlabel->setText("Please enter your reset code.");
+        return;
+    }
+
+    if (newPassword.isEmpty()) {
+        ui->tokenlabel->setText("Please enter your new password.");
+        return;
+    }
+
+    ui->tokenlabel->setText("Button clicked successfully.");
+}
+
+
+void SignIn::on_backsigninBTNR_clicked()
+{
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 

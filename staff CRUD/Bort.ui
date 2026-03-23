@@ -309,7 +309,7 @@ QLabel[objectName*=&quot;error&quot;] {
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="pageSignIn">
      <property name="styleSheet">
@@ -3288,6 +3288,273 @@ QPushButton#backsigninBTN:hover {
         </widget>
        </item>
       </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="pageresetmdp">
+     <property name="styleSheet">
+      <string notr="true">/* ===== FORGOT PAGE ===== */
+QFrame#leftpanelForgetR {
+    background-color: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 #0d2c4a,
+        stop:0.5 #0a375b,
+        stop:1 #073052);
+    border-radius: 22px;
+    border: 1px solid rgba(79,195,247,0.16);
+}
+
+QFrame#rightpanelForgetR {
+    background-color: rgba(255,255,255,0.06);
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.14);
+}
+
+/* Title of forgot page */
+QLabel#ResetTitle {
+    color: #4fc3f7;
+    font-size: 36px;
+    font-weight: 900;
+    qproperty-alignment: AlignCenter;
+}
+
+/* Instruction label */
+QLabel#tokenlabel {
+    background: transparent;
+    color: rgba(234,243,255,0.80);
+    font-size: 13px;
+    font-weight: 600;
+}
+QLabel#Newlabel {
+    background: transparent;
+    color: rgba(234,243,255,0.80);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Input */
+QLineEdit#tokenlineEdit {
+    min-height: 46px;
+    min-width: 420px;
+    max-width: 420px;
+    background-color: rgba(25,45,65,0.65);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 14px;
+    padding: 10px 14px;
+    color: white;
+}
+QLineEdit#tokenlineEdit:focus {
+    border: 1px solid #4fc3f7;
+}
+QLineEdit#NewEdit {
+    min-height: 46px;
+    min-width: 420px;
+    max-width: 420px;
+    background-color: rgba(25,45,65,0.65);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: 14px;
+    padding: 10px 14px;
+    color: white;
+}
+QLineEdit#NewEdit:focus {
+    border: 1px solid #4fc3f7;
+}
+
+/* Buttons */
+QPushButton#newbtn {
+    min-height: 54px;
+    min-width: 420px;
+    max-width: 420px;
+    border-radius: 16px;
+    background-color: #0A66FF;
+    color: white;
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+QPushButton#newbtn:hover { background-color: rgba(10,102,255,0.86); }
+
+QPushButton#backsigninBTNR {
+    min-height: 52px;
+    min-width: 420px;
+    max-width: 420px;
+    border-radius: 16px;
+    background-color: rgba(255,255,255,0.08);
+    color: rgba(234,243,255,0.85);
+    border: 1px solid rgba(255,255,255,0.14);
+    font-weight: 800;
+}
+QPushButton#backsigninBTNR:hover {
+    border: 1px solid rgba(79,195,247,0.35);
+    color: #4fc3f7;
+}
+</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget_14">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>130</y>
+        <width>891</width>
+        <height>481</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_16">
+       <item>
+        <widget class="QFrame" name="leftpanelForgetR">
+         <property name="frameShape">
+          <enum>QFrame::Shape::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+         <widget class="QLabel" name="labelR">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>40</y>
+            <width>331</width>
+            <height>351</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="Ressources.qrc">:/Images/logo.png</pixmap>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QFrame" name="rightpannelforgetR">
+          <property name="geometry">
+           <rect>
+            <x>370</x>
+            <y>0</y>
+            <width>541</width>
+            <height>479</height>
+           </rect>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::Shape::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Shadow::Raised</enum>
+          </property>
+          <widget class="QLabel" name="tokenlabel">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>90</y>
+             <width>391</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Enter your token</string>
+           </property>
+          </widget>
+          <widget class="QLineEdit" name="tokenlineEdit">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>120</y>
+             <width>450</width>
+             <height>68</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>450</width>
+             <height>68</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>450</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="newbtn">
+           <property name="geometry">
+            <rect>
+             <x>50</x>
+             <y>330</y>
+             <width>420</width>
+             <height>54</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Confirm</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="backsigninBTNR">
+           <property name="geometry">
+            <rect>
+             <x>50</x>
+             <y>400</y>
+             <width>422</width>
+             <height>54</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Back To Sign In</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="Newlabel">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>210</y>
+             <width>391</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Enter your new password</string>
+           </property>
+          </widget>
+          <widget class="QLineEdit" name="NewEdit">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>250</y>
+             <width>450</width>
+             <height>68</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>450</width>
+             <height>68</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>450</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="ResetTitle">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>40</y>
+        <width>451</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Reset Your Password</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="pageWelcome">
