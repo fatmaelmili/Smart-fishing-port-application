@@ -213,6 +213,8 @@ private slots:
 
     void on_staffsearchbarre_U_textChanged(const QString &arg1);
 
+    void on_exportbtn_clicked();
+
 private:
     Ui::SignIn *ui;
     QByteArray m_cvBlob;
@@ -231,6 +233,9 @@ private:
     void loadStaffDashboardStats();
     void buildRoleChart();
     void buildCvStatusChart();
+    QPixmap captureWidgetScaled(QWidget *widget, double scaleFactor = 3.0);
+    void drawRoundedCard(QPainter &painter, const QRect &rect, const QColor &fillColor,const QColor &borderColor, int radius = 24);
+    void exportStaffDashboardToPdf();
 };
 
 #endif // BORT_H

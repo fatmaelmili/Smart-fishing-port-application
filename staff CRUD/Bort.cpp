@@ -25,7 +25,15 @@
 #include <QBarCategoryAxis>
 #include <QValueAxis>
 #include <QLegend>
-
+#include <QPdfWriter>
+#include <QPainter>
+#include <QPageSize>
+#include <QStandardPaths>
+#include <QDir>
+#include <QDateTime>
+#include <QApplication>
+#include <QPageLayout>
+#include <QDir>
 SignIn::SignIn(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SignIn)
@@ -1777,3 +1785,222 @@ void SignIn::buildCvStatusChart()
 
     m_cvLegendWidget->show();
 }
+QPixmap SignIn::captureWidgetScaled(QWidget *widget, double scaleFactor)
+{
+    if (!widget)
+        return QPixmap();
+
+    const QSize sourceSize = widget->size();
+    const QSize targetSize(sourceSize.width() * scaleFactor,
+                           sourceSize.height() * scaleFactor);
+
+    QPixmap pixmap(targetSize);
+    pixmap.fill(Qt::transparent);
+
+    QPainter p(&pixmap);
+    p.setRenderHint(QPainter::Antialiasing, true);
+    p.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    p.scale(scaleFactor, scaleFactor);
+    widget->render(&p, QPoint(), QRegion(),
+                   QWidget::DrawWindowBackground | QWidget::DrawChildren);
+    p.end();
+
+    return pixmap;
+}
+
+void SignIn::drawRoundedCard(QPainter &painter, const QRect &rect, const QColor &fillColor,
+                             const QColor &borderColor, int radius)
+{
+    painter.save();
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setPen(QPen(borderColor, 2));
+    painter.setBrush(fillColor);
+    painter.drawRoundedRect(rect, radius, radius);
+    painter.restore();
+}
+static QFont pdfFont(const QString &family, int pixelSize, bool bold = false)
+{
+    QFont f(family);
+    f.setPixelSize(pixelSize);
+    f.setBold(bold);
+    return f;
+}
+void SignIn::exportStaffDashboardToPdf()
+{
+    loadStaffDashboardStats();
+    qApp->processEvents();
+
+    QString defaultName = QDir::homePath() + "/Staff_Dashboard_Report.pdf";
+
+    QString fileName = QFileDialog::getSaveFileName(
+        this,
+        "Export Staff Dashboard as PDF",
+        defaultName,
+        "PDF Files (*.pdf)"
+        );
+
+    if (fileName.isEmpty())
+        return;
+
+    if (!fileName.endsWith(".pdf", Qt::CaseInsensitive))
+        fileName += ".pdf";
+
+    QPdfWriter pdf(fileName);
+    pdf.setPageSize(QPageSize(QPageSize::A4));
+    pdf.setPageOrientation(QPageLayout::Landscape);
+    pdf.setResolution(300);
+    pdf.setPageMargins(QMarginsF(8, 8, 8, 8), QPageLayout::Millimeter);
+
+    QPainter painter(&pdf);
+    if (!painter.isActive()) {
+        QMessageBox::critical(this, "PDF Error", "Unable to create PDF file.");
+        return;
+    }
+
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    painter.setRenderHint(QPainter::TextAntialiasing, true);
+
+    const int pageW = pdf.width();
+    const int pageH = pdf.height();
+
+    const int margin = 55;
+    const int pageInnerW = pageW - 2 * margin;
+    painter.fillRect(0, 0, pageW, pageH, QColor("#071826"));
+
+    QLinearGradient bgGrad(0, 0, pageW, pageH);
+    bgGrad.setColorAt(0.0, QColor(8, 34, 52, 80));
+    bgGrad.setColorAt(1.0, QColor(3, 15, 28, 0));
+    painter.fillRect(0, 0, pageW, pageH, bgGrad);
+    const int headerH = 250;
+    QRect headerRect(margin, margin, pageInnerW, headerH);
+    drawRoundedCard(painter, headerRect,
+                    QColor(8, 33, 52, 235),
+                    QColor(72, 170, 255, 90),
+                    24);
+
+    QPixmap logo(":/Images/logo.png");
+    QRect logoRect(headerRect.left() + 26, headerRect.top() + 28, 210, 210);
+    if (!logo.isNull()) {
+        painter.drawPixmap(logoRect, logo.scaled(logoRect.size(),
+                                                 Qt::KeepAspectRatio,
+                                                 Qt::SmoothTransformation));
+    }
+
+    int textLeft = logoRect.right() + 30;
+    int textWidth = headerRect.width() - (textLeft - headerRect.left()) - 30;
+
+    painter.setPen(Qt::white);
+
+    painter.setFont(pdfFont("Arial", 52, true));
+    painter.drawText(QRect(textLeft, headerRect.top() + 26, textWidth, 50),
+                     Qt::AlignLeft | Qt::AlignVCenter,
+                     "BORT - Smart Fishing Port Application");
+
+    painter.setPen(QColor("#72D0FF"));
+    painter.setFont(pdfFont("Arial", 40, true));
+    painter.drawText(QRect(textLeft, headerRect.top() + 72, textWidth, 38),
+                     Qt::AlignLeft | Qt::AlignVCenter,
+                     "Staff Dashboard Report");
+
+    painter.setPen(QColor("#DCEBFA"));
+    painter.setFont(pdfFont("Arial", 30, false));
+    painter.drawText(QRect(textLeft, headerRect.top() + 114, textWidth, 28),
+                     Qt::AlignLeft | Qt::AlignVCenter,
+                     "Generated on " + QDateTime::currentDateTime().toString("dd/MM/yyyy  hh:mm"));
+
+    painter.setPen(QPen(QColor(80, 180, 255, 90), 2));
+    painter.drawLine(headerRect.left() + 20, headerRect.bottom() - 26,
+                     headerRect.right() - 20, headerRect.bottom() - 26);
+
+
+    const int topGap = 22;
+    const int totalCardH = 145;
+    QRect totalRect(margin, headerRect.bottom() + topGap, 360, totalCardH);
+
+    drawRoundedCard(painter, totalRect,
+                    QColor(10, 40, 63, 235),
+                    QColor(72, 170, 255, 80),
+                    20);
+
+    painter.setPen(QColor("#8FD8FF"));
+    painter.setFont(pdfFont("Arial", 34, true));
+    painter.drawText(QRect(totalRect.left() + 24, totalRect.top() + 16,
+                           totalRect.width() - 48, 30),
+                     Qt::AlignLeft | Qt::AlignVCenter,
+                     "Total Accepted Staff");
+
+    painter.setPen(Qt::white);
+    painter.setFont(pdfFont("Arial", 54, true));
+    painter.drawText(QRect(totalRect.left() + 24, totalRect.top() + 46,
+                           totalRect.width() - 48, 56),
+                     Qt::AlignLeft | Qt::AlignVCenter,
+                     ui->numberemp->text());
+
+
+    const int chartsTop = totalRect.bottom() + 28;
+    const int footerReserved = 36;
+    const int chartGap = 24;
+    const int chartCardW = (pageInnerW - chartGap) / 2;
+    const int chartCardH = pageH - chartsTop - margin - footerReserved;
+
+    QRect roleCard(margin, chartsTop, chartCardW, chartCardH);
+    QRect cvCard(margin + chartCardW + chartGap, chartsTop, chartCardW, chartCardH);
+
+    drawRoundedCard(painter, roleCard,
+                    QColor(8, 30, 48, 235),
+                    QColor(72, 170, 255, 65),
+                    24);
+
+    drawRoundedCard(painter, cvCard,
+                    QColor(8, 30, 48, 235),
+                    QColor(72, 170, 255, 65),
+                    24);
+
+    painter.setPen(Qt::white);
+    painter.setFont(pdfFont("Arial", 46, true));
+
+    painter.drawText(QRect(roleCard.left() + 22, roleCard.top() + 18,
+                           roleCard.width() - 44, 36),
+                     Qt::AlignLeft | Qt::AlignVCenter,
+                     "Staff Distribution by Role");
+
+    painter.drawText(QRect(cvCard.left() + 22, cvCard.top() + 18,
+                           cvCard.width() - 44, 36),
+                     Qt::AlignLeft | Qt::AlignVCenter,
+                     "CV Review Status");
+
+
+    QPixmap rolePixmap = captureWidgetScaled(ui->statRole, 3.2);
+    QPixmap cvPixmap   = captureWidgetScaled(ui->statcvstatus, 3.2);
+
+    QRect roleTarget = roleCard.adjusted(14, 62, -14, -14);
+    QRect cvTarget   = cvCard.adjusted(14, 62, -14, -14);
+    if (!rolePixmap.isNull()) {
+        painter.drawPixmap(roleTarget, rolePixmap.scaled(roleTarget.size(),
+                                                         Qt::IgnoreAspectRatio,
+                                                         Qt::SmoothTransformation));
+    }
+
+    if (!cvPixmap.isNull()) {
+        painter.drawPixmap(cvTarget, cvPixmap.scaled(cvTarget.size(),
+                                                     Qt::IgnoreAspectRatio,
+                                                     Qt::SmoothTransformation));
+    }
+
+
+    painter.setPen(QColor(205, 225, 240, 190));
+    painter.setFont(pdfFont("Arial", 16, false));
+    painter.drawText(QRect(margin, pageH - margin + 2, pageInnerW, 22),
+                     Qt::AlignCenter,
+                     "BORT - Smart Fishing Port Application | Staff Dashboard Analytics");
+
+    painter.end();
+
+    QMessageBox::information(this, "Export PDF", "Staff dashboard PDF exported successfully.");
+}
+void SignIn::on_exportbtn_clicked()
+{
+    exportStaffDashboardToPdf();
+}
+
