@@ -57,18 +57,21 @@ void SignIn::refreshStaffTable()
     ui->tablestaff->setHorizontalHeaderLabels(headers);
     ui->tablestaff->setRowCount(0);
 
+    QString selectedSort = ui->sortstaff->currentText();
+
     Personnel p;
-    QVector<QStringList> rows = p.getStaffRows();
+    QVector<QStringList> rows = p.getStaffRows(selectedSort);
 
     ui->tablestaff->setRowCount(rows.size());
 
     for (int r = 0; r < rows.size(); ++r) {
         for (int c = 0; c < headers.size(); ++c) {
             QTableWidgetItem *item = new QTableWidgetItem(rows[r][c]);
-            item->setFlags(item->flags() & ~Qt::ItemIsEditable); // read-only
+            item->setFlags(item->flags() & ~Qt::ItemIsEditable);
             ui->tablestaff->setItem(r, c, item);
         }
     }
+
     ui->tablestaff->setColumnHidden(0, true);
     ui->tablestaff->resizeColumnsToContents();
 }
@@ -1035,14 +1038,16 @@ void SignIn::refreshStaffTable_U()
     ui->tablestaff_U->setHorizontalHeaderLabels(headers);
     ui->tablestaff_U->setRowCount(0);
 
+    QString selectedSort = ui->sortstaff_U->currentText();
+
     Personnel p;
-    QVector<QStringList> rows = p.getStaffRows();
+    QVector<QStringList> rows = p.getStaffRows(selectedSort);
 
     ui->tablestaff_U->setRowCount(rows.size());
 
     for (int r = 0; r < rows.size(); ++r) {
         for (int c = 0; c < headers.size(); ++c) {
-            auto *item = new QTableWidgetItem(rows[r][c]);
+            QTableWidgetItem *item = new QTableWidgetItem(rows[r][c]);
             item->setFlags(item->flags() & ~Qt::ItemIsEditable);
             ui->tablestaff_U->setItem(r, c, item);
         }
@@ -1444,5 +1449,19 @@ void SignIn::on_backsigninBTNR_clicked()
 void SignIn::on_showPassCheckR_toggled(bool checked)
 {
     ui->NewEdit->setEchoMode(checked ? QLineEdit::Normal: QLineEdit::Password);
+}
+
+
+void SignIn::on_sortstaff_currentTextChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1);
+    refreshStaffTable();
+}
+
+
+void SignIn::on_sortstaff_U_currentTextChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1);
+    refreshStaffTable_U();
 }
 

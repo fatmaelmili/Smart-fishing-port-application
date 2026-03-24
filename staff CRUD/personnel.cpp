@@ -71,26 +71,40 @@ bool Personnel::ajouterStaff(){
     return true;
 }
 
-QVector<QStringList> Personnel::getStaffRows()
+QVector<QStringList> Personnel::getStaffRows(const QString& sortBy)
 {
     QVector<QStringList> rows;
 
+    QString orderBy = "IDPERS DESC";
+
+    if (sortBy == "Staff Full Name") {
+        orderBy = "UPPER(PRENOM), UPPER(NOM)";
+    }
+    else if (sortBy == "Staff Role") {
+        orderBy = "UPPER(ROLE)";
+    }
+    else if (sortBy == "Staff CvStatus") {
+        orderBy = "UPPER(CVSTATUS)";
+    }
+
     QSqlQuery q;
-    q.prepare(R"(
-    SELECT
-        IDPERS,
-        (PRENOM || ' ' || NOM) AS FULLNAME,
-        ADRESSE,
-        TEL,
-        MAIL,
-        MDP,
-        ROLE,
-        CVSTATUS,
-        CASE WHEN CV IS NULL THEN 'No' ELSE 'Yes' END AS HAS_CV,
-        CASE WHEN AVATAR IS NULL THEN 'No' ELSE 'Yes' END AS HAS_AVATAR
-    FROM FATMA.PERSONNEL
-    ORDER BY IDPERS DESC
-)");
+    QString query = QString(R"(
+        SELECT
+            IDPERS,
+            (PRENOM || ' ' || NOM) AS FULLNAME,
+            ADRESSE,
+            TEL,
+            MAIL,
+            MDP,
+            ROLE,
+            CVSTATUS,
+            CASE WHEN CV IS NULL THEN 'No' ELSE 'Yes' END AS HAS_CV,
+            CASE WHEN AVATAR IS NULL THEN 'No' ELSE 'Yes' END AS HAS_AVATAR
+        FROM FATMA.PERSONNEL
+        ORDER BY %1
+    )").arg(orderBy);
+
+    q.prepare(query);
 
     if (!q.exec()) {
         qDebug() << "getStaffRows error:" << q.lastError().text();
@@ -99,8 +113,9 @@ QVector<QStringList> Personnel::getStaffRows()
 
     while (q.next()) {
         QStringList row;
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < 10; ++i) {
             row << q.value(i).toString();
+        }
         rows.push_back(row);
     }
 

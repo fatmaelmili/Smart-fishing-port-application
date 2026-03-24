@@ -204,6 +204,10 @@ private slots:
 
     void on_showPassCheckR_toggled(bool checked);
 
+    void on_sortstaff_currentTextChanged(const QString &arg1);
+
+    void on_sortstaff_U_currentTextChanged(const QString &arg1);
+
 private:
     Ui::SignIn *ui;
     QByteArray m_cvBlob;
