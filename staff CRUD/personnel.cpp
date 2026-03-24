@@ -375,6 +375,77 @@ bool Personnel::resetPasswordByToken(const QString& token, const QString& newPla
     return q.numRowsAffected() > 0;
 }
 
+QMap<QString, int> Personnel::getRoleStatistics()
+{
+    QMap<QString, int> stats;
+    QSqlQuery q;
+
+    q.prepare(R"(
+        SELECT NVL(TRIM(ROLE), 'Unknown') AS ROLE_NAME, COUNT(*)
+        FROM FATMA.PERSONNEL
+        WHERE UPPER(TRIM(CVSTATUS)) = 'ACCEPTED'
+        GROUP BY NVL(TRIM(ROLE), 'Unknown')
+        ORDER BY ROLE_NAME
+    )");
+
+    if (!q.exec()) {
+        qDebug() << "getRoleStatistics error:" << q.lastError().text();
+        return stats;
+    }
+
+    while (q.next()) {
+        stats.insert(q.value(0).toString(), q.value(1).toInt());
+    }
+
+    return stats;
+}
+
+QMap<QString, int> Personnel::getCvStatusStatistics()
+{
+    QMap<QString, int> stats;
+    QSqlQuery q;
+
+    q.prepare(R"(
+        SELECT NVL(TRIM(CVSTATUS), 'Unknown') AS STATUS_NAME, COUNT(*)
+        FROM FATMA.PERSONNEL
+        GROUP BY NVL(TRIM(CVSTATUS), 'Unknown')
+        ORDER BY STATUS_NAME
+    )");
+
+    if (!q.exec()) {
+        qDebug() << "getCvStatusStatistics error:" << q.lastError().text();
+        return stats;
+    }
+
+    while (q.next()) {
+        stats.insert(q.value(0).toString(), q.value(1).toInt());
+    }
+
+    return stats;
+}
+
+int Personnel::getTotalStaffCount()
+{
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT COUNT(*)
+        FROM FATMA.PERSONNEL
+        WHERE UPPER(TRIM(CVSTATUS)) = 'ACCEPTED'
+    )");
+
+    if (!q.exec()) {
+        qDebug() << "getTotalStaffCount error:" << q.lastError().text();
+        return 0;
+    }
+
+    if (q.next()) {
+        return q.value(0).toInt();
+    }
+
+    return 0;
+}
+
+
 
 
 

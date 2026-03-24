@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSslSocket>
+#include <QChartView>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -217,12 +218,19 @@ private:
     QByteArray m_cvBlob;
     QByteArray m_avatarBlob;
     QString m_currentRole;
+    QChartView *m_roleChartView = nullptr;
+    QChartView *m_cvChartView = nullptr;
+    QWidget *m_roleLegendWidget = nullptr;
+    QWidget *m_cvLegendWidget = nullptr;
     void updateUserProfileUI(const QString& fullName, const QByteArray& avatarBytes);
     void applyRolePermissions(const QString& role);
     void setModuleAccess(const QString& prefix, bool allowed, bool hide = true);
     bool showCaptchaPuzzle();
     bool sendSmtpCommand(QSslSocket& socket, const QString& command, const QString& expectedCode);
     bool sendResetEmail(const QString& toMail, const QString& fullName, const QString& token);
+    void loadStaffDashboardStats();
+    void buildRoleChart();
+    void buildCvStatusChart();
 };
 
 #endif // BORT_H

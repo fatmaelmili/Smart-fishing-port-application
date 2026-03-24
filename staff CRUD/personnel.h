@@ -6,6 +6,7 @@
 #include <QSqlQueryModel>
 #include <QVector>
 #include <QStringList>
+#include <QMap>
 
 
 class Personnel
@@ -75,6 +76,9 @@ public:
     static bool saveResetToken(const QString& mail, const QString& token, int expiryMinutes = 15);
     static bool validateResetToken(const QString& token);
     static bool resetPasswordByToken(const QString& token, const QString& newPlainPassword);
+    static QMap<QString, int> getRoleStatistics();
+    static QMap<QString, int> getCvStatusStatistics();
+    static int getTotalStaffCount();
 
 
 };

@@ -15,13 +15,27 @@
 #include <QRandomGenerator>
 #include <QDateTime>
 #include <QSslSocket>
+#include <QVBoxLayout>
+#include <QChartView>
+#include <QChart>
+#include <QPieSeries>
+#include <QPieSlice>
+#include <QBarSet>
+#include <QHorizontalBarSeries>
+#include <QBarCategoryAxis>
+#include <QValueAxis>
+#include <QLegend>
+
 SignIn::SignIn(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SignIn)
 {
     ui->setupUi(this);
+    ui->statrole->hide();
+    ui->statcv->hide();
     refreshStaffTable();
     refreshStaffTable_U();
+    loadStaffDashboardStats();
     ui->staffmanagementBTN->setProperty("active", true);
     ui->staffmanagementBTN->style()->unpolish(ui->staffmanagementBTN);
     ui->staffmanagementBTN->style()->polish(ui->staffmanagementBTN);
@@ -32,6 +46,8 @@ SignIn::SignIn(QWidget *parent)
     ui->fishingzonemanagementBTNZ->update();
     ui->PasswordEdit->setEchoMode(QLineEdit::Password);
     ui->NewEdit->setEchoMode(QLineEdit::Password);
+
+
 }
 void SignIn::on_showPassCheck_toggled(bool checked)
 {
@@ -403,6 +419,7 @@ void SignIn::on_backWbtn_clicked()
 
 void SignIn::on_staticbtn_clicked()
 {
+    loadStaffDashboardStats();
     ui->stackedWidget->setCurrentWidget(ui->staffdash);
 }
 
@@ -416,6 +433,7 @@ void SignIn::on_backWbtn_U_clicked()
 
 void SignIn::on_staticbtn_U_clicked()
 {
+    loadStaffDashboardStats();
     ui->stackedWidget->setCurrentWidget(ui->staffdash);
 }
 
@@ -1480,4 +1498,282 @@ void SignIn::on_staffsearchbarre_U_textChanged(const QString &arg1)
     Q_UNUSED(arg1);
     refreshStaffTable_U();
 }
+void SignIn::loadStaffDashboardStats()
+{
+    if (ui->numberemp) {
+        ui->numberemp->setText(QString::number(Personnel::getTotalStaffCount()));
+    }
 
+    buildRoleChart();
+    buildCvStatusChart();
+}
+
+void SignIn::buildRoleChart()
+{
+    QMap<QString, int> stats = Personnel::getRoleStatistics();
+
+    if (m_roleChartView) {
+        delete m_roleChartView;
+        m_roleChartView = nullptr;
+    }
+
+    if (m_roleLegendWidget) {
+        delete m_roleLegendWidget;
+        m_roleLegendWidget = nullptr;
+    }
+
+    QPieSeries *series = new QPieSeries();
+    series->setHoleSize(0.58);
+    series->setPieSize(0.75);
+
+    int total = 0;
+    for (auto it = stats.begin(); it != stats.end(); ++it) {
+        total += it.value();
+    }
+
+    QList<QColor> colors = {
+        QColor(QString("#58B8F6")),
+        QColor(QString("#2D9CDB")),
+        QColor(QString("#22C1C3")),
+        QColor(QString("#3DD598")),
+        QColor(QString("#4A90E2")),
+        QColor(QString("#1ABC9C")),
+        QColor(QString("#6FCF97")),
+        QColor(QString("#56CCF2"))
+    };
+
+    int colorIndex = 0;
+
+    for (auto it = stats.begin(); it != stats.end(); ++it) {
+        if (it.value() <= 0)
+            continue;
+
+        QPieSlice *slice = series->append(it.key(), it.value());
+
+        QColor c = colors[colorIndex % colors.size()];
+        slice->setBrush(c);
+        slice->setPen(QPen(Qt::transparent));
+        slice->setLabelVisible(false);
+
+        QObject::connect(slice, &QPieSlice::hovered, this, [slice](bool state) {
+            slice->setExploded(state);
+            slice->setPen(QPen(Qt::white, state ? 2 : 0));
+        });
+
+        colorIndex++;
+    }
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Staff Distribution by Role");
+    chart->setTitleBrush(QBrush(Qt::white));
+    chart->setBackgroundVisible(false);
+    chart->setPlotAreaBackgroundVisible(false);
+    chart->setAnimationOptions(QChart::SeriesAnimations);
+    chart->legend()->hide();
+
+    QFont titleFont;
+    titleFont.setPointSize(11);
+    titleFont.setBold(true);
+    chart->setTitleFont(titleFont);
+    m_roleChartView = new QChartView(chart, ui->statRole);
+    m_roleChartView->setRenderHint(QPainter::Antialiasing);
+    m_roleChartView->setStyleSheet("background: transparent; border: none;");
+    m_roleChartView->setGeometry(10, 35, 250, ui->statRole->height() - 50);
+    m_roleChartView->show();
+    m_roleLegendWidget = new QWidget(ui->statRole);
+    m_roleLegendWidget->setGeometry(270, 70, ui->statRole->width() - 280, ui->statRole->height() - 90);
+    m_roleLegendWidget->setStyleSheet("background: transparent;");
+
+    QVBoxLayout *legendLayout = new QVBoxLayout(m_roleLegendWidget);
+    legendLayout->setContentsMargins(0, 0, 0, 0);
+    legendLayout->setSpacing(10);
+
+    colorIndex = 0;
+    for (auto it = stats.begin(); it != stats.end(); ++it) {
+        if (it.value() <= 0)
+            continue;
+
+        double percent = (total > 0) ? (100.0 * it.value() / total) : 0.0;
+        QColor c = colors[colorIndex % colors.size()];
+
+        QWidget *itemWidget = new QWidget(m_roleLegendWidget);
+        itemWidget->setStyleSheet("background: transparent;");
+        QHBoxLayout *itemLayout = new QHBoxLayout(itemWidget);
+        itemLayout->setContentsMargins(0, 0, 0, 0);
+        itemLayout->setSpacing(8);
+
+        QLabel *colorBox = new QLabel(itemWidget);
+        colorBox->setFixedSize(12, 12);
+        colorBox->setStyleSheet(QString(
+                                    "background-color: %1; border: 1px solid white; border-radius: 2px;"
+                                    ).arg(c.name()));
+
+        QString roleName = it.key();
+        QString text;
+        QString percentText = QString::number(percent, 'f', 1);
+
+        if (roleName.length() > 14) {
+            text = QString("%1\n%2%")
+            .arg(roleName.left(14) + "...", percentText);
+        } else {
+            text = QString("%1\n%2%")
+            .arg(roleName, percentText);
+        }
+        QLabel *textLabel = new QLabel(text, itemWidget);
+        textLabel->setStyleSheet(
+            "color: #E0E0E0;"
+            "font-size: 7.5pt;"
+            "font-weight: 500;"
+            "background: transparent;"
+            );
+        textLabel->setWordWrap(true);
+
+        itemLayout->addWidget(colorBox, 0, Qt::AlignTop);
+        itemLayout->addWidget(textLabel);
+
+        legendLayout->addWidget(itemWidget);
+
+        colorIndex++;
+    }
+
+    legendLayout->addStretch();
+    m_roleLegendWidget->show();
+}
+
+void SignIn::buildCvStatusChart()
+{
+    QMap<QString, int> stats = Personnel::getCvStatusStatistics();
+
+    if (m_cvChartView) {
+        delete m_cvChartView;
+        m_cvChartView = nullptr;
+    }
+
+    if (m_cvLegendWidget) {
+        delete m_cvLegendWidget;
+        m_cvLegendWidget = nullptr;
+    }
+
+    QHorizontalBarSeries *series = new QHorizontalBarSeries();
+
+    int maxValue = 0;
+
+    QColor acceptedColor(QString("#46B5F4"));
+    QColor pendingColor(QString("#A8D96F"));
+    QColor rejectedColor(QString("#F5A623"));
+
+    auto addStatusBar = [&](const QString& statusName, const QColor& color)
+    {
+        int value = stats.value(statusName, 0);
+
+        QBarSet *set = new QBarSet(statusName);
+        *set << value;
+        set->setColor(color);
+        set->setBorderColor(Qt::transparent);
+
+        series->append(set);
+
+        if (value > maxValue)
+            maxValue = value;
+    };
+
+    addStatusBar("Accepted", acceptedColor);
+    addStatusBar("Pending", pendingColor);
+    addStatusBar("Rejected", rejectedColor);
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("CV Review Status");
+    chart->setTitleBrush(QBrush(Qt::white));
+    chart->setBackgroundVisible(false);
+    chart->setPlotAreaBackgroundVisible(false);
+    chart->setAnimationOptions(QChart::SeriesAnimations);
+    chart->legend()->hide();
+    chart->setMargins(QMargins(8, 8, 8, 8));
+
+    QFont titleFont;
+    titleFont.setPointSize(11);
+    titleFont.setBold(true);
+    chart->setTitleFont(titleFont);
+
+
+    QValueAxis *axisX = new QValueAxis();
+
+    int maxAxis = ((maxValue + 4) / 5) * 5;
+
+    axisX->setRange(0, maxAxis);
+    axisX->setTickCount(6);
+    axisX->setLabelFormat("%d");
+
+    axisX->setLabelsBrush(QBrush(Qt::white));
+    axisX->setGridLineColor(QColor(255, 255, 255, 45));
+    axisX->setLinePen(QPen(Qt::white));
+
+
+    QBarCategoryAxis *axisY = new QBarCategoryAxis();
+    axisY->append(QStringList() << "" );
+    axisY->setVisible(false);
+    axisY->setGridLineVisible(false);
+
+    chart->addAxis(axisX, Qt::AlignBottom);
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisX);
+    series->attachAxis(axisY);
+
+    m_cvChartView = new QChartView(chart, ui->statcvstatus);
+    m_cvChartView->setRenderHint(QPainter::Antialiasing);
+    m_cvChartView->setStyleSheet("background: transparent; border: none;");
+    m_cvChartView->setGeometry(120, 28, ui->statcvstatus->width() - 130, ui->statcvstatus->height() - 38);
+    m_cvChartView->show();
+
+
+    m_cvLegendWidget = new QWidget(ui->statcvstatus);
+    m_cvLegendWidget->setGeometry(12, 78, 105, 95);
+    m_cvLegendWidget->setStyleSheet("background: transparent;");
+
+    QVBoxLayout *legendLayout = new QVBoxLayout(m_cvLegendWidget);
+    legendLayout->setContentsMargins(0, 0, 0, 0);
+    legendLayout->setSpacing(10);
+    legendLayout->setAlignment(Qt::AlignVCenter);
+
+    auto createLegendItem = [&](const QString& text, const QColor& color) -> QWidget*
+    {
+        QWidget *item = new QWidget(m_cvLegendWidget);
+        item->setStyleSheet("background: transparent;");
+
+        QHBoxLayout *layout = new QHBoxLayout(item);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setSpacing(7);
+
+        QLabel *colorBox = new QLabel(item);
+        colorBox->setFixedSize(10, 10);
+        colorBox->setStyleSheet(QString(
+                                    "background-color: %1;"
+                                    "border: 1px solid rgba(255,255,255,0.75);"
+                                    "border-radius: 2px;"
+                                    ).arg(color.name()));
+
+        QLabel *label = new QLabel(text, item);
+        label->setStyleSheet(
+            "color: #E8EEF5;"
+            "font-size: 8.5pt;"
+            "font-weight: 500;"
+            "background: transparent;"
+            );
+
+        layout->addWidget(colorBox);
+        layout->addWidget(label);
+        layout->addStretch();
+
+        return item;
+    };
+
+    legendLayout->addStretch();
+    legendLayout->addWidget(createLegendItem("Accepted", acceptedColor));
+    legendLayout->addWidget(createLegendItem("Pending", pendingColor));
+    legendLayout->addWidget(createLegendItem("Rejected", rejectedColor));
+    legendLayout->addStretch();
+
+    m_cvLegendWidget->show();
+}

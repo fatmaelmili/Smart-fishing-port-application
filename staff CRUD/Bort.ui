@@ -309,7 +309,7 @@ QLabel[objectName*=&quot;error&quot;] {
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>9</number>
     </property>
     <widget class="QWidget" name="pageSignIn">
      <property name="styleSheet">
@@ -8736,7 +8736,7 @@ QLineEdit:focus {
        <widget class="QLabel" name="statcv">
         <property name="geometry">
          <rect>
-          <x>-40</x>
+          <x>-50</x>
           <y>-30</y>
           <width>461</width>
           <height>361</height>
@@ -8765,7 +8765,7 @@ QLineEdit:focus {
        <widget class="QLabel" name="statrole">
         <property name="geometry">
          <rect>
-          <x>-40</x>
+          <x>-30</x>
           <y>30</y>
           <width>411</width>
           <height>241</height>
