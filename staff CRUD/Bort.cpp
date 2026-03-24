@@ -58,6 +58,7 @@ SignIn::SignIn(QWidget *parent)
     ui->fishingzonemanagementBTNZ->update();
     ui->PasswordEdit->setEchoMode(QLineEdit::Password);
     ui->NewEdit->setEchoMode(QLineEdit::Password);
+    ui->passlab_A->setEchoMode(QLineEdit::Password);
 
 
 }
@@ -403,9 +404,13 @@ void SignIn::on_signinbtn_clicked()
     Personnel::UserProfile prof;
     if (Personnel::fetchProfileByMail(mail, &prof)) {
         QString fullName = (prof.prenom + " " + prof.nom).trimmed();
+        m_currentUserMail = mail;
+        m_currentUserId = prof.idPers;
+        m_currentAccountAvatar = prof.avatar;
         updateUserProfileUI(fullName, prof.avatar);
     }
     ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
+    loadEmployeeCount();
 }
 
 
@@ -426,6 +431,7 @@ void SignIn::on_backstfbtn_clicked()
 void SignIn::on_backWbtn_clicked()
 {
     ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
+    loadEmployeeCount();
 }
 
 
@@ -491,30 +497,31 @@ void SignIn::on_logOutBTN_A_clicked()
 void SignIn::on_backWbtn_A_clicked()
 {
     ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
+    loadEmployeeCount();
 }
 
 
 void SignIn::on_userprofiledetails_A_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
+    openCurrentUserAccountPage();
 }
 
 
 void SignIn::on_userprofiledetails_W_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
+    openCurrentUserAccountPage();
 }
 
 
 void SignIn::on_userprofiledetails_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
+    openCurrentUserAccountPage();
 }
 
 
 void SignIn::on_userprofiledetails_U_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
+    openCurrentUserAccountPage();
 }
 
 
@@ -522,7 +529,7 @@ void SignIn::on_userprofiledetails_U_clicked()
 
 void SignIn::on_userprofiledetails_D_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
+    openCurrentUserAccountPage();
 }
 
 
@@ -540,7 +547,7 @@ void SignIn::on_logOutBTNZ_clicked()
 
 void SignIn::on_userprofiledetails_Z_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
+    openCurrentUserAccountPage();
 }
 
 
@@ -589,7 +596,7 @@ void SignIn::on_stockmanagementBTN_stock_clicked()
 
 void SignIn::on_userprofiledetails_stock_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
+    openCurrentUserAccountPage();
 }
 
 
@@ -674,13 +681,14 @@ void SignIn::on_staffmanagementBTNe_clicked()
 
 void SignIn::on_userprofiledetailsE_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
+    openCurrentUserAccountPage();
 }
 
 
 void SignIn::on_backWbtnE_clicked()
 {
     ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
+    loadEmployeeCount();
 }
 
 
@@ -765,6 +773,7 @@ void SignIn::on_userprofileC_clicked()
 void SignIn::on_mainpagebtn_clicked()
 {
     ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
+    loadEmployeeCount();
 }
 
 
@@ -806,7 +815,7 @@ void SignIn::on_logOutBTN_DC_clicked()
 
 void SignIn::on_userprofiledetails_DC_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
+    openCurrentUserAccountPage();
 }
 
 
@@ -2297,5 +2306,208 @@ void SignIn::on_exportpdfstaffbtn_clicked()
         "Staff List Report",
         "Staff_List_Report.pdf"
         );
+}
+bool SignIn::loadCurrentUserAccountData()
+{
+    if (m_currentUserMail.trimmed().isEmpty()) {
+        QMessageBox::warning(this, "Profile", "No connected user found.");
+        return false;
+    }
+
+    Personnel::AccountProfile acc;
+    if (!Personnel::fetchAccountProfileByMail(m_currentUserMail, &acc)) {
+        QMessageBox::critical(this, "Profile", "Unable to load account data.");
+        return false;
+    }
+
+    m_currentUserId = acc.idPers;
+    m_currentUserMail = acc.mail;
+    m_currentAccountAvatar = acc.avatar;
+
+    ui->staffnameedit_A->setText((acc.prenom + " " + acc.nom).trimmed());
+    ui->staffaddressedit_A->setText(acc.adresse);
+    ui->teledit_A->setText(acc.tel);
+    ui->mailedit_A->setText(acc.mail);
+    ui->passlab_A->clear();
+
+    if (ui->cvpathEdit_2) {
+        ui->cvpathEdit_2->setText(acc.avatar.isEmpty() ? "No photo selected" : "Current photo loaded");
+    }
+
+    return true;
+}
+
+void SignIn::openCurrentUserAccountPage()
+{
+    if (loadCurrentUserAccountData()) {
+        ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
+    }
+}
+
+void SignIn::on_addstaffbtn_A_clicked()
+{
+    if (m_currentUserId < 0) {
+        QMessageBox::warning(this, "Update account", "No connected user found.");
+        return;
+    }
+
+    QString fullName = ui->staffnameedit_A->text().trimmed();
+    QString adresse  = ui->staffaddressedit_A->text().trimmed();
+    QString tel      = ui->teledit_A->text().trimmed();
+    QString mail     = ui->mailedit_A->text().trimmed();
+    QString newPass  = ui->passlab_A->text();
+
+    if (fullName.isEmpty()) {
+        QMessageBox::warning(this, "Warning", "Full name is required.");
+        return;
+    }
+
+    QRegularExpression reName("^[\\p{L}]+(?:\\s+[\\p{L}]+)*$");
+    if (!reName.match(fullName).hasMatch()) {
+        QMessageBox::warning(this,
+                             "Invalid name",
+                             "Full name must contain only letters and spaces.");
+        ui->staffnameedit_A->setFocus();
+        ui->staffnameedit_A->selectAll();
+        return;
+    }
+
+    if (adresse.isEmpty()) {
+        QMessageBox::warning(this, "Warning", "Address is required.");
+        return;
+    }
+
+    if (mail.isEmpty()) {
+        QMessageBox::warning(this, "Warning", "Mail is required.");
+        return;
+    }
+
+    QRegularExpression reMail("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+    if (!reMail.match(mail).hasMatch()) {
+        QMessageBox::warning(this, "Invalid email",
+                             "Email must be like: name@example.com");
+        ui->mailedit_A->setFocus();
+        ui->mailedit_A->selectAll();
+        return;
+    }
+
+    if (tel.isEmpty()) {
+        QMessageBox::warning(this, "Warning", "Phone number is required.");
+        return;
+    }
+
+    QString telClean = tel;
+    telClean.remove(' ');
+
+    QRegularExpression reTel("^\\d{8}$");
+    if (!reTel.match(telClean).hasMatch()) {
+        QMessageBox::warning(this,
+                             "Invalid phone number",
+                             "The phone number should contain exactly 8 digits.\nExample: 22123456");
+        ui->teledit_A->setFocus();
+        ui->teledit_A->selectAll();
+        return;
+    }
+    tel = telClean;
+
+    if (!newPass.trimmed().isEmpty()) {
+        QRegularExpression reMdp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$");
+        if (!reMdp.match(newPass).hasMatch()) {
+            QMessageBox::warning(this,
+                                 "Invalid password",
+                                 "Password must be at least 8 characters and contain:\n"
+                                 "- at least one uppercase letter\n"
+                                 "- at least one lowercase letter\n"
+                                 "- at least one number\n"
+                                 "- at least one special character");
+            ui->passlab_A->setFocus();
+            ui->passlab_A->selectAll();
+            return;
+        }
+    }
+
+    auto rep = QMessageBox::question(
+        this,
+        "Confirm update",
+        "Do you want to save your account changes?",
+        QMessageBox::Yes | QMessageBox::No
+        );
+
+    if (rep != QMessageBox::Yes)
+        return;
+
+    QStringList parts = fullName.split(' ', Qt::SkipEmptyParts);
+    QString nom, prenom;
+
+    if (parts.size() == 1) {
+        nom = parts[0];
+        prenom = "";
+    } else {
+        nom = parts.last();
+        parts.removeLast();
+        prenom = parts.join(" ");
+    }
+
+    if (!Personnel::updateOwnAccount(
+            m_currentUserId,
+            nom,
+            prenom,
+            adresse,
+            tel,
+            mail,
+            newPass,
+            m_currentAccountAvatar,
+            true)) {
+        QMessageBox::critical(this, "Error", "Failed to update your account.");
+        return;
+    }
+
+    m_currentUserMail = mail;
+
+    if (!loadCurrentUserAccountData()) {
+        QMessageBox::warning(this, "Update account", "Account updated, but refresh failed.");
+        return;
+    }
+
+    QString refreshedFullName = ui->staffnameedit_A->text().trimmed();
+    updateUserProfileUI(refreshedFullName, m_currentAccountAvatar);
+
+    refreshStaffTable();
+    refreshStaffTable_U();
+
+    QMessageBox::information(this, "Success", "Your account has been updated successfully.");
+}
+
+
+void SignIn::on_browbtn_clicked()
+{
+    QString filePath = QFileDialog::getOpenFileName(
+        this,
+        "Select your profile photo",
+        QDir::homePath(),
+        "Images (*.jpg *.jpeg *.png *.webp);;All files (*.*)"
+        );
+
+    if (filePath.isEmpty())
+        return;
+
+    QFile f(filePath);
+    if (!f.open(QIODevice::ReadOnly)) {
+        QMessageBox::critical(this, "Error", "Cannot open image file.");
+        return;
+    }
+
+    m_currentAccountAvatar = f.readAll();
+    f.close();
+
+    if (ui->cvpathEdit_2) {
+        ui->cvpathEdit_2->setText(QFileInfo(filePath).fileName());
+    }
+}
+void SignIn::loadEmployeeCount()
+{
+    int total = Personnel::getTotalStaffCount();
+
+    ui->numberstaff->setText(QString::number(total));
 }
 

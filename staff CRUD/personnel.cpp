@@ -444,7 +444,96 @@ int Personnel::getTotalStaffCount()
 
     return 0;
 }
+bool Personnel::fetchAccountProfileByMail(const QString& mail, AccountProfile* out)
+{
+    if (!out) return false;
 
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT IDPERS, NOM, PRENOM, ADRESSE, TEL, MAIL, ROLE, CVSTATUS, AVATAR
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail);
+
+    if (!q.exec()) {
+        qDebug() << "fetchAccountProfileByMail error:" << q.lastError().text();
+        return false;
+    }
+
+    if (!q.next()) {
+        return false;
+    }
+
+    out->idPers   = q.value(0).toInt();
+    out->nom      = q.value(1).toString();
+    out->prenom   = q.value(2).toString();
+    out->adresse  = q.value(3).toString();
+    out->tel      = q.value(4).toString();
+    out->mail     = q.value(5).toString();
+    out->role     = q.value(6).toString();
+    out->cvStatus = q.value(7).toString();
+    out->avatar   = q.value(8).toByteArray();
+
+    return true;
+}
+
+bool Personnel::updateOwnAccount(int idPers,
+                                 const QString& nom,
+                                 const QString& prenom,
+                                 const QString& adresse,
+                                 const QString& tel,
+                                 const QString& mail,
+                                 const QString& newPlainPassword,
+                                 const QByteArray& avatarBytes,
+                                 bool updateAvatar)
+{
+    QString queryStr = R"(
+        UPDATE FATMA.PERSONNEL
+        SET NOM = :nom,
+            PRENOM = :prenom,
+            ADRESSE = :adresse,
+            TEL = :tel,
+            MAIL = :mail
+    )";
+
+    const bool updatePassword = !newPlainPassword.trimmed().isEmpty();
+
+    if (updatePassword) {
+        queryStr += ", MDP = :mdp";
+    }
+
+    if (updateAvatar) {
+        queryStr += ", AVATAR = :avatar";
+    }
+
+    queryStr += " WHERE IDPERS = :id";
+
+    QSqlQuery q;
+    q.prepare(queryStr);
+
+    q.bindValue(":nom", nom);
+    q.bindValue(":prenom", prenom);
+    q.bindValue(":adresse", adresse);
+    q.bindValue(":tel", tel);
+    q.bindValue(":mail", mail);
+    q.bindValue(":id", idPers);
+
+    if (updatePassword) {
+        q.bindValue(":mdp", Personnel::hashPassword(newPlainPassword));
+    }
+
+    if (updateAvatar) {
+        q.bindValue(":avatar", avatarBytes.isEmpty() ? QVariant() : QVariant::fromValue(avatarBytes));
+    }
+
+    if (!q.exec()) {
+        qDebug() << "updateOwnAccount error:" << q.lastError().text();
+        return false;
+    }
+
+    return q.numRowsAffected() > 0;
+}
 
 
 

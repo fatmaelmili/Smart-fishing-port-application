@@ -38,8 +38,20 @@ public:
         QString role;
         QByteArray avatar;
     };
+    struct AccountProfile {
+        int idPers = -1;
+        QString nom;
+        QString prenom;
+        QString adresse;
+        QString tel;
+        QString mail;
+        QString role;
+        QString cvStatus;
+        QByteArray avatar;
+    };
 
     static bool fetchProfileByMail(const QString& mail, UserProfile* out);
+    static bool fetchAccountProfileByMail(const QString& mail, AccountProfile* out);
     Personnel();
     Personnel(QString Nom,QString Prenom,QString Adresse,QString Tel,QString Mail,QString Role,QString Mdp,QString CvStatus,QByteArray Cv,QByteArray Avatar);
     void setIdPers(int IdPers){this->IdPers=IdPers;}
@@ -79,6 +91,7 @@ public:
     static QMap<QString, int> getRoleStatistics();
     static QMap<QString, int> getCvStatusStatistics();
     static int getTotalStaffCount();
+    static bool updateOwnAccount(int idPers,const QString& nom,const QString& prenom,const QString& adresse,const QString& tel,const QString& mail,const QString& newPlainPassword,const QByteArray& avatarBytes,bool updateAvatar);
 
 
 };

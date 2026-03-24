@@ -309,7 +309,7 @@ QLabel[objectName*=&quot;error&quot;] {
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>5</number>
     </property>
     <widget class="QWidget" name="pageSignIn">
      <property name="styleSheet">
@@ -10032,7 +10032,7 @@ QPushButton#backWbtn_A:disabled {
                  </rect>
                 </property>
                 <property name="text">
-                 <string>Your Password</string>
+                 <string>Your Avatar</string>
                 </property>
                </widget>
                <widget class="QPushButton" name="browbtn">

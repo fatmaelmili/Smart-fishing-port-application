@@ -222,6 +222,10 @@ private slots:
 
     void on_exportpdfstaffbtn_clicked();
 
+    void on_addstaffbtn_A_clicked();
+
+    void on_browbtn_clicked();
+
 private:
     Ui::SignIn *ui;
     QByteArray m_cvBlob;
@@ -231,6 +235,9 @@ private:
     QChartView *m_cvChartView = nullptr;
     QWidget *m_roleLegendWidget = nullptr;
     QWidget *m_cvLegendWidget = nullptr;
+    QString m_currentUserMail;
+    int m_currentUserId = -1;
+    QByteArray m_currentAccountAvatar;
     void updateUserProfileUI(const QString& fullName, const QByteArray& avatarBytes);
     void applyRolePermissions(const QString& role);
     void setModuleAccess(const QString& prefix, bool allowed, bool hide = true);
@@ -244,6 +251,9 @@ private:
     void drawRoundedCard(QPainter &painter, const QRect &rect, const QColor &fillColor,const QColor &borderColor, int radius = 24);
     void exportStaffDashboardToPdf();
     void exportStaffTableToPdf(QTableWidget *table, const QString &reportTitle,const QString &defaultFileName);
+    void openCurrentUserAccountPage();
+    bool loadCurrentUserAccountData();
+    void loadEmployeeCount();
 };
 
 #endif // BORT_H
