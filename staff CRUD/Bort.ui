@@ -309,7 +309,7 @@ QLabel[objectName*=&quot;error&quot;] {
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>9</number>
+     <number>6</number>
     </property>
     <widget class="QWidget" name="pageSignIn">
      <property name="styleSheet">

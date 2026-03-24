@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QSslSocket>
 #include <QChartView>
+#include <QTableWidget>
+#include <QPdfWriter>
+#include <QPainter>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -215,6 +218,10 @@ private slots:
 
     void on_exportbtn_clicked();
 
+    void on_exportpdfstaffbtn_U_clicked();
+
+    void on_exportpdfstaffbtn_clicked();
+
 private:
     Ui::SignIn *ui;
     QByteArray m_cvBlob;
@@ -236,6 +243,7 @@ private:
     QPixmap captureWidgetScaled(QWidget *widget, double scaleFactor = 3.0);
     void drawRoundedCard(QPainter &painter, const QRect &rect, const QColor &fillColor,const QColor &borderColor, int radius = 24);
     void exportStaffDashboardToPdf();
+    void exportStaffTableToPdf(QTableWidget *table, const QString &reportTitle,const QString &defaultFileName);
 };
 
 #endif // BORT_H
