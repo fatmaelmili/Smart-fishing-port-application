@@ -71,7 +71,7 @@ bool Personnel::ajouterStaff(){
     return true;
 }
 
-QVector<QStringList> Personnel::getStaffRows(const QString& sortBy)
+QVector<QStringList> Personnel::getStaffRows(const QString& sortBy, const QString& searchText)
 {
     QVector<QStringList> rows;
 
@@ -87,8 +87,7 @@ QVector<QStringList> Personnel::getStaffRows(const QString& sortBy)
         orderBy = "UPPER(CVSTATUS)";
     }
 
-    QSqlQuery q;
-    QString query = QString(R"(
+    QString queryStr = R"(
         SELECT
             IDPERS,
             (PRENOM || ' ' || NOM) AS FULLNAME,
@@ -101,10 +100,24 @@ QVector<QStringList> Personnel::getStaffRows(const QString& sortBy)
             CASE WHEN CV IS NULL THEN 'No' ELSE 'Yes' END AS HAS_CV,
             CASE WHEN AVATAR IS NULL THEN 'No' ELSE 'Yes' END AS HAS_AVATAR
         FROM FATMA.PERSONNEL
-        ORDER BY %1
-    )").arg(orderBy);
+    )";
 
-    q.prepare(query);
+    if (!searchText.trimmed().isEmpty()) {
+        queryStr += R"(
+            WHERE UPPER(PRENOM || ' ' || NOM) LIKE UPPER(:search)
+               OR UPPER(ROLE) LIKE UPPER(:search)
+               OR UPPER(CVSTATUS) LIKE UPPER(:search)
+        )";
+    }
+
+    queryStr += " ORDER BY " + orderBy;
+
+    QSqlQuery q;
+    q.prepare(queryStr);
+
+    if (!searchText.trimmed().isEmpty()) {
+        q.bindValue(":search", "%" + searchText.trimmed() + "%");
+    }
 
     if (!q.exec()) {
         qDebug() << "getStaffRows error:" << q.lastError().text();

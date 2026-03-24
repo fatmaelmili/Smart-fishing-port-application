@@ -309,7 +309,7 @@ QLabel[objectName*=&quot;error&quot;] {
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>8</number>
+     <number>6</number>
     </property>
     <widget class="QWidget" name="pageSignIn">
      <property name="styleSheet">
@@ -5610,20 +5610,20 @@ QPushButton#backWbtn:disabled {
                <property name="geometry">
                 <rect>
                  <x>20</x>
-                 <y>10</y>
+                 <y>30</y>
                  <width>361</width>
                  <height>58</height>
                 </rect>
                </property>
                <property name="text">
-                <string>🔍Search with staff full name,role,cvstatus....</string>
+                <string/>
                </property>
               </widget>
               <widget class="QComboBox" name="sortstaff">
                <property name="geometry">
                 <rect>
                  <x>230</x>
-                 <y>80</y>
+                 <y>90</y>
                  <width>151</width>
                  <height>54</height>
                 </rect>
@@ -5653,7 +5653,7 @@ QPushButton#backWbtn:disabled {
                <property name="geometry">
                 <rect>
                  <x>30</x>
-                 <y>80</y>
+                 <y>90</y>
                  <width>191</width>
                  <height>51</height>
                 </rect>
@@ -5811,6 +5811,22 @@ QPushButton#backWbtn:disabled {
                </property>
                <property name="text">
                 <string>↩️Back to Welcome Page</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="searchlabel">
+               <property name="geometry">
+                <rect>
+                 <x>-20</x>
+                 <y>0</y>
+                 <width>391</width>
+                 <height>31</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>🔍Search with staff full name,role,cvstatus....</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </widget>
@@ -8028,20 +8044,20 @@ QPushButton#backWbtn_U:disabled {
                <property name="geometry">
                 <rect>
                  <x>20</x>
-                 <y>10</y>
+                 <y>30</y>
                  <width>361</width>
                  <height>58</height>
                 </rect>
                </property>
                <property name="text">
-                <string>🔍Search with staff full name,role,cvstatus....</string>
+                <string/>
                </property>
               </widget>
               <widget class="QComboBox" name="sortstaff_U">
                <property name="geometry">
                 <rect>
                  <x>230</x>
-                 <y>80</y>
+                 <y>90</y>
                  <width>151</width>
                  <height>54</height>
                 </rect>
@@ -8071,7 +8087,7 @@ QPushButton#backWbtn_U:disabled {
                <property name="geometry">
                 <rect>
                  <x>30</x>
-                 <y>80</y>
+                 <y>90</y>
                  <width>191</width>
                  <height>51</height>
                 </rect>
@@ -8210,6 +8226,22 @@ QPushButton#backWbtn_U:disabled {
                </property>
                <property name="text">
                 <string>↩️Back to Add Page</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="searchlabel_U">
+               <property name="geometry">
+                <rect>
+                 <x>-30</x>
+                 <y>0</y>
+                 <width>391</width>
+                 <height>31</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>🔍Search with staff full name,role,cvstatus....</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </widget>

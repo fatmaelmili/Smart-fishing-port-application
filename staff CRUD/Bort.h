@@ -208,6 +208,10 @@ private slots:
 
     void on_sortstaff_U_currentTextChanged(const QString &arg1);
 
+    void on_staffsearchbarre_textChanged(const QString &arg1);
+
+    void on_staffsearchbarre_U_textChanged(const QString &arg1);
+
 private:
     Ui::SignIn *ui;
     QByteArray m_cvBlob;

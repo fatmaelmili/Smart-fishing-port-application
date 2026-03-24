@@ -67,7 +67,7 @@ public:
     bool ajouterStaff();
     bool modifierStaff(int IdPers);
     bool supprimerStaff(int IdPers);
-    QVector<QStringList> getStaffRows(const QString& sortBy = "");
+    QVector<QStringList> getStaffRows(const QString& sortBy = "", const QString& searchText = "");
     static bool verifyPassword(const QString& plain, const QString& storedSaltHash);
     static LoginResult authenticateByMailEx(const QString& mail,const QString& plainPassword,QString* outRole = nullptr,QString* outCvStatus = nullptr);
     static bool findUserByMail(const QString& mail, QString* fullName = nullptr);

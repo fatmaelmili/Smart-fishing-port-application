@@ -58,9 +58,10 @@ void SignIn::refreshStaffTable()
     ui->tablestaff->setRowCount(0);
 
     QString selectedSort = ui->sortstaff->currentText();
+    QString searchText = ui->staffsearchbarre->text().trimmed();
 
     Personnel p;
-    QVector<QStringList> rows = p.getStaffRows(selectedSort);
+    QVector<QStringList> rows = p.getStaffRows(selectedSort, searchText);
 
     ui->tablestaff->setRowCount(rows.size());
 
@@ -1039,9 +1040,10 @@ void SignIn::refreshStaffTable_U()
     ui->tablestaff_U->setRowCount(0);
 
     QString selectedSort = ui->sortstaff_U->currentText();
+    QString searchText = ui->staffsearchbarre_U->text().trimmed();
 
     Personnel p;
-    QVector<QStringList> rows = p.getStaffRows(selectedSort);
+    QVector<QStringList> rows = p.getStaffRows(selectedSort, searchText);
 
     ui->tablestaff_U->setRowCount(rows.size());
 
@@ -1460,6 +1462,20 @@ void SignIn::on_sortstaff_currentTextChanged(const QString &arg1)
 
 
 void SignIn::on_sortstaff_U_currentTextChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1);
+    refreshStaffTable_U();
+}
+
+
+void SignIn::on_staffsearchbarre_textChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1);
+    refreshStaffTable();
+}
+
+
+void SignIn::on_staffsearchbarre_U_textChanged(const QString &arg1)
 {
     Q_UNUSED(arg1);
     refreshStaffTable_U();
