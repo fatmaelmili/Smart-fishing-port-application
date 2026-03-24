@@ -31,7 +31,7 @@ SignIn::SignIn(QWidget *parent)
     ui->fishingzonemanagementBTNZ->style()->polish(ui->fishingzonemanagementBTNZ);
     ui->fishingzonemanagementBTNZ->update();
     ui->PasswordEdit->setEchoMode(QLineEdit::Password);
-    ui->resetlabel->setText("");
+    ui->NewEdit->setEchoMode(QLineEdit::Password);
 }
 void SignIn::on_showPassCheck_toggled(bool checked)
 {
@@ -1410,16 +1410,39 @@ void SignIn::on_newbtn_clicked()
     }
 
     if (newPassword.isEmpty()) {
-        ui->tokenlabel->setText("Please enter your new password.");
+        ui->Newlabel->setText("Please enter your new password.");
         return;
     }
 
-    ui->tokenlabel->setText("Button clicked successfully.");
+    QRegularExpression reMdp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$");
+    if (!reMdp.match(newPassword).hasMatch()) {
+        QMessageBox::warning(this, "Invalid Password","Password must be at least 8 characters and contain uppercase, lowercase, number and special character.");
+        return;
+    }
+
+    if (!Personnel::resetPasswordByToken(token, newPassword)) {
+        ui->tokenlabel->setText("Invalid or expired reset code.");
+        return;
+    }
+
+    QMessageBox::information(this, "Success", "Your password has been reset successfully.");
+
+    ui->tokenlineEdit->clear();
+    ui->NewEdit->clear();
+    ui->tokenlabel->clear();
+
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
 void SignIn::on_backsigninBTNR_clicked()
 {
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
+}
+
+
+void SignIn::on_showPassCheckR_toggled(bool checked)
+{
+    ui->NewEdit->setEchoMode(checked ? QLineEdit::Normal: QLineEdit::Password);
 }
 

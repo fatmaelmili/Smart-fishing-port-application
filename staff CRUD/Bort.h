@@ -202,6 +202,8 @@ private slots:
 
     void on_backsigninBTNR_clicked();
 
+    void on_showPassCheckR_toggled(bool checked);
+
 private:
     Ui::SignIn *ui;
     QByteArray m_cvBlob;

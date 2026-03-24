@@ -648,7 +648,7 @@ QLabel[objectName*=&quot;status&quot;] {
        </rect>
       </property>
       <property name="text">
-       <string>User Name</string>
+       <string>User Email</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
@@ -3233,7 +3233,7 @@ QPushButton#backsigninBTN:hover {
             </rect>
            </property>
            <property name="text">
-            <string>Enter your email or username to reset your password</string>
+            <string>Enter your email  to reset your password</string>
            </property>
           </widget>
           <widget class="QLineEdit" name="resetlineEdit">
@@ -3385,7 +3385,26 @@ QPushButton#backsigninBTNR:hover {
     border: 1px solid rgba(79,195,247,0.35);
     color: #4fc3f7;
 }
-</string>
+
+QCheckBox#showPassCheckR  {
+    color: rgba(220, 232, 242, 0.80);
+    font-size: 10.5pt;
+    font-weight: 600;
+    spacing: 10px;
+}
+
+QCheckBox#showPassCheckR::indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    border: 2px solid rgba(77, 159, 254, 0.70);
+    background-color: rgba(0, 44, 114, 0.10);
+}
+
+QCheckBox#showPassCheckR::indicator:checked {
+    background-color: #4D9FFE;
+    border: 2px solid #4D9FFE;
+}</string>
      </property>
      <widget class="QWidget" name="layoutWidget_14">
       <property name="geometry">
@@ -3443,7 +3462,7 @@ QPushButton#backsigninBTNR:hover {
            <property name="geometry">
             <rect>
              <x>60</x>
-             <y>90</y>
+             <y>40</y>
              <width>391</width>
              <height>20</height>
             </rect>
@@ -3456,7 +3475,7 @@ QPushButton#backsigninBTNR:hover {
            <property name="geometry">
             <rect>
              <x>60</x>
-             <y>120</y>
+             <y>70</y>
              <width>450</width>
              <height>68</height>
             </rect>
@@ -3504,7 +3523,7 @@ QPushButton#backsigninBTNR:hover {
            <property name="geometry">
             <rect>
              <x>60</x>
-             <y>210</y>
+             <y>160</y>
              <width>391</width>
              <height>20</height>
             </rect>
@@ -3517,7 +3536,7 @@ QPushButton#backsigninBTNR:hover {
            <property name="geometry">
             <rect>
              <x>60</x>
-             <y>250</y>
+             <y>200</y>
              <width>450</width>
              <height>68</height>
             </rect>
@@ -3533,6 +3552,19 @@ QPushButton#backsigninBTNR:hover {
              <width>450</width>
              <height>16777215</height>
             </size>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="showPassCheckR">
+           <property name="geometry">
+            <rect>
+             <x>170</x>
+             <y>280</y>
+             <width>354</width>
+             <height>51</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Show Password</string>
            </property>
           </widget>
          </widget>
