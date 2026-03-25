@@ -31,6 +31,14 @@ public:
         CvNotAccepted,
         DbError
     };
+    enum class FaceLoginResult {
+        Ok,
+        FaceNotRecognized,
+        FaceNotEnabled,
+        CvNotAccepted,
+        DbError
+    };
+
     struct UserProfile {
         int idPers = -1;
         QString nom;
@@ -48,6 +56,13 @@ public:
         QString role;
         QString cvStatus;
         QByteArray avatar;
+    };
+    struct FaceRecord {
+        int idPers = -1;
+        QString mail;
+        QString role;
+        QString cvStatus;
+        QByteArray faceData;
     };
 
     static bool fetchProfileByMail(const QString& mail, UserProfile* out);
@@ -92,6 +107,11 @@ public:
     static QMap<QString, int> getCvStatusStatistics();
     static int getTotalStaffCount();
     static bool updateOwnAccount(int idPers,const QString& nom,const QString& prenom,const QString& adresse,const QString& tel,const QString& mail,const QString& newPlainPassword,const QByteArray& avatarBytes,bool updateAvatar);
+    static bool saveFaceIdByMail(const QString& mail, const QByteArray& faceData);
+    static bool hasFaceIdRegistered(const QString& mail);
+    static bool removeFaceIdByMail(const QString& mail);
+    static FaceLoginResult authenticateByFaceId(const QByteArray& capturedFaceData,QString* outMail = nullptr,QString* outRole = nullptr,QString* outCvStatus = nullptr);
+    static QVector<FaceRecord> getAllRegisteredFaceIds();
 
 
 };

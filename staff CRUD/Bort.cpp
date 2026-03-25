@@ -1,6 +1,8 @@
 #include "Bort.h"
 #include "ui_Bort.h"
 #include "personnel.h"
+#include <opencv2/opencv.hpp>
+#include <QBuffer>
 #include<QStyle>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -496,8 +498,36 @@ void SignIn::on_logOutBTN_A_clicked()
 
 void SignIn::on_backWbtn_A_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
-    loadEmployeeCount();
+    if (m_currentUserMail.trimmed().isEmpty()) {
+        QMessageBox::warning(this, "Face ID", "No connected user found.");
+        return;
+    }
+
+    Personnel::AccountProfile profile;
+    if (!Personnel::fetchAccountProfileByMail(m_currentUserMail, &profile)) {
+        QMessageBox::warning(this, "Face ID", "Unable to load current user profile.");
+        return;
+    }
+
+    if (profile.cvStatus.trimmed().compare("Accepted", Qt::CaseInsensitive) != 0) {
+        QMessageBox::warning(this, "Face ID", "Only users with an accepted CV can register Face ID.");
+        return;
+    }
+
+    QByteArray faceData = captureFaceFromCamera();
+
+    if (faceData.isEmpty()) {
+        QMessageBox::warning(this, "Face ID", "Capture failed.");
+        return;
+    }
+
+    if (!Personnel::saveFaceIdByMail(m_currentUserMail, faceData)) {
+        QMessageBox::critical(this, "Face ID", "Failed to save Face ID.");
+        return;
+    }
+
+    updateFaceIdStatusLabel();
+    QMessageBox::information(this, "Face ID", "Face ID registered successfully.");
 }
 
 
@@ -2333,6 +2363,7 @@ bool SignIn::loadCurrentUserAccountData()
     if (ui->cvpathEdit_2) {
         ui->cvpathEdit_2->setText(acc.avatar.isEmpty() ? "No photo selected" : "Current photo loaded");
     }
+    updateFaceIdStatusLabel();
 
     return true;
 }
@@ -2509,5 +2540,253 @@ void SignIn::loadEmployeeCount()
     int total = Personnel::getTotalStaffCount();
 
     ui->numberstaff->setText(QString::number(total));
+}
+void SignIn::updateFaceIdStatusLabel()
+{
+    if (m_currentUserMail.trimmed().isEmpty()) {
+        ui->registerlabel->setText("Face ID status: unknown");
+        return;
+    }
+
+    const bool registered = Personnel::hasFaceIdRegistered(m_currentUserMail);
+
+    if (registered) {
+        ui->registerlabel->setText("Face ID status: Registered");
+    } else {
+        ui->registerlabel->setText("Face ID status: Not registered");
+    }
+}
+
+void SignIn::on_facebtn_clicked()
+{
+    if (m_currentUserMail.trimmed().isEmpty()) {
+        QMessageBox::warning(this, "Face ID", "No connected user found.");
+        return;
+    }
+
+    const QMessageBox::StandardButton reply = QMessageBox::question(
+        this,
+        "Reset Face ID",
+        "Are you sure you want to remove your registered Face ID?",
+        QMessageBox::Yes | QMessageBox::No
+        );
+
+    if (reply != QMessageBox::Yes) {
+        return;
+    }
+
+    if (!Personnel::removeFaceIdByMail(m_currentUserMail)) {
+        QMessageBox::critical(this, "Face ID", "Failed to reset Face ID.");
+        return;
+    }
+
+    updateFaceIdStatusLabel();
+    QMessageBox::information(this, "Face ID", "Face ID has been removed successfully.");
+
+}
+QByteArray SignIn::captureFaceFromCamera()
+{
+    cv::VideoCapture cap(0);
+
+    if (!cap.isOpened()) {
+        QMessageBox::warning(this, "Camera", "Unable to open the camera.");
+        return QByteArray();
+    }
+
+    cv::Mat frame;
+    cv::Mat capturedFrame;
+
+    while (true) {
+        cap >> frame;
+
+        if (frame.empty()) {
+            QMessageBox::warning(this, "Camera", "Failed to read frame from camera.");
+            cap.release();
+            cv::destroyAllWindows();
+            return QByteArray();
+        }
+
+        cv::imshow("Face ID Camera - Press SPACE to capture / ESC to cancel", frame);
+
+        int key = cv::waitKey(30);
+
+        if (key == 32) { // SPACE
+            capturedFrame = frame.clone();
+            break;
+        } else if (key == 27) { // ESC
+            cap.release();
+            cv::destroyAllWindows();
+            return QByteArray();
+        }
+    }
+
+    cap.release();
+    cv::destroyAllWindows();
+
+    if (capturedFrame.empty()) {
+        QMessageBox::warning(this, "Camera", "No image was captured.");
+        return QByteArray();
+    }
+
+    cv::Mat face = detectAndCropFace(capturedFrame);
+    if (face.empty()) {
+        return QByteArray();
+    }
+
+    std::vector<uchar> buffer;
+    if (!cv::imencode(".jpg", face, buffer)) {
+        QMessageBox::warning(this, "Camera", "Failed to encode detected face.");
+        return QByteArray();
+    }
+
+    return QByteArray(reinterpret_cast<const char*>(buffer.data()),
+                      static_cast<int>(buffer.size()));
+}
+QString SignIn::ensureFaceCascadeFile()
+{
+    const QString tempPath = QDir::temp().filePath("haarcascade_frontalface_default.xml");
+
+    if (QFile::exists(tempPath)) {
+        return tempPath;
+    }
+
+    QFile resourceFile(":/haarcascade_frontalface_default.xml");
+    if (!resourceFile.open(QIODevice::ReadOnly)) {
+        QMessageBox::warning(this, "Face ID", "Unable to open face cascade resource file.");
+        return QString();
+    }
+
+    QFile tempFile(tempPath);
+    if (!tempFile.open(QIODevice::WriteOnly)) {
+        QMessageBox::warning(this, "Face ID", "Unable to create temporary cascade file.");
+        resourceFile.close();
+        return QString();
+    }
+
+    tempFile.write(resourceFile.readAll());
+    tempFile.close();
+    resourceFile.close();
+
+    return tempPath;
+}
+
+cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
+{
+    QString cascadePath = ensureFaceCascadeFile();
+    if (cascadePath.isEmpty()) {
+        return cv::Mat();
+    }
+
+    cv::CascadeClassifier faceCascade;
+    if (!faceCascade.load(cascadePath.toStdString())) {
+        QMessageBox::warning(this, "Face ID", "Failed to load face cascade.");
+        return cv::Mat();
+    }
+
+    cv::Mat gray;
+    cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+
+    std::vector<cv::Rect> faces;
+    faceCascade.detectMultiScale(gray, faces, 1.3, 5);
+
+    if (faces.empty()) {
+        QMessageBox::warning(this, "Face ID", "No face detected.");
+        return cv::Mat();
+    }
+
+
+    cv::Rect faceRect = faces[0];
+    cv::Mat face = frame(faceRect).clone();
+
+
+    cv::resize(face, face, cv::Size(200, 200));
+
+    return face;
+}
+bool SignIn::compareFaces(const cv::Mat& face1, const cv::Mat& face2)
+{
+    if (face1.empty() || face2.empty()) {
+        return false;
+    }
+
+    cv::Mat resized1, resized2;
+    cv::resize(face1, resized1, cv::Size(200, 200));
+    cv::resize(face2, resized2, cv::Size(200, 200));
+
+    cv::Mat gray1, gray2;
+    cv::cvtColor(resized1, gray1, cv::COLOR_BGR2GRAY);
+    cv::cvtColor(resized2, gray2, cv::COLOR_BGR2GRAY);
+
+    double distance = cv::norm(gray1, gray2, cv::NORM_L2);
+
+    qDebug() << "Face distance =" << distance;
+
+    return distance < 3000.0;
+}
+
+
+bool SignIn::authenticateWithFaceId()
+{
+    QByteArray capturedData = captureFaceFromCamera();
+    if (capturedData.isEmpty()) {
+        QMessageBox::warning(this, "Face ID", "Face capture failed.");
+        return false;
+    }
+
+    std::vector<uchar> capturedBuffer(capturedData.begin(), capturedData.end());
+    cv::Mat capturedFace = cv::imdecode(capturedBuffer, cv::IMREAD_COLOR);
+
+    if (capturedFace.empty()) {
+        QMessageBox::warning(this, "Face ID", "Unable to decode captured face.");
+        return false;
+    }
+
+    QVector<Personnel::FaceRecord> records = Personnel::getAllRegisteredFaceIds();
+    if (records.isEmpty()) {
+        QMessageBox::warning(this, "Face ID", "No registered Face ID found in database.");
+        return false;
+    }
+
+    for (const Personnel::FaceRecord &rec : records) {
+        std::vector<uchar> dbBuffer(rec.faceData.begin(), rec.faceData.end());
+        cv::Mat dbFace = cv::imdecode(dbBuffer, cv::IMREAD_COLOR);
+
+        if (dbFace.empty()) {
+            continue;
+        }
+
+        if (compareFaces(capturedFace, dbFace)) {
+            if (rec.cvStatus.trimmed().compare("Accepted", Qt::CaseInsensitive) != 0) {
+                QMessageBox::warning(this, "Face ID", "Your CV is not accepted. Access denied.");
+                return false;
+            }
+
+            m_currentUserMail = rec.mail;
+            m_currentRole = rec.role;
+
+            Personnel::UserProfile profile;
+            if (Personnel::fetchProfileByMail(rec.mail, &profile)) {
+                m_currentUserId = profile.idPers;
+                m_currentAccountAvatar = profile.avatar;
+                updateUserProfileUI((profile.prenom + " " + profile.nom).trimmed(), profile.avatar);
+            }
+
+            applyRolePermissions(m_currentRole);
+            loadCurrentUserAccountData();
+            loadStaffDashboardStats();
+            ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
+
+            QMessageBox::information(this, "Face ID", "Face recognized successfully.");
+            return true;
+        }
+    }
+
+    QMessageBox::warning(this, "Face ID", "Face ID not recognized.");
+    return false;
+}
+
+void SignIn::on_withfacebtn_clicked()
+{
+    authenticateWithFaceId();
 }
 

@@ -534,7 +534,167 @@ bool Personnel::updateOwnAccount(int idPers,
 
     return q.numRowsAffected() > 0;
 }
+bool Personnel::saveFaceIdByMail(const QString& mail, const QByteArray& faceData)
+{
+    if (mail.trimmed().isEmpty() || faceData.isEmpty()) {
+        qDebug() << "saveFaceIdByMail: invalid mail or empty face data.";
+        return false;
+    }
 
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET FACE_ID_DATA = :faceData,
+            FACE_ID_ENABLED = 1,
+            FACE_ID_UPDATED_AT = SYSDATE
+        WHERE MAIL = :mail
+    )");
+
+    q.bindValue(":faceData", QVariant::fromValue(faceData));
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec()) {
+        qDebug() << "saveFaceIdByMail error:" << q.lastError().text();
+        return false;
+    }
+
+    return q.numRowsAffected() > 0;
+}
+
+bool Personnel::hasFaceIdRegistered(const QString& mail)
+{
+    if (mail.trimmed().isEmpty()) {
+        return false;
+    }
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT FACE_ID_ENABLED, FACE_ID_DATA
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec()) {
+        qDebug() << "hasFaceIdRegistered error:" << q.lastError().text();
+        return false;
+    }
+
+    if (!q.next()) {
+        return false;
+    }
+
+    const int enabled = q.value(0).toInt();
+    const QByteArray faceData = q.value(1).toByteArray();
+
+    return enabled == 1 && !faceData.isEmpty();
+}
+
+bool Personnel::removeFaceIdByMail(const QString& mail)
+{
+    if (mail.trimmed().isEmpty()) {
+        qDebug() << "removeFaceIdByMail: empty mail.";
+        return false;
+    }
+
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET FACE_ID_DATA = NULL,
+            FACE_ID_ENABLED = 0,
+            FACE_ID_UPDATED_AT = NULL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec()) {
+        qDebug() << "removeFaceIdByMail error:" << q.lastError().text();
+        return false;
+    }
+
+    return q.numRowsAffected() > 0;
+}
+
+Personnel::FaceLoginResult Personnel::authenticateByFaceId(const QByteArray& capturedFaceData,
+                                                           QString* outMail,
+                                                           QString* outRole,
+                                                           QString* outCvStatus)
+{
+    if (capturedFaceData.isEmpty()) {
+        return FaceLoginResult::FaceNotRecognized;
+    }
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT MAIL, ROLE, CVSTATUS, FACE_ID_ENABLED
+        FROM FATMA.PERSONNEL
+        WHERE FACE_ID_DATA = :faceData
+    )");
+    q.bindValue(":faceData", QVariant::fromValue(capturedFaceData));
+
+    if (!q.exec()) {
+        qDebug() << "authenticateByFaceId error:" << q.lastError().text();
+        return FaceLoginResult::DbError;
+    }
+
+    if (!q.next()) {
+        return FaceLoginResult::FaceNotRecognized;
+    }
+
+    const QString mail = q.value(0).toString();
+    const QString role = q.value(1).toString();
+    const QString cvStatus = q.value(2).toString();
+    const int faceEnabled = q.value(3).toInt();
+
+    if (outMail) {
+        *outMail = mail;
+    }
+    if (outRole) {
+        *outRole = role;
+    }
+    if (outCvStatus) {
+        *outCvStatus = cvStatus;
+    }
+
+    if (faceEnabled != 1) {
+        return FaceLoginResult::FaceNotEnabled;
+    }
+
+    if (cvStatus.trimmed().compare("Accepted", Qt::CaseInsensitive) != 0) {
+        return FaceLoginResult::CvNotAccepted;
+    }
+
+    return FaceLoginResult::Ok;
+}
+QVector<Personnel::FaceRecord> Personnel::getAllRegisteredFaceIds()
+{
+    QVector<FaceRecord> records;
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT IDPERS, MAIL, ROLE, CVSTATUS, FACE_ID_DATA
+        FROM FATMA.PERSONNEL
+        WHERE FACE_ID_ENABLED = 1
+          AND FACE_ID_DATA IS NOT NULL
+    )");
+
+    if (!q.exec()) {
+        qDebug() << "getAllRegisteredFaceIds error:" << q.lastError().text();
+        return records;
+    }
+
+    while (q.next()) {
+        FaceRecord rec;
+        rec.idPers = q.value(0).toInt();
+        rec.mail = q.value(1).toString();
+        rec.role = q.value(2).toString();
+        rec.cvStatus = q.value(3).toString();
+        rec.faceData = q.value(4).toByteArray();
+        records.push_back(rec);
+    }
+
+    return records;
+}
 
 
 

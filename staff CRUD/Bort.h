@@ -7,6 +7,7 @@
 #include <QTableWidget>
 #include <QPdfWriter>
 #include <QPainter>
+#include <opencv2/opencv.hpp>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -226,8 +227,15 @@ private slots:
 
     void on_browbtn_clicked();
 
+    void on_facebtn_clicked();
+
+    void on_withfacebtn_clicked();
+
 private:
     Ui::SignIn *ui;
+    QByteArray captureFaceFromCamera();
+    QString ensureFaceCascadeFile();
+    cv::Mat detectAndCropFace(const cv::Mat& frame);
     QByteArray m_cvBlob;
     QByteArray m_avatarBlob;
     QString m_currentRole;
@@ -254,6 +262,9 @@ private:
     void openCurrentUserAccountPage();
     bool loadCurrentUserAccountData();
     void loadEmployeeCount();
+    void updateFaceIdStatusLabel();
+    bool compareFaces(const cv::Mat& face1, const cv::Mat& face2);
+    bool authenticateWithFaceId();
 };
 
 #endif // BORT_H

@@ -36,3 +36,14 @@ RESOURCES += \
 
 DISTFILES += \
     Images/logo.png
+
+
+INCLUDEPATH += C:/opencv/build/include
+
+CONFIG(debug, debug|release) {
+    LIBS += -LC:/opencv/build/x64/vc16/lib \
+            -lopencv_world4120d
+} else {
+    LIBS += -LC:/opencv/build/x64/vc16/lib \
+            -lopencv_world4120
+}
