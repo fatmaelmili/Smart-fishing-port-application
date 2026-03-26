@@ -2731,11 +2731,10 @@ cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
 
     return face;
 }
-bool SignIn::compareFaces(const cv::Mat& face1, const cv::Mat& face2)
+double SignIn::compareFacesDistance(const cv::Mat& face1, const cv::Mat& face2)
 {
     if (face1.empty() || face2.empty()) {
-        QMessageBox::warning(this, "Face Compare", "One of the faces is empty.");
-        return false;
+        return 1e12;
     }
 
     cv::Mat resized1, resized2;
@@ -2746,12 +2745,10 @@ bool SignIn::compareFaces(const cv::Mat& face1, const cv::Mat& face2)
     cv::cvtColor(resized1, gray1, cv::COLOR_BGR2GRAY);
     cv::cvtColor(resized2, gray2, cv::COLOR_BGR2GRAY);
 
-    double distance = cv::norm(gray1, gray2, cv::NORM_L2);
+    cv::equalizeHist(gray1, gray1);
+    cv::equalizeHist(gray2, gray2);
 
-    QMessageBox::information(this, "Face Distance",
-                             "Distance = " + QString::number(distance));
-
-    return distance < 95000.0;
+    return cv::norm(gray1, gray2, cv::NORM_L2);
 }
 
 
@@ -2759,105 +2756,125 @@ bool SignIn::authenticateWithFaceId()
 {
     QByteArray capturedData = captureFaceFromCamera();
     if (capturedData.isEmpty()) {
-        registerFaceAuthFailure("Face capture failed");
-        QMessageBox::warning(this, "Face ID", "Face capture failed.");
+        registerFaceAuthFailure("No face captured");
+        QMessageBox::warning(this, "Face ID", "No face captured.");
         return false;
     }
 
-    std::vector<uchar> capturedBuffer(capturedData.begin(), capturedData.end());
-    cv::Mat capturedFace = cv::imdecode(capturedBuffer, cv::IMREAD_COLOR);
+    std::vector<uchar> buffer(capturedData.begin(), capturedData.end());
+    cv::Mat capturedFace = cv::imdecode(buffer, cv::IMREAD_COLOR);
 
     if (capturedFace.empty()) {
-        registerFaceAuthFailure("Captured face could not be decoded");
+        registerFaceAuthFailure("Invalid face data");
         QMessageBox::warning(this, "Face ID", "Unable to decode captured face.");
         return false;
     }
 
-    QVector<Personnel::FaceRecord> records = Personnel::getAllRegisteredFaceIds();
-    if (records.isEmpty()) {
+    auto faces = Personnel::getAllRegisteredFaceIds();
+    if (faces.isEmpty()) {
         QMessageBox::warning(this, "Face ID", "No registered Face ID found in database.");
         return false;
     }
 
-    for (const Personnel::FaceRecord &rec : records) {
+    double bestDistance = 1e12;
+    Personnel::FaceRecord bestRecord;
+    bool foundCandidate = false;
+
+    for (const auto& rec : faces) {
         std::vector<uchar> dbBuffer(rec.faceData.begin(), rec.faceData.end());
         cv::Mat dbFace = cv::imdecode(dbBuffer, cv::IMREAD_COLOR);
 
-        if (dbFace.empty()) {
+        if (dbFace.empty())
             continue;
-        }
 
-        if (!compareFaces(capturedFace, dbFace)) {
-            continue;
-        }
+        double distance = compareFacesDistance(capturedFace, dbFace);
 
-        QString authMail;
-        QString authRole;
-        QString authCvStatus;
+        qDebug() << "Face ID compare with" << rec.mail << "distance =" << distance;
 
-        Personnel::FaceLoginResult result =
-            Personnel::authenticateByFaceIdMail(rec.mail, &authMail, &authRole, &authCvStatus);
-
-        switch (result) {
-        case Personnel::FaceLoginResult::Ok: {
-            resetFaceAuthFailureCounter();
-
-            m_currentUserMail = authMail;
-            m_currentRole = authRole;
-
-            Personnel::UserProfile profile;
-            if (Personnel::fetchProfileByMail(authMail, &profile)) {
-                m_currentUserId = profile.idPers;
-                m_currentAccountAvatar = profile.avatar;
-                updateUserProfileUI((profile.prenom + " " + profile.nom).trimmed(), profile.avatar);
-            }
-
-            applyRolePermissions(m_currentRole);
-            loadCurrentUserAccountData();
-            loadStaffDashboardStats();
-            ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
-
-            QMessageBox::information(this, "Face ID", "Face recognized successfully.");
-            return true;
-        }
-
-        case Personnel::FaceLoginResult::AccountBlocked:
-            resetFaceAuthFailureCounter();
-            QMessageBox::critical(this, "Face ID",
-                                  "This account is temporarily blocked due to suspicious activity.");
-            return false;
-
-        case Personnel::FaceLoginResult::FaceNotEnabled:
-            registerFaceAuthFailure("Face ID is disabled for this account");
-            QMessageBox::warning(this, "Face ID",
-                                 "Face ID is disabled for this account.");
-            return false;
-
-        case Personnel::FaceLoginResult::CvNotAccepted:
-            resetFaceAuthFailureCounter();
-            QMessageBox::warning(this, "Face ID",
-                                 "Your CV is not accepted. Access denied.");
-            return false;
-
-        case Personnel::FaceLoginResult::SuspiciousActivity:
-            registerFaceAuthFailure("Suspicious Face ID activity");
-            QMessageBox::warning(this, "Face ID",
-                                 "Suspicious Face ID activity detected.");
-            return false;
-
-        case Personnel::FaceLoginResult::FaceNotRecognized:
-            break;
-
-        case Personnel::FaceLoginResult::DbError:
-            registerFaceAuthFailure("Database error during Face ID authentication");
-            QMessageBox::critical(this, "Face ID",
-                                  "Database error during Face ID authentication.");
-            return false;
+        if (distance < bestDistance) {
+            bestDistance = distance;
+            bestRecord = rec;
+            foundCandidate = true;
         }
     }
 
-    registerFaceAuthFailure("Face ID not recognized");
-    QMessageBox::warning(this, "Face ID", "Face ID not recognized.");
+    if (!foundCandidate) {
+        registerFaceAuthFailure("No valid registered face found");
+        QMessageBox::warning(this, "Face ID", "No valid registered face found.");
+        return false;
+    }
+
+    qDebug() << "Best Face ID match =" << bestRecord.mail
+             << "| distance =" << bestDistance;
+
+    // seuil plus strict
+    if (bestDistance > 30000.0) {
+        registerFaceAuthFailure("Face not recognized");
+        QMessageBox::warning(this, "Face ID", "Face ID not recognized.");
+        return false;
+    }
+
+    QString authMail;
+    QString authRole;
+    QString authCvStatus;
+
+    Personnel::FaceLoginResult result =
+        Personnel::authenticateByFaceIdMail(bestRecord.mail, &authMail, &authRole, &authCvStatus);
+
+    switch (result) {
+    case Personnel::FaceLoginResult::Ok: {
+        resetFaceAuthFailureCounter();
+
+        m_currentUserMail = authMail;
+        m_currentRole = authRole;
+
+        Personnel::UserProfile profile;
+        if (Personnel::fetchProfileByMail(authMail, &profile)) {
+            m_currentUserId = profile.idPers;
+            m_currentAccountAvatar = profile.avatar;
+            updateUserProfileUI((profile.prenom + " " + profile.nom).trimmed(), profile.avatar);
+        }
+
+        applyRolePermissions(m_currentRole);
+        loadCurrentUserAccountData();
+        loadStaffDashboardStats();
+        loadEmployeeCount();
+        ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
+
+        QMessageBox::information(this, "Face ID", "Face recognized successfully.");
+        return true;
+    }
+
+    case Personnel::FaceLoginResult::AccountBlocked:
+        QMessageBox::critical(this, "Face ID",
+                              "This account is temporarily blocked due to suspicious activity.");
+        return false;
+
+    case Personnel::FaceLoginResult::FaceNotEnabled:
+        registerFaceAuthFailure("Face ID is disabled for this account");
+        QMessageBox::warning(this, "Face ID", "Face ID is disabled for this account.");
+        return false;
+
+    case Personnel::FaceLoginResult::CvNotAccepted:
+        QMessageBox::warning(this, "Face ID", "Your CV is not accepted. Access denied.");
+        return false;
+
+    case Personnel::FaceLoginResult::SuspiciousActivity:
+        registerFaceAuthFailure("Suspicious Face ID activity");
+        QMessageBox::warning(this, "Face ID", "Suspicious Face ID activity detected.");
+        return false;
+
+    case Personnel::FaceLoginResult::FaceNotRecognized:
+        registerFaceAuthFailure("Face not recognized");
+        QMessageBox::warning(this, "Face ID", "Face ID not recognized.");
+        return false;
+
+    case Personnel::FaceLoginResult::DbError:
+        registerFaceAuthFailure("Database error during Face ID authentication");
+        QMessageBox::critical(this, "Face ID", "Database error during Face ID authentication.");
+        return false;
+    }
+
     return false;
 }
 

@@ -281,7 +281,7 @@ private:
     bool loadCurrentUserAccountData();
     void loadEmployeeCount();
     void updateFaceIdStatusLabel();
-    bool compareFaces(const cv::Mat& face1, const cv::Mat& face2);
+    double compareFacesDistance(const cv::Mat& face1, const cv::Mat& face2);
     bool authenticateWithFaceId();
     void runCvAnalysisForSelectedRow(QTableWidget *table);
     QString extractTextFromPdfBlob(const QByteArray& pdfBlob) const;

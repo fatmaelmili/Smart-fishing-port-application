@@ -583,6 +583,10 @@ bool Personnel::saveFaceIdByMail(const QString& mail, const QByteArray& faceData
         return false;
     }
 
+    qDebug() << "saveFaceIdByMail OK | mail =" << mail
+             << "| rows =" << q.numRowsAffected()
+             << "| bytes =" << faceData.size();
+
     return q.numRowsAffected() > 0;
 }
 
@@ -720,6 +724,10 @@ QVector<Personnel::FaceRecord> Personnel::getAllRegisteredFaceIds()
         rec.role = q.value(2).toString();
         rec.cvStatus = q.value(3).toString();
         rec.faceData = q.value(4).toByteArray();
+
+        qDebug() << "Loaded Face ID:" << rec.mail
+                 << "| bytes =" << rec.faceData.size();
+
         records.push_back(rec);
     }
 
