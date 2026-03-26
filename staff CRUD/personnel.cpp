@@ -695,7 +695,59 @@ QVector<Personnel::FaceRecord> Personnel::getAllRegisteredFaceIds()
 
     return records;
 }
+bool Personnel::fetchCvAnalysisInputById(int idPers, CvAnalysisInput* out)
+{
+    if (!out) return false;
 
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT
+            IDPERS,
+            (PRENOM || ' ' || NOM) AS FULLNAME,
+            ROLE,
+            CVSTATUS,
+            CV
+        FROM FATMA.PERSONNEL
+        WHERE IDPERS = :id
+    )");
+    q.bindValue(":id", idPers);
+
+    if (!q.exec()) {
+        qDebug() << "fetchCvAnalysisInputById error:" << q.lastError().text();
+        return false;
+    }
+
+    if (!q.next()) {
+        return false;
+    }
+
+    out->idPers   = q.value(0).toInt();
+    out->fullName = q.value(1).toString().trimmed();
+    out->role     = q.value(2).toString().trimmed();
+    out->cvStatus = q.value(3).toString().trimmed();
+    out->cv       = q.value(4).toByteArray();
+
+    return true;
+}
+
+bool Personnel::updateCvStatusById(int idPers, const QString& newStatus)
+{
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET CVSTATUS = :status
+        WHERE IDPERS = :id
+    )");
+    q.bindValue(":status", newStatus.trimmed());
+    q.bindValue(":id", idPers);
+
+    if (!q.exec()) {
+        qDebug() << "updateCvStatusById error:" << q.lastError().text();
+        return false;
+    }
+
+    return true;
+}
 
 
 

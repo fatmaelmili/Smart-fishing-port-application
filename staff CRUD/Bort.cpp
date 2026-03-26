@@ -40,6 +40,11 @@
 #include <QHeaderView>
 #include <QFontMetrics>
 #include <QTextOption>
+#include <QSet>
+#include <QTemporaryFile>
+#include <QRegularExpression>
+#include <QSet>
+#include <QPdfDocument>
 SignIn::SignIn(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SignIn)
@@ -2736,7 +2741,7 @@ bool SignIn::compareFaces(const cv::Mat& face1, const cv::Mat& face2)
     QMessageBox::information(this, "Face Distance",
                              "Distance = " + QString::number(distance));
 
-    return distance < 9500.0;
+    return distance < 95000.0;
 }
 
 
@@ -2803,5 +2808,314 @@ bool SignIn::authenticateWithFaceId()
 void SignIn::on_withfacebtn_clicked()
 {
     authenticateWithFaceId();
+}
+
+
+QString SignIn::extractTextFromPdfBlob(const QByteArray& pdfBlob) const
+{
+    if (pdfBlob.isEmpty()) {
+        return QString();
+    }
+
+    QBuffer buffer;
+    buffer.setData(pdfBlob);
+    if (!buffer.open(QIODevice::ReadOnly)) {
+        return QString();
+    }
+
+    QPdfDocument doc;
+    doc.load(&buffer);
+
+    if (doc.status() != QPdfDocument::Status::Ready) {
+        return QString();
+    }
+
+    QString fullText;
+    const int pageCount = doc.pageCount();
+
+    for (int i = 0; i < pageCount; ++i) {
+        fullText += doc.getAllText(i).text();
+        fullText += "\n";
+    }
+
+    fullText.replace(QRegularExpression(R"(\s+)"), " ");
+    return fullText.simplified();
+}
+
+QStringList SignIn::generalCvKeywords() const
+{
+    return {
+        "experience", "experiences",
+        "project", "projects",
+        "internship", "internships",
+        "training", "formation",
+        "skills", "skill",
+        "certificate", "certification",
+        "university", "bachelor", "master",
+        "teamwork", "communication", "organization"
+    };
+}
+QStringList SignIn::roleKeywords(const QString& role) const
+{
+    const QString r = role.trimmed().toLower();
+
+    if (r == "admin") {
+        return {
+            "management", "manager", "leadership", "administration",
+            "planning", "coordination", "reporting", "organization"
+        };
+    }
+    if (r == "human resource") {
+        return {
+            "human resources", "hr", "recruitment", "interview",
+            "onboarding", "training", "employee", "payroll"
+        };
+    }
+    if (r == "an accountant") {
+        return {
+            "accounting", "accountant", "finance", "financial",
+            "excel", "budget", "invoice", "audit", "bookkeeping"
+        };
+    }
+    if (r == "regulatory manager") {
+        return {
+            "compliance", "regulation", "regulatory", "audit",
+            "policy", "quality", "inspection", "certification"
+        };
+    }
+    if (r == "fisherman") {
+        return {
+            "fishing", "boat", "sea", "net",
+            "navigation", "marine", "port", "safety"
+        };
+    }
+    if (r == "security") {
+        return {
+            "security", "surveillance", "patrol", "incident",
+            "protection", "guard", "access control", "cctv"
+        };
+    }
+
+    return {
+        "experience", "project", "skill", "training",
+        "university", "internship"
+    };
+}
+
+SignIn::CvAnalysisResult SignIn::analyzeCvAdvanced(const QByteArray& cvBlob, const QString& role) const
+{
+    CvAnalysisResult result;
+
+    const QString text = extractTextFromPdfBlob(cvBlob).toLower();
+    const QStringList roleKws = roleKeywords(role);
+    const QStringList generalKws = generalCvKeywords();
+
+    if (text.trimmed().isEmpty()) {
+        result.score = 0;
+        result.decision = "Rejected";
+        result.summary = "No readable text found in CV.";
+        return result;
+    }
+
+    int score = 0;
+
+    for (const QString& kw : roleKws) {
+        if (text.contains(kw.toLower())) {
+            result.matchedRoleKeywords << kw;
+            score += 12;
+        }
+    }
+
+    for (const QString& kw : generalKws) {
+        if (text.contains(kw.toLower())) {
+            result.matchedGeneralKeywords << kw;
+            score += 4;
+        }
+    }
+
+    if (text.contains("year") || text.contains("years")) {
+        score += 8;
+    }
+
+    if (text.contains("assistant") || text.contains("manager") || text.contains("specialist")) {
+        score += 6;
+    }
+
+    if (text.contains("responsible") || text.contains("managed") || text.contains("conducted")) {
+        score += 6;
+    }
+
+    result.score = qMin(score, 100);
+
+    if (result.score >= 60) {
+        result.decision = "Accepted";
+    } else {
+        result.decision = "Rejected";
+    }
+
+    QString rolePart = result.matchedRoleKeywords.isEmpty()
+                           ? "None"
+                           : result.matchedRoleKeywords.join(", ");
+
+    QString generalPart = result.matchedGeneralKeywords.isEmpty()
+                              ? "None"
+                              : result.matchedGeneralKeywords.join(", ");
+
+    result.summary =
+        "Score: " + QString::number(result.score) + "/100\n"
+                                                    "Matched role keywords: " + rolePart + "\n"
+                     "Matched general keywords: " + generalPart + "\n"
+                        "Final decision: " + result.decision;
+
+    return result;
+}
+void SignIn::runCvAnalysisForSelectedRow(QTableWidget *table)
+{
+    if (!table) {
+        QMessageBox::warning(this, "AI CV analysis", "Staff table not found.");
+        return;
+    }
+
+    const int row = table->currentRow();
+    if (row < 0) {
+        QMessageBox::warning(this, "AI CV analysis", "Please select a staff first.");
+        return;
+    }
+
+    QTableWidgetItem *idItem = table->item(row, 0);
+    if (!idItem) {
+        QMessageBox::critical(this, "AI CV analysis", "Unable to read selected staff ID.");
+        return;
+    }
+
+    bool ok = false;
+    const int idPers = idItem->text().toInt(&ok);
+    if (!ok) {
+        QMessageBox::critical(this, "AI CV analysis", "Invalid staff ID.");
+        return;
+    }
+
+    Personnel::CvAnalysisInput input;
+    if (!Personnel::fetchCvAnalysisInputById(idPers, &input)) {
+        QMessageBox::critical(this, "AI CV analysis", "Unable to load CV data from database.");
+        return;
+    }
+
+    if (input.cvStatus.compare("Pending", Qt::CaseInsensitive) != 0) {
+        QMessageBox::information(
+            this,
+            "AI CV analysis",
+            "Only pending CVs can be analyzed.\nCurrent status: " + input.cvStatus
+            );
+        return;
+    }
+
+    if (input.cv.isEmpty()) {
+        QMessageBox::warning(this, "AI CV analysis", "No CV file found for this staff.");
+        return;
+    }
+
+    CvAnalysisResult result = analyzeCvAdvanced(input.cv, input.role);
+
+    if (!Personnel::updateCvStatusById(idPers, result.decision)) {
+        QMessageBox::critical(this, "AI CV analysis", "Unable to update CV status in database.");
+        return;
+    }
+
+    refreshStaffTable();
+    refreshStaffTable_U();
+    loadStaffDashboardStats();
+    loadEmployeeCount();
+
+    showCvAnalysisDialog(input.fullName, input.role, result);
+}
+void SignIn::showCvAnalysisDialog(const QString& fullName,
+                                  const QString& role,
+                                  const CvAnalysisResult& result)
+{
+    QDialog dialog(this);
+    dialog.setWindowTitle("AI CV Analysis Result");
+    dialog.setFixedSize(520, 420);
+
+    QString decisionColor = (result.decision == "Accepted") ? "#16A34A" : "#DC2626";
+    QString scoreColor = (result.score >= 60) ? "#22C55E" : "#EF4444";
+
+    dialog.setStyleSheet(R"(
+        QDialog {
+            background-color: #071826;
+            border: 1px solid #1E90FF;
+            border-radius: 16px;
+        }
+        QLabel {
+            color: white;
+            font-size: 14px;
+        }
+        QTextEdit {
+            background-color: #0B2239;
+            color: white;
+            border: 1px solid #1E90FF;
+            border-radius: 10px;
+            padding: 8px;
+            font-size: 13px;
+        }
+        QPushButton {
+            background-color: #1D4ED8;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        QPushButton:hover {
+            background-color: #2563EB;
+        }
+    )");
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(&dialog);
+    mainLayout->setContentsMargins(20, 20, 20, 20);
+    mainLayout->setSpacing(12);
+
+    QLabel *title = new QLabel("AI CV Analysis Result");
+    title->setAlignment(Qt::AlignCenter);
+    title->setStyleSheet("font-size: 22px; font-weight: bold; color: #38BDF8;");
+
+    QLabel *nameLabel = new QLabel("Staff: " + fullName);
+    nameLabel->setStyleSheet("font-size: 15px; font-weight: bold;");
+
+    QLabel *roleLabel = new QLabel("Role: " + role);
+    roleLabel->setStyleSheet("font-size: 15px;");
+
+    QLabel *scoreLabel = new QLabel("Score: " + QString::number(result.score) + "/100");
+    scoreLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: " + scoreColor + ";");
+
+    QLabel *decisionLabel = new QLabel("Decision: " + result.decision);
+    decisionLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: " + decisionColor + ";");
+
+    QTextEdit *details = new QTextEdit;
+    details->setReadOnly(true);
+    details->setText(result.summary);
+
+    QPushButton *closeBtn = new QPushButton("Close");
+    connect(closeBtn, &QPushButton::clicked, &dialog, &QDialog::accept);
+
+    mainLayout->addWidget(title);
+    mainLayout->addWidget(nameLabel);
+    mainLayout->addWidget(roleLabel);
+    mainLayout->addWidget(scoreLabel);
+    mainLayout->addWidget(decisionLabel);
+    mainLayout->addWidget(details);
+    mainLayout->addWidget(closeBtn, 0, Qt::AlignCenter);
+
+    dialog.exec();
+}
+void SignIn::on_cvanalysebtn_clicked()
+{
+    runCvAnalysisForSelectedRow(ui->tablestaff);
+}
+
+void SignIn::on_cvanalysebtn_U_clicked()
+{
+    runCvAnalysisForSelectedRow(ui->tablestaff_U);
 }
 

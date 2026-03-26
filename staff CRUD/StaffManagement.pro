@@ -3,7 +3,7 @@ QT += core gui widgets charts
 QT+=sql
 QT += network
 QT += charts
-
+QT += pdf
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17

@@ -64,6 +64,13 @@ public:
         QString cvStatus;
         QByteArray faceData;
     };
+    struct CvAnalysisInput {
+        int idPers = -1;
+        QString fullName;
+        QString role;
+        QString cvStatus;
+        QByteArray cv;
+    };
 
     static bool fetchProfileByMail(const QString& mail, UserProfile* out);
     static bool fetchAccountProfileByMail(const QString& mail, AccountProfile* out);
@@ -112,6 +119,8 @@ public:
     static bool removeFaceIdByMail(const QString& mail);
     static FaceLoginResult authenticateByFaceId(const QByteArray& capturedFaceData,QString* outMail = nullptr,QString* outRole = nullptr,QString* outCvStatus = nullptr);
     static QVector<FaceRecord> getAllRegisteredFaceIds();
+    static bool fetchCvAnalysisInputById(int idPers, CvAnalysisInput* out);
+    static bool updateCvStatusById(int idPers, const QString& newStatus);
 
 
 };

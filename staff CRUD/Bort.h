@@ -231,7 +231,20 @@ private slots:
 
     void on_withfacebtn_clicked();
 
+    void on_cvanalysebtn_U_clicked();
+
+    void on_cvanalysebtn_clicked();
+
 private:
+    struct CvAnalysisResult
+    {
+        int score = 0;
+        QString decision;
+        QStringList matchedRoleKeywords;
+        QStringList matchedGeneralKeywords;
+        QString summary;
+    };
+
     Ui::SignIn *ui;
     QByteArray captureFaceFromCamera();
     QString ensureFaceCascadeFile();
@@ -265,6 +278,13 @@ private:
     void updateFaceIdStatusLabel();
     bool compareFaces(const cv::Mat& face1, const cv::Mat& face2);
     bool authenticateWithFaceId();
+    void runCvAnalysisForSelectedRow(QTableWidget *table);
+    QString extractTextFromPdfBlob(const QByteArray& pdfBlob) const;
+    QStringList roleKeywords(const QString& role) const;
+    bool analyzeCvAgainstRole(const QByteArray& cvBlob,const QString& role,QString* outDecision,QString* outReport) const;
+    QStringList generalCvKeywords() const;
+    CvAnalysisResult analyzeCvAdvanced(const QByteArray& cvBlob, const QString& role) const;
+    void showCvAnalysisDialog(const QString& fullName,const QString& role,const CvAnalysisResult& result);
 };
 
 #endif // BORT_H
