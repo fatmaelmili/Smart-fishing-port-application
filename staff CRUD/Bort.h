@@ -259,6 +259,11 @@ private:
     QString m_currentUserMail;
     int m_currentUserId = -1;
     QByteArray m_currentAccountAvatar;
+    int m_faceAuthFailureCount = 0;
+    const int m_faceFraudThreshold = 3;
+    void registerFaceAuthFailure(const QString& reason);
+    void resetFaceAuthFailureCounter();
+    void showFaceFraudAlert(const QString& reason);
     void updateUserProfileUI(const QString& fullName, const QByteArray& avatarBytes);
     void applyRolePermissions(const QString& role);
     void setModuleAccess(const QString& prefix, bool allowed, bool hide = true);

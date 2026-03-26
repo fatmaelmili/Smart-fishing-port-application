@@ -398,6 +398,16 @@ void SignIn::on_signinbtn_clicked()
                                                   "Please wait for acceptance.");
             break;
 
+        case Personnel::LoginResult::AccountBlocked:
+            QMessageBox::critical(this, "Sign In",
+                                  "This account is temporarily blocked due to suspicious authentication activity.");
+            break;
+
+        case Personnel::LoginResult::SuspiciousActivity:
+            QMessageBox::warning(this, "Sign In",
+                                 "Suspicious activity detected.\nPlease try again later or contact the administrator.");
+            break;
+
         case Personnel::LoginResult::DbError:
         default:
             QMessageBox::critical(this, "Sign In", "Database error. Please try again.");
@@ -2749,6 +2759,7 @@ bool SignIn::authenticateWithFaceId()
 {
     QByteArray capturedData = captureFaceFromCamera();
     if (capturedData.isEmpty()) {
+        registerFaceAuthFailure("Face capture failed");
         QMessageBox::warning(this, "Face ID", "Face capture failed.");
         return false;
     }
@@ -2757,6 +2768,7 @@ bool SignIn::authenticateWithFaceId()
     cv::Mat capturedFace = cv::imdecode(capturedBuffer, cv::IMREAD_COLOR);
 
     if (capturedFace.empty()) {
+        registerFaceAuthFailure("Captured face could not be decoded");
         QMessageBox::warning(this, "Face ID", "Unable to decode captured face.");
         return false;
     }
@@ -2775,17 +2787,26 @@ bool SignIn::authenticateWithFaceId()
             continue;
         }
 
-        if (compareFaces(capturedFace, dbFace)) {
-            if (rec.cvStatus.trimmed().compare("Accepted", Qt::CaseInsensitive) != 0) {
-                QMessageBox::warning(this, "Face ID", "Your CV is not accepted. Access denied.");
-                return false;
-            }
+        if (!compareFaces(capturedFace, dbFace)) {
+            continue;
+        }
 
-            m_currentUserMail = rec.mail;
-            m_currentRole = rec.role;
+        QString authMail;
+        QString authRole;
+        QString authCvStatus;
+
+        Personnel::FaceLoginResult result =
+            Personnel::authenticateByFaceIdMail(rec.mail, &authMail, &authRole, &authCvStatus);
+
+        switch (result) {
+        case Personnel::FaceLoginResult::Ok: {
+            resetFaceAuthFailureCounter();
+
+            m_currentUserMail = authMail;
+            m_currentRole = authRole;
 
             Personnel::UserProfile profile;
-            if (Personnel::fetchProfileByMail(rec.mail, &profile)) {
+            if (Personnel::fetchProfileByMail(authMail, &profile)) {
                 m_currentUserId = profile.idPers;
                 m_currentAccountAvatar = profile.avatar;
                 updateUserProfileUI((profile.prenom + " " + profile.nom).trimmed(), profile.avatar);
@@ -2799,8 +2820,43 @@ bool SignIn::authenticateWithFaceId()
             QMessageBox::information(this, "Face ID", "Face recognized successfully.");
             return true;
         }
+
+        case Personnel::FaceLoginResult::AccountBlocked:
+            resetFaceAuthFailureCounter();
+            QMessageBox::critical(this, "Face ID",
+                                  "This account is temporarily blocked due to suspicious activity.");
+            return false;
+
+        case Personnel::FaceLoginResult::FaceNotEnabled:
+            registerFaceAuthFailure("Face ID is disabled for this account");
+            QMessageBox::warning(this, "Face ID",
+                                 "Face ID is disabled for this account.");
+            return false;
+
+        case Personnel::FaceLoginResult::CvNotAccepted:
+            resetFaceAuthFailureCounter();
+            QMessageBox::warning(this, "Face ID",
+                                 "Your CV is not accepted. Access denied.");
+            return false;
+
+        case Personnel::FaceLoginResult::SuspiciousActivity:
+            registerFaceAuthFailure("Suspicious Face ID activity");
+            QMessageBox::warning(this, "Face ID",
+                                 "Suspicious Face ID activity detected.");
+            return false;
+
+        case Personnel::FaceLoginResult::FaceNotRecognized:
+            break;
+
+        case Personnel::FaceLoginResult::DbError:
+            registerFaceAuthFailure("Database error during Face ID authentication");
+            QMessageBox::critical(this, "Face ID",
+                                  "Database error during Face ID authentication.");
+            return false;
+        }
     }
 
+    registerFaceAuthFailure("Face ID not recognized");
     QMessageBox::warning(this, "Face ID", "Face ID not recognized.");
     return false;
 }
@@ -3108,6 +3164,31 @@ void SignIn::showCvAnalysisDialog(const QString& fullName,
     mainLayout->addWidget(closeBtn, 0, Qt::AlignCenter);
 
     dialog.exec();
+}
+void SignIn::registerFaceAuthFailure(const QString& reason)
+{
+    m_faceAuthFailureCount++;
+
+    if (m_faceAuthFailureCount >= m_faceFraudThreshold) {
+        showFaceFraudAlert(reason);
+    }
+}
+
+void SignIn::resetFaceAuthFailureCounter()
+{
+    m_faceAuthFailureCount = 0;
+}
+
+void SignIn::showFaceFraudAlert(const QString& reason)
+{
+    QMessageBox::critical(
+        this,
+        "Face ID Fraud Detection",
+        "Suspicious Face ID activity detected.\n\n"
+        "Multiple failed Face ID attempts were recorded.\n"
+        "Last reason: " + reason + "\n\n"
+                       "Please verify the user identity before trying again."
+        );
 }
 void SignIn::on_cvanalysebtn_clicked()
 {

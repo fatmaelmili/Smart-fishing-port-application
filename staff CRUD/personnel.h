@@ -29,6 +29,8 @@ public:
         UserNotFound,
         WrongPassword,
         CvNotAccepted,
+        AccountBlocked,
+        SuspiciousActivity,
         DbError
     };
     enum class FaceLoginResult {
@@ -36,6 +38,8 @@ public:
         FaceNotRecognized,
         FaceNotEnabled,
         CvNotAccepted,
+        AccountBlocked,
+        SuspiciousActivity,
         DbError
     };
 
@@ -121,6 +125,15 @@ public:
     static QVector<FaceRecord> getAllRegisteredFaceIds();
     static bool fetchCvAnalysisInputById(int idPers, CvAnalysisInput* out);
     static bool updateCvStatusById(int idPers, const QString& newStatus);
+    static bool resetAuthRiskByMail(const QString& mail, const QString& method);
+    static bool registerFailedAuthByMail(const QString& mail, const QString& method, int riskIncrement = 10);
+    static bool registerUnknownAuthAttempt(const QString& method);
+    static bool isAccountBlockedByMail(const QString& mail);
+    static int getRiskScoreByMail(const QString& mail);
+    static bool unblockAccountByMail(const QString& mail);
+    static bool isBlockExpiredByMail(const QString& mail);
+    static bool clearExpiredBlockByMail(const QString& mail);
+    static FaceLoginResult authenticateByFaceIdMail(const QString& mail,QString* outMail = nullptr,QString* outRole = nullptr,QString* outCvStatus = nullptr);
 
 
 };

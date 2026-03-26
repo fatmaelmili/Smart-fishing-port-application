@@ -193,15 +193,18 @@ bool Personnel::verifyPassword(const QString& plain, const QString& storedSaltHa
     return computedHashHex == storedHashHex;
 }
 
-Personnel::LoginResult Personnel::authenticateByMailEx(const QString& mail,const QString& plainPassword,QString* outRole,QString* outCvStatus)
+Personnel::LoginResult Personnel::authenticateByMailEx(const QString& mail,
+                                                       const QString& plainPassword,
+                                                       QString* outRole,
+                                                       QString* outCvStatus)
 {
     QSqlQuery q;
     q.prepare(R"(
-        SELECT MDP, ROLE, CVSTATUS
+        SELECT MDP, ROLE, CVSTATUS, NVL(ACCOUNT_STATUS, 'ACTIVE')
         FROM FATMA.PERSONNEL
         WHERE MAIL = :mail
     )");
-    q.bindValue(":mail", mail);
+    q.bindValue(":mail", mail.trimmed());
 
     if (!q.exec()) {
         qDebug() << "Auth DB error:" << q.lastError().text();
@@ -209,27 +212,49 @@ Personnel::LoginResult Personnel::authenticateByMailEx(const QString& mail,const
     }
 
     if (!q.next()) {
+        registerUnknownAuthAttempt("CLASSIC");
         return LoginResult::UserNotFound;
     }
 
-    const QString stored   = q.value(0).toString();
-    const QString role     = q.value(1).toString();
-    const QString cvStatus = q.value(2).toString();
+    const QString stored        = q.value(0).toString();
+    const QString role          = q.value(1).toString();
+    const QString cvStatus      = q.value(2).toString();
+    const QString accountStatus = q.value(3).toString();
 
     if (outRole) *outRole = role;
     if (outCvStatus) *outCvStatus = cvStatus;
 
+    if (accountStatus.trimmed().compare("BLOCKED", Qt::CaseInsensitive) == 0) {
+        if (isBlockExpiredByMail(mail)) {
+            clearExpiredBlockByMail(mail);
+        } else {
+            return LoginResult::AccountBlocked;
+        }
+    }
+
     if (!verifyPassword(plainPassword, stored)) {
+        registerFailedAuthByMail(mail, "CLASSIC", 10);
+
+        if (isAccountBlockedByMail(mail)) {
+            return LoginResult::AccountBlocked;
+        }
+
+        if (getRiskScoreByMail(mail) >= 60) {
+            return LoginResult::SuspiciousActivity;
+        }
+
         return LoginResult::WrongPassword;
     }
 
     if (cvStatus.trimmed().compare("Accepted", Qt::CaseInsensitive) != 0) {
+        resetAuthRiskByMail(mail, "CLASSIC");
         return LoginResult::CvNotAccepted;
     }
 
+    resetAuthRiskByMail(mail, "CLASSIC");
+
     return LoginResult::Ok;
 }
-
 bool Personnel::fetchProfileByMail(const QString& mail, UserProfile* out)
 {
     if (!out) return false;
@@ -626,7 +651,7 @@ Personnel::FaceLoginResult Personnel::authenticateByFaceId(const QByteArray& cap
 
     QSqlQuery q;
     q.prepare(R"(
-        SELECT MAIL, ROLE, CVSTATUS, FACE_ID_ENABLED
+        SELECT MAIL, ROLE, CVSTATUS, FACE_ID_ENABLED, NVL(ACCOUNT_STATUS, 'ACTIVE')
         FROM FATMA.PERSONNEL
         WHERE FACE_ID_DATA = :faceData
     )");
@@ -641,29 +666,34 @@ Personnel::FaceLoginResult Personnel::authenticateByFaceId(const QByteArray& cap
         return FaceLoginResult::FaceNotRecognized;
     }
 
-    const QString mail = q.value(0).toString();
-    const QString role = q.value(1).toString();
-    const QString cvStatus = q.value(2).toString();
-    const int faceEnabled = q.value(3).toInt();
+    const QString mail          = q.value(0).toString();
+    const QString role          = q.value(1).toString();
+    const QString cvStatus      = q.value(2).toString();
+    const int faceEnabled       = q.value(3).toInt();
+    const QString accountStatus = q.value(4).toString();
 
-    if (outMail) {
-        *outMail = mail;
-    }
-    if (outRole) {
-        *outRole = role;
-    }
-    if (outCvStatus) {
-        *outCvStatus = cvStatus;
+    if (outMail) *outMail = mail;
+    if (outRole) *outRole = role;
+    if (outCvStatus) *outCvStatus = cvStatus;
+
+    if (accountStatus.trimmed().compare("BLOCKED", Qt::CaseInsensitive) == 0) {
+        return FaceLoginResult::AccountBlocked;
     }
 
     if (faceEnabled != 1) {
+        registerFailedAuthByMail(mail, "FACE_ID", 20);
+        if (isAccountBlockedByMail(mail)) {
+            return FaceLoginResult::AccountBlocked;
+        }
         return FaceLoginResult::FaceNotEnabled;
     }
 
     if (cvStatus.trimmed().compare("Accepted", Qt::CaseInsensitive) != 0) {
+        resetAuthRiskByMail(mail, "FACE_ID");
         return FaceLoginResult::CvNotAccepted;
     }
 
+    resetAuthRiskByMail(mail, "FACE_ID");
     return FaceLoginResult::Ok;
 }
 QVector<Personnel::FaceRecord> Personnel::getAllRegisteredFaceIds()
@@ -747,6 +777,251 @@ bool Personnel::updateCvStatusById(int idPers, const QString& newStatus)
     }
 
     return true;
+}
+bool Personnel::resetAuthRiskByMail(const QString& mail, const QString& method)
+{
+    if (mail.trimmed().isEmpty()) return false;
+
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET FAILED_LOGIN_ATTEMPTS = 0,
+            LAST_LOGIN_ATTEMPT = SYSDATE,
+            LAST_LOGIN_SUCCESS = SYSDATE,
+            LAST_AUTH_METHOD = :method
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":method", method.trimmed());
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec()) {
+        qDebug() << "resetAuthRiskByMail error:" << q.lastError().text();
+        return false;
+    }
+
+    return q.numRowsAffected() > 0;
+}
+
+bool Personnel::registerFailedAuthByMail(const QString& mail, const QString& method, int riskIncrement)
+{
+    if (mail.trimmed().isEmpty()) return false;
+
+    QSqlQuery readQ;
+    readQ.prepare(R"(
+        SELECT NVL(FAILED_LOGIN_ATTEMPTS, 0), NVL(RISK_SCORE, 0)
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    readQ.bindValue(":mail", mail.trimmed());
+
+    if (!readQ.exec() || !readQ.next()) {
+        qDebug() << "registerFailedAuthByMail read error:" << readQ.lastError().text();
+        return false;
+    }
+
+    int failed = readQ.value(0).toInt() + 1;
+    int risk   = readQ.value(1).toInt() + riskIncrement;
+
+    if (failed >= 3) risk += 20;
+    if (failed >= 5) risk += 30;
+
+    const bool shouldBlock = (failed >= 5 || risk >= 60);
+    QString status = shouldBlock ? "BLOCKED" : "ACTIVE";
+    QDateTime blockedUntil = shouldBlock ? QDateTime::currentDateTime().addSecs(3600) : QDateTime();
+
+    QSqlQuery updateQ;
+    updateQ.prepare(R"(
+    UPDATE FATMA.PERSONNEL
+    SET FAILED_LOGIN_ATTEMPTS = :failed,
+        LAST_LOGIN_ATTEMPT = SYSDATE,
+        ACCOUNT_STATUS = :status,
+        RISK_SCORE = :risk,
+        LAST_AUTH_METHOD = :method,
+        BLOCKED_UNTIL = :blockedUntil
+    WHERE MAIL = :mail
+)");
+    updateQ.bindValue(":blockedUntil", shouldBlock ? QVariant(blockedUntil) : QVariant(QVariant::DateTime));
+    updateQ.bindValue(":failed", failed);
+    updateQ.bindValue(":status", status);
+    updateQ.bindValue(":risk", risk);
+    updateQ.bindValue(":method", method.trimmed());
+    updateQ.bindValue(":mail", mail.trimmed());
+
+    if (!updateQ.exec()) {
+        qDebug() << "registerFailedAuthByMail update error:" << updateQ.lastError().text();
+        return false;
+    }
+
+    return updateQ.numRowsAffected() > 0;
+}
+
+bool Personnel::registerUnknownAuthAttempt(const QString& method)
+{
+    Q_UNUSED(method);
+    return true;
+}
+
+bool Personnel::isAccountBlockedByMail(const QString& mail)
+{
+    if (mail.trimmed().isEmpty()) return false;
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT NVL(ACCOUNT_STATUS, 'ACTIVE')
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec() || !q.next()) {
+        return false;
+    }
+
+    return q.value(0).toString().trimmed().compare("BLOCKED", Qt::CaseInsensitive) == 0;
+}
+
+int Personnel::getRiskScoreByMail(const QString& mail)
+{
+    if (mail.trimmed().isEmpty()) return 0;
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT NVL(RISK_SCORE, 0)
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec() || !q.next()) {
+        return 0;
+    }
+
+    return q.value(0).toInt();
+}
+
+bool Personnel::unblockAccountByMail(const QString& mail)
+{
+    if (mail.trimmed().isEmpty()) return false;
+
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET ACCOUNT_STATUS = 'ACTIVE',
+            FAILED_LOGIN_ATTEMPTS = 0,
+            RISK_SCORE = 0
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec()) {
+        qDebug() << "unblockAccountByMail error:" << q.lastError().text();
+        return false;
+    }
+
+    return q.numRowsAffected() > 0;
+}
+bool Personnel::isBlockExpiredByMail(const QString& mail)
+{
+    if (mail.trimmed().isEmpty()) return false;
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT BLOCKED_UNTIL
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec() || !q.next()) {
+        return false;
+    }
+
+    if (q.value(0).isNull()) {
+        return false;
+    }
+
+    const QDateTime blockedUntil = q.value(0).toDateTime();
+    return QDateTime::currentDateTime() >= blockedUntil;
+}
+
+bool Personnel::clearExpiredBlockByMail(const QString& mail)
+{
+    if (mail.trimmed().isEmpty()) return false;
+
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET ACCOUNT_STATUS = 'ACTIVE',
+            FAILED_LOGIN_ATTEMPTS = 0,
+            RISK_SCORE = 0,
+            BLOCKED_UNTIL = NULL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec()) {
+        qDebug() << "clearExpiredBlockByMail error:" << q.lastError().text();
+        return false;
+    }
+
+    return q.numRowsAffected() > 0;
+}
+Personnel::FaceLoginResult Personnel::authenticateByFaceIdMail(const QString& mail,
+                                                               QString* outMail,
+                                                               QString* outRole,
+                                                               QString* outCvStatus)
+{
+    if (mail.trimmed().isEmpty()) {
+        return FaceLoginResult::FaceNotRecognized;
+    }
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT MAIL, ROLE, CVSTATUS, FACE_ID_ENABLED, NVL(ACCOUNT_STATUS, 'ACTIVE')
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec()) {
+        qDebug() << "authenticateByFaceIdMail error:" << q.lastError().text();
+        return FaceLoginResult::DbError;
+    }
+
+    if (!q.next()) {
+        return FaceLoginResult::FaceNotRecognized;
+    }
+
+    const QString dbMail         = q.value(0).toString();
+    const QString role           = q.value(1).toString();
+    const QString cvStatus       = q.value(2).toString();
+    const int faceEnabled        = q.value(3).toInt();
+    const QString accountStatus  = q.value(4).toString();
+
+    if (outMail) *outMail = dbMail;
+    if (outRole) *outRole = role;
+    if (outCvStatus) *outCvStatus = cvStatus;
+
+    if (accountStatus.trimmed().compare("BLOCKED", Qt::CaseInsensitive) == 0) {
+        if (isBlockExpiredByMail(dbMail)) {
+            clearExpiredBlockByMail(dbMail);
+        } else {
+            return FaceLoginResult::AccountBlocked;
+        }
+    }
+
+    if (faceEnabled != 1) {
+        registerFailedAuthByMail(dbMail, "FACE_ID", 20);
+        return FaceLoginResult::FaceNotEnabled;
+    }
+
+    if (cvStatus.trimmed().compare("Accepted", Qt::CaseInsensitive) != 0) {
+        resetAuthRiskByMail(dbMail, "FACE_ID");
+        return FaceLoginResult::CvNotAccepted;
+    }
+
+    resetAuthRiskByMail(dbMail, "FACE_ID");
+    return FaceLoginResult::Ok;
 }
 
 
