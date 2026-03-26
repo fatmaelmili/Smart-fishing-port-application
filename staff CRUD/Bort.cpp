@@ -59,6 +59,7 @@ SignIn::SignIn(QWidget *parent)
     refreshStaffTable_U();
     loadStaffDashboardStats();
     loadRememberedUser();
+    loadEmployeeOfMonth();
     ui->staffmanagementBTN->setProperty("active", true);
     ui->staffmanagementBTN->style()->unpolish(ui->staffmanagementBTN);
     ui->staffmanagementBTN->style()->polish(ui->staffmanagementBTN);
@@ -1655,6 +1656,7 @@ void SignIn::on_newbtn_clicked()
     ui->tokenlineEdit->clear();
     ui->NewEdit->clear();
     ui->tokenlabel->clear();
+    clearSignInForm(false);
 
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
@@ -1662,6 +1664,7 @@ void SignIn::on_newbtn_clicked()
 
 void SignIn::on_backsigninBTNR_clicked()
 {
+    clearSignInForm(false);
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
@@ -2509,9 +2512,7 @@ bool SignIn::loadCurrentUserAccountData()
     ui->mailedit_A->setText(acc.mail);
     ui->passlab_A->clear();
 
-    if (ui->cvpathEdit_2) {
-        ui->cvpathEdit_2->setText(acc.avatar.isEmpty() ? "No photo selected" : "Current photo loaded");
-    }
+
     updateFaceIdStatusLabel();
 
     return true;
@@ -2680,9 +2681,14 @@ void SignIn::on_browbtn_clicked()
     m_currentAccountAvatar = f.readAll();
     f.close();
 
-    if (ui->cvpathEdit_2) {
-        ui->cvpathEdit_2->setText(QFileInfo(filePath).fileName());
+    m_currentAvatarPath = filePath;
+
+    if (ui->profile_A) {
+        ui->profile_A->setText(QFileInfo(filePath).fileName());
+
     }
+
+
 }
 void SignIn::loadEmployeeCount()
 {
@@ -3412,4 +3418,52 @@ void SignIn::on_staffmanagementBTNZ_clicked()
 {
     ui->stackedWidget->setCurrentWidget(ui->pageStaffManagement);
 }
+void SignIn::loadEmployeeOfMonth()
+{
+    Personnel::EmployeeOfMonth emp;
 
+    if (!Personnel::getEmployeeOfMonth(&emp)) {
+        if (ui->namebest)
+            ui->namebest->setText("No employee available");
+        if (ui->rolebest)
+            ui->rolebest->setText("Role: -");
+        if (ui->rewardbest)
+            ui->rewardbest->setText("Reward: -");
+        if (ui->bestEmployeeAvatar)
+            ui->bestEmployeeAvatar->clear();
+
+        return;
+    }
+
+    if (ui->titlebest) {
+        ui->titlebest->setText("Best Employee of this month");
+    }
+
+    if (ui->namebest) {
+        ui->namebest->setText("Full Name: " + emp.fullName);
+    }
+
+    if (ui->rolebest) {
+        ui->rolebest->setText("Role: " + emp.role);
+    }
+
+    if (ui->rewardbest) {
+        ui->rewardbest->setText("Reward: 100dt");
+    }
+
+    if (ui->bestEmployeeAvatar) {
+        QPixmap px;
+        px.loadFromData(emp.avatar);
+
+        if (!px.isNull()) {
+            ui->bestEmployeeAvatar->setPixmap(
+                px.scaled(ui->bestEmployeeAvatar->size(),
+                          Qt::KeepAspectRatio,
+                          Qt::SmoothTransformation)
+                );
+            ui->bestEmployeeAvatar->setAlignment(Qt::AlignCenter);
+        } else {
+            ui->bestEmployeeAvatar->clear();
+        }
+    }
+}

@@ -263,6 +263,7 @@ private:
     QWidget *m_cvLegendWidget = nullptr;
     QString m_currentUserMail;
     int m_currentUserId = -1;
+    QString m_currentAvatarPath;
     QByteArray m_currentAccountAvatar;
     int m_faceAuthFailureCount = 0;
     const int m_faceFraudThreshold = 3;
@@ -299,6 +300,7 @@ private:
     void clearSignInForm(bool keepRememberedMail = false);
     void saveRememberedUser();
     void loadRememberedUser();
+    void loadEmployeeOfMonth();
 };
 
 #endif // BORT_H

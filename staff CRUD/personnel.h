@@ -75,6 +75,13 @@ public:
         QString cvStatus;
         QByteArray cv;
     };
+    struct EmployeeOfMonth
+    {
+        int idPers = -1;
+        QString fullName;
+        QString role;
+        QByteArray avatar;
+    };
 
     static bool fetchProfileByMail(const QString& mail, UserProfile* out);
     static bool fetchAccountProfileByMail(const QString& mail, AccountProfile* out);
@@ -134,6 +141,7 @@ public:
     static bool isBlockExpiredByMail(const QString& mail);
     static bool clearExpiredBlockByMail(const QString& mail);
     static FaceLoginResult authenticateByFaceIdMail(const QString& mail,QString* outMail = nullptr,QString* outRole = nullptr,QString* outCvStatus = nullptr);
+    static bool getEmployeeOfMonth(EmployeeOfMonth* out);
 
 
 };

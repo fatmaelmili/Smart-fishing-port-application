@@ -309,7 +309,7 @@ QLabel[objectName*=&quot;error&quot;] {
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>11</number>
+     <number>9</number>
     </property>
     <widget class="QWidget" name="pageSignIn">
      <property name="styleSheet">
@@ -8895,19 +8895,6 @@ QLineEdit:focus {
          <pixmap resource="Ressources.qrc">:/Images/bestresized.png</pixmap>
         </property>
        </widget>
-       <widget class="QPushButton" name="browse">
-        <property name="geometry">
-         <rect>
-          <x>410</x>
-          <y>100</y>
-          <width>171</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Browse To Put Image </string>
-        </property>
-       </widget>
        <widget class="QLabel" name="namebest">
         <property name="geometry">
          <rect>
@@ -8945,6 +8932,19 @@ QLineEdit:focus {
         </property>
         <property name="text">
          <string>Reward:100dt</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="bestEmployeeAvatar">
+        <property name="geometry">
+         <rect>
+          <x>440</x>
+          <y>20</y>
+          <width>121</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </widget>
@@ -10013,54 +10013,38 @@ QPushButton#backWbtn_A:disabled {
                  </rect>
                 </property>
                </widget>
-               <widget class="QLabel" name="cvpathEdit_2">
+               <widget class="QLabel" name="profile_A">
                 <property name="geometry">
                  <rect>
-                  <x>30</x>
-                  <y>490</y>
-                  <width>311</width>
+                  <x>190</x>
+                  <y>410</y>
+                  <width>201</width>
                   <height>20</height>
                  </rect>
                 </property>
                 <property name="text">
                  <string/>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignmentFlag::AlignCenter</set>
-                </property>
-               </widget>
-               <widget class="QLabel" name="profile_A">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>410</y>
-                  <width>141</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Your Avatar</string>
-                </property>
                </widget>
                <widget class="QPushButton" name="browbtn">
                 <property name="geometry">
                  <rect>
-                  <x>130</x>
+                  <x>0</x>
                   <y>400</y>
-                  <width>261</width>
+                  <width>181</width>
                   <height>41</height>
                  </rect>
                 </property>
                 <property name="text">
-                 <string>Browse To choose your photo </string>
+                 <string>Choose your Avatar</string>
                 </property>
                </widget>
                <widget class="QPushButton" name="backWbtn_A">
                 <property name="geometry">
                  <rect>
-                  <x>10</x>
+                  <x>0</x>
                   <y>450</y>
-                  <width>161</width>
+                  <width>171</width>
                   <height>41</height>
                  </rect>
                 </property>
@@ -10674,7 +10658,18 @@ QPushButton#fishingzonemanagementBTNZ:hover {
 QPushButton#fishingzonemanagementBTNZ:pressed {
     background-color: rgba(88,184,255,0.25);
 }
-</string>
+QPushButton[active=&quot;true&quot;] {
+    background-color: rgba(10, 102, 255, 0.28);
+    border: 1px solid rgba(10, 102, 255, 0.55);
+    color: #FFFFFF;
+    padding-left: 18px;
+}
+QPushButton#fishingzonemanagementBTNZ[active=&quot;true&quot;] {
+    background-color: rgba(10, 102, 255, 0.35);
+    border-left: 4px solid #4FC3F7;
+    color: white;
+    font-weight: 600;
+}</string>
            </property>
            <property name="text">
             <string>🗺️FishingZone Management</string>

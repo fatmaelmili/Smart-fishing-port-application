@@ -1058,7 +1058,53 @@ Personnel::FaceLoginResult Personnel::authenticateByFaceIdMail(const QString& ma
     resetAuthRiskByMail(dbMail, "FACE_ID");
     return FaceLoginResult::Ok;
 }
+bool Personnel::getEmployeeOfMonth(EmployeeOfMonth* out)
+{
+    if (!out) return false;
 
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT
+            IDPERS,
+            TRIM(PRENOM || ' ' || NOM) AS FULLNAME,
+            ROLE,
+            AVATAR
+        FROM FATMA.PERSONNEL
+        WHERE UPPER(TRIM(CVSTATUS)) = 'ACCEPTED'
+        ORDER BY IDPERS
+    )");
+
+    if (!q.exec()) {
+        qDebug() << "getEmployeeOfMonth error:" << q.lastError().text();
+        return false;
+    }
+
+    QVector<EmployeeOfMonth> acceptedEmployees;
+
+    while (q.next()) {
+        EmployeeOfMonth emp;
+        emp.idPers = q.value(0).toInt();
+        emp.fullName = q.value(1).toString().trimmed();
+        emp.role = q.value(2).toString().trimmed();
+        emp.avatar = q.value(3).toByteArray();
+        acceptedEmployees.push_back(emp);
+    }
+
+    if (acceptedEmployees.isEmpty()) {
+        return false;
+    }
+
+    const QDate currentDate = QDate::currentDate();
+
+
+    const int monthKey = currentDate.year() * 100 + currentDate.month();
+
+
+    const int index = monthKey % acceptedEmployees.size();
+
+    *out = acceptedEmployees[index];
+    return true;
+}
 
 
 
