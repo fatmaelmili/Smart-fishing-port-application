@@ -235,6 +235,11 @@ private slots:
 
     void on_cvanalysebtn_clicked();
 
+    void on_staffmanagementBTN_stock_clicked();
+
+
+    void on_staffmanagementBTNZ_clicked();
+
 private:
     struct CvAnalysisResult
     {
@@ -290,6 +295,10 @@ private:
     QStringList generalCvKeywords() const;
     CvAnalysisResult analyzeCvAdvanced(const QByteArray& cvBlob, const QString& role) const;
     void showCvAnalysisDialog(const QString& fullName,const QString& role,const CvAnalysisResult& result);
+    void clearUpdateStaffForm();
+    void clearSignInForm(bool keepRememberedMail = false);
+    void saveRememberedUser();
+    void loadRememberedUser();
 };
 
 #endif // BORT_H

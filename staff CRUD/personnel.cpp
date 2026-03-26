@@ -37,7 +37,7 @@ Personnel::Personnel(QString Nom,QString Prenom,QString Adresse,QString Tel,QStr
     this->Tel=Tel;
     this->Mail=Mail;
     this->Role=Role;
-    this->Mdp = Personnel::hashPassword(Mdp);
+    this->Mdp = Mdp.trimmed().isEmpty() ? "" : Personnel::hashPassword(Mdp);
     this->CvStatus=CvStatus;
     this->Cv=Cv;
     this->Avatar=Avatar;
@@ -149,21 +149,37 @@ bool Personnel::supprimerStaff(int idPers)
 
 bool Personnel::modifierStaff(int IdPers)
 {
-    QSqlQuery q;
-    q.prepare(R"(
+    QString queryStr = R"(
         UPDATE FATMA.PERSONNEL
-        SET NOM      = :nom,
-            PRENOM    = :prenom,
-            ADRESSE   = :adresse,
-            TEL       = :tel,
-            MAIL      = :mail,
-            ROLE      = :role,
-            CVSTATUS  = :cvstatus,
-            CV        = :cv,
-            AVATAR    = :avatar,
-            MDP       = :mdp
-        WHERE IDPERS = :id
-    )");
+        SET NOM = :nom,
+            PRENOM = :prenom,
+            ADRESSE = :adresse,
+            TEL = :tel,
+            MAIL = :mail,
+            ROLE = :role,
+            CVSTATUS = :cvstatus
+    )";
+
+    const bool updatePassword = !Mdp.trimmed().isEmpty();
+    const bool updateCv = !Cv.isEmpty();
+    const bool updateAvatar = !Avatar.isEmpty();
+
+    if (updatePassword) {
+        queryStr += ", MDP = :mdp";
+    }
+
+    if (updateCv) {
+        queryStr += ", CV = :cv";
+    }
+
+    if (updateAvatar) {
+        queryStr += ", AVATAR = :avatar";
+    }
+
+    queryStr += " WHERE IDPERS = :id";
+
+    QSqlQuery q;
+    q.prepare(queryStr);
 
     q.bindValue(":nom", Nom);
     q.bindValue(":prenom", Prenom);
@@ -172,15 +188,26 @@ bool Personnel::modifierStaff(int IdPers)
     q.bindValue(":mail", Mail);
     q.bindValue(":role", Role);
     q.bindValue(":cvstatus", CvStatus);
-    q.bindValue(":cv", Cv.isEmpty() ? QVariant() : QVariant::fromValue(Cv));
-    q.bindValue(":avatar", Avatar.isEmpty() ? QVariant() : QVariant::fromValue(Avatar));
-    q.bindValue(":mdp", Mdp);
     q.bindValue(":id", IdPers);
+
+    if (updatePassword) {
+        q.bindValue(":mdp", Mdp);
+    }
+
+    if (updateCv) {
+        q.bindValue(":cv", QVariant::fromValue(Cv));
+    }
+
+    if (updateAvatar) {
+        q.bindValue(":avatar", QVariant::fromValue(Avatar));
+    }
+
     if (!q.exec()) {
         qDebug() << "modifierStaff error:" << q.lastError().text();
         return false;
     }
-    return true;
+
+    return q.numRowsAffected() > 0;
 }
 bool Personnel::verifyPassword(const QString& plain, const QString& storedSaltHash)
 {

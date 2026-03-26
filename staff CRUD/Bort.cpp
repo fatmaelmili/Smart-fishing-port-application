@@ -45,6 +45,9 @@
 #include <QRegularExpression>
 #include <QSet>
 #include <QPdfDocument>
+#include <QPainterPath>
+#include <QGraphicsDropShadowEffect>
+#include <QSettings>
 SignIn::SignIn(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SignIn)
@@ -55,6 +58,7 @@ SignIn::SignIn(QWidget *parent)
     refreshStaffTable();
     refreshStaffTable_U();
     loadStaffDashboardStats();
+    loadRememberedUser();
     ui->staffmanagementBTN->setProperty("active", true);
     ui->staffmanagementBTN->style()->unpolish(ui->staffmanagementBTN);
     ui->staffmanagementBTN->style()->polish(ui->staffmanagementBTN);
@@ -63,9 +67,42 @@ SignIn::SignIn(QWidget *parent)
     ui->fishingzonemanagementBTNZ->style()->unpolish(ui->fishingzonemanagementBTNZ);
     ui->fishingzonemanagementBTNZ->style()->polish(ui->fishingzonemanagementBTNZ);
     ui->fishingzonemanagementBTNZ->update();
+
     ui->PasswordEdit->setEchoMode(QLineEdit::Password);
     ui->NewEdit->setEchoMode(QLineEdit::Password);
     ui->passlab_A->setEchoMode(QLineEdit::Password);
+    const auto avatarLabels = this->findChildren<QLabel*>();
+    for (QLabel* lab : avatarLabels) {
+        if (!lab) continue;
+
+        if (lab->objectName().startsWith("avatar") &&
+            lab->objectName() != "avatarpathEdit" &&
+            lab->objectName() != "avatarpathEdit_U")
+        {
+            lab->setStyleSheet(R"(
+            QLabel {
+                background-color: rgba(255,255,255,0.06);
+                border: 2px solid #38BDF8;
+                border-radius: 28px;
+                padding: 2px;
+            }
+            QLabel:hover {
+                border: 2px solid #7DD3FC;
+                background-color: rgba(255,255,255,0.10);
+            }
+        )");
+
+            lab->setAlignment(Qt::AlignCenter);
+            lab->setScaledContents(false);
+            lab->setCursor(Qt::PointingHandCursor);
+
+            QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect(lab);
+            effect->setBlurRadius(22);
+            effect->setOffset(0, 0);
+            effect->setColor(QColor(56, 189, 248, 140));
+            lab->setGraphicsEffect(effect);
+        }
+    }
 
 
 }
@@ -426,8 +463,10 @@ void SignIn::on_signinbtn_clicked()
         m_currentAccountAvatar = prof.avatar;
         updateUserProfileUI(fullName, prof.avatar);
     }
+    saveRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
     loadEmployeeCount();
+    clearSignInForm(ui->remembercheck->isChecked());
 }
 
 
@@ -483,30 +522,55 @@ void SignIn::on_modifystaffbtn_clicked()
 
 void SignIn::on_logOutBTN_W_clicked()
 {
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
 void SignIn::on_logOutBTN_U_clicked()
 {
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
 void SignIn::on_logOutBTN_D_clicked()
 {
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
 void SignIn::on_logOutBTN_clicked()
 {
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
 void SignIn::on_logOutBTN_A_clicked()
 {
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
@@ -586,6 +650,11 @@ void SignIn::on_staffmanagementBTN_A_clicked()
 
 void SignIn::on_logOutBTNZ_clicked()
 {
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
@@ -598,7 +667,7 @@ void SignIn::on_userprofiledetails_Z_clicked()
 
 void SignIn::on_fishingzonemanagementBTNZ_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageStaffManagement);
+    ui->stackedWidget->setCurrentWidget(ui->pageFishingZone);
 }
 
 
@@ -653,6 +722,11 @@ void SignIn::on_fishingzonemanagementBTN_stock_clicked()
 
 void SignIn::on_logOutBTN_stock_clicked()
 {
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
@@ -702,6 +776,11 @@ void SignIn::on_stockmanagementBTN_clicked()
 
 void SignIn::on_logOutBTNe_clicked()
 {
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
@@ -805,6 +884,11 @@ void SignIn::on_fishingzonemanagementBTNA_clicked()
 
 void SignIn::on_logOutBTNA_clicked()
 {
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
@@ -854,6 +938,11 @@ void SignIn::on_fishingzonemanagementBTN_DC_clicked()
 
 void SignIn::on_logOutBTN_DC_clicked()
 {
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
@@ -1142,12 +1231,33 @@ void SignIn::refreshStaffTable_U()
     ui->tablestaff_U->setColumnHidden(0, true);
     ui->tablestaff_U->resizeColumnsToContents();
 }
+void SignIn::clearUpdateStaffForm()
+{
+    ui->staffnameedit_U->clear();
+    ui->staffaddressedit_U->clear();
+    ui->teledit_U->clear();
+    ui->mailedit_U->clear();
+    ui->passlab_U_2->clear();
 
+    ui->role_U->setCurrentText("Staff Role");
+    ui->cvstat_U->setCurrentText("CvStatus");
+
+    ui->cvpathEdit_U->clear();
+    ui->avatarpathEdit_U->clear();
+
+    m_cvBlob.clear();
+    m_avatarBlob.clear();
+
+    ui->tablestaff_U->clearSelection();
+    ui->tablestaff_U->setCurrentCell(-1, -1);
+}
 
 void SignIn::on_tablestaff_U_itemSelectionChanged()
 {
     int row = ui->tablestaff_U->currentRow();
     if (row < 0) return;
+    m_cvBlob.clear();
+    m_avatarBlob.clear();
 
 
     QString fullName = ui->tablestaff_U->item(row, 1)->text();
@@ -1297,8 +1407,10 @@ void SignIn::on_addstaffbtn_U_clicked()
 
     if (p.modifierStaff(idPers)) {
         QMessageBox::information(this, "Success", "Staff updated successfully.");
+        ui->passlab_U_2->clear();
         refreshStaffTable_U();
         refreshStaffTable();
+        clearUpdateStaffForm();
     } else {
         QMessageBox::critical(this, "Error", "Update failed.");
     }
@@ -1475,15 +1587,37 @@ void SignIn::updateUserProfileUI(const QString& fullName, const QByteArray& avat
     if (!avatarBytes.isEmpty()) {
         QPixmap px;
         px.loadFromData(avatarBytes);
+
         if (!px.isNull()) {
             const auto avatarLabels = this->findChildren<QLabel*>();
             for (QLabel* lab : avatarLabels) {
                 if (!lab) continue;
-                if (lab->objectName().startsWith("avatar")) {
-                    lab->setPixmap(px.scaled(lab->size(),
-                                             Qt::KeepAspectRatioByExpanding,
-                                             Qt::SmoothTransformation));
-                    lab->setScaledContents(true);
+
+                if (lab->objectName().startsWith("avatar") &&
+                    lab->objectName() != "avatarpathEdit" &&
+                    lab->objectName() != "avatarpathEdit_U")
+                {
+                    QPixmap scaled = px.scaled(
+                        lab->size(),
+                        Qt::KeepAspectRatioByExpanding,
+                        Qt::SmoothTransformation
+                        );
+
+                    QPixmap circular(lab->size());
+                    circular.fill(Qt::transparent);
+
+                    QPainter painter(&circular);
+                    painter.setRenderHint(QPainter::Antialiasing, true);
+                    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+
+                    QPainterPath path;
+                    path.addEllipse(0, 0, lab->width(), lab->height());
+                    painter.setClipPath(path);
+                    painter.drawPixmap(0, 0, scaled);
+
+                    lab->setPixmap(circular);
+                    lab->setAlignment(Qt::AlignCenter);
+                    lab->setScaledContents(false);
                 }
             }
         }
@@ -3215,5 +3349,67 @@ void SignIn::on_cvanalysebtn_clicked()
 void SignIn::on_cvanalysebtn_U_clicked()
 {
     runCvAnalysisForSelectedRow(ui->tablestaff_U);
+}
+void SignIn::clearSignInForm(bool keepRememberedMail)
+{
+    if (!keepRememberedMail) {
+        ui->UserNameEdit->clear();
+    }
+
+    ui->PasswordEdit->clear();
+
+    if (!keepRememberedMail) {
+        ui->remembercheck->setChecked(false);
+    }
+
+    ui->showPassCheck->setChecked(false);
+    ui->PasswordEdit->setEchoMode(QLineEdit::Password);
+}
+
+void SignIn::saveRememberedUser()
+{
+    QSettings settings("BORT", "SmartFishingPort");
+
+    if (ui->remembercheck->isChecked()) {
+        settings.setValue("rememberMe", true);
+        settings.setValue("rememberedMail", ui->UserNameEdit->text().trimmed());
+    } else {
+        settings.setValue("rememberMe", false);
+        settings.remove("rememberedMail");
+    }
+}
+
+void SignIn::loadRememberedUser()
+{
+    QSettings settings("BORT", "SmartFishingPort");
+
+    const bool remember = settings.value("rememberMe", false).toBool();
+    const QString mail = settings.value("rememberedMail").toString();
+
+    ui->remembercheck->setChecked(remember);
+
+    if (remember && !mail.trimmed().isEmpty()) {
+        ui->UserNameEdit->setText(mail);
+        ui->PasswordEdit->clear();
+        ui->UserNameEdit->setFocus();
+    } else {
+        ui->UserNameEdit->clear();
+        ui->PasswordEdit->clear();
+    }
+
+    ui->showPassCheck->setChecked(false);
+    ui->PasswordEdit->setEchoMode(QLineEdit::Password);
+}
+
+void SignIn::on_staffmanagementBTN_stock_clicked()
+{
+    ui->stackedWidget->setCurrentWidget(ui->pageStaffManagement);
+}
+
+
+
+void SignIn::on_staffmanagementBTNZ_clicked()
+{
+    ui->stackedWidget->setCurrentWidget(ui->pageStaffManagement);
 }
 

@@ -309,7 +309,7 @@ QLabel[objectName*=&quot;error&quot;] {
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>11</number>
     </property>
     <widget class="QWidget" name="pageSignIn">
      <property name="styleSheet">
@@ -4871,33 +4871,26 @@ QTableWidget QScrollBar::sub-line {
     height: 0;
 }
 
-/* ================================================= */
-/* ================= BUTTONS ======================= */
-/* ================================================= */
-
-
-#cvanalysebtn,
-#staticbtn,
-#uploadcvbtn,
-#uploadAvatarbtn,
-#exportpdfstaffbtn {
-    background-color: rgba(20, 60, 95, 0.9);
-    border: 1px solid rgba(79, 195, 247, 0.4);
-    border-radius: 12px;
-    color: #e3f2fd;
-    padding: 10px 16px;
-    font-weight: 600;
+/* ===== LINK STYLE BUTTONS ===== */
+#ubploacvbtn,
+#ubploaAvatarbtn {
+    background: transparent;
+    border: none;
+    color: #22C55E; /* bleu clair moderne */
+    font-size: 13px;
+    font-weight: 700;
 }
 
-#uploadcvbtn:hover,
-#uploadAvatarbtn:hover,
-#cvanalysebtn:hover,
-#staticbtn:hover,
-#exportpdfstaffbtn:hover {
-    background-color: rgba(79, 195, 247, 0.35);
-    color: white;
+#ubploacvbtn:hover,
+#ubploaAvatarbtn:hover {
+    color: #4ADE80; /* bleu glow */
+    border-bottom: 1px solid #7DD3FC;
 }
 
+#ubploacvbtn:pressed,
+#ubploaAvatarbtn:pressed {
+    color: #0284C7;
+}
 /* ===== DELETE BUTTON ===== */
 #deletestaffbtn {
     background-color: rgba(183, 28, 28, 0.9);
@@ -4968,6 +4961,38 @@ QPushButton#backWbtn:disabled {
     background: rgba(20, 38, 58, 0.35);
     color: rgba(234,240,255,0.45);
     border: 1px solid rgba(120,160,200,0.15);
+}
+/* ===== DROPDOWN LIST ===== */
+QComboBox QAbstractItemView {
+    background-color: #0A2236; /* fond solide */
+    color: #E3F2FD;
+    border: 1px solid #4FC3F7;
+    border-radius: 8px;
+    padding: 4px;
+    selection-background-color: #4FC3F7;
+    selection-color: #001018;
+}
+
+/* Hover item */
+QComboBox QAbstractItemView::item:hover {
+    background-color: rgba(79,195,247,0.25);
+}
+
+/* Selected item */
+QComboBox QAbstractItemView::item:selected {
+    background-color: #4FC3F7;
+    color: #001018;
+}
+#cvanalysebtn, #staticbtn, #exportpdfstaffbtn { 
+background-color: rgba(20, 60, 95, 0.9);
+border: 1px solid rgba(79, 195, 247, 0.4); 
+border-radius: 12px; 
+color: #e3f2fd; 
+padding: 10px 16px; 
+font-weight: 600; }  
+#cvanalysebtn:hover, #staticbtn:hover, #exportpdfstaffbtn:hover
+ { background-color: rgba(79, 195, 247, 0.35);
+ color: white; 
 }
 </string>
      </property>
@@ -5308,11 +5333,6 @@ QPushButton#backWbtn:disabled {
                   <string>Security</string>
                  </property>
                 </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
                </widget>
                <widget class="QLabel" name="staffnamelabel">
                 <property name="geometry">
@@ -5435,51 +5455,6 @@ QPushButton#backWbtn:disabled {
                   <string>Pending</string>
                  </property>
                 </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
                </widget>
                <widget class="QLabel" name="passlab">
                 <property name="geometry">
@@ -5507,9 +5482,9 @@ QPushButton#backWbtn:disabled {
                <widget class="QPushButton" name="ubploacvbtn">
                 <property name="geometry">
                  <rect>
-                  <x>30</x>
+                  <x>-10</x>
                   <y>460</y>
-                  <width>90</width>
+                  <width>111</width>
                   <height>29</height>
                  </rect>
                 </property>
@@ -5566,8 +5541,8 @@ QPushButton#backWbtn:disabled {
                <widget class="QPushButton" name="ubploaAvatarbtn">
                 <property name="geometry">
                  <rect>
-                  <x>10</x>
-                  <y>500</y>
+                  <x>-10</x>
+                  <y>490</y>
                   <width>131</width>
                   <height>29</height>
                  </rect>
@@ -7440,7 +7415,48 @@ QPushButton#backWbtn_U:disabled {
     color: rgba(234,240,255,0.45);
     border: 1px solid rgba(120,160,200,0.15);
 }
-</string>
+/* ===== LINK STYLE BUTTONS ===== */
+#ubploacvbtn_U,
+#ubploavatarbtn_U {
+    background: transparent;
+    border: none;
+    color: #22C55E; /* bleu clair moderne */
+    font-size: 13px;
+    font-weight: 700;
+}
+
+#ubploacvbtn_U:hover,
+#ubploaubploavatarbtn_U:hover {
+    color: #4ADE80; /* bleu glow */
+    border-bottom: 1px solid #7DD3FC;
+}
+
+#ubploacvbtn_U:pressed,
+#ubploaubploavatarbtn_U:pressed {
+    color: #0284C7;
+}
+
+/* ===== DROPDOWN LIST ===== */
+QComboBox QAbstractItemView {
+    background-color: #0A2236; /* fond solide */
+    color: #E3F2FD;
+    border: 1px solid #4FC3F7;
+    border-radius: 8px;
+    padding: 4px;
+    selection-background-color: #4FC3F7;
+    selection-color: #001018;
+}
+
+/* Hover item */
+QComboBox QAbstractItemView::item:hover {
+    background-color: rgba(79,195,247,0.25);
+}
+
+/* Selected item */
+QComboBox QAbstractItemView::item:selected {
+    background-color: #4FC3F7;
+    color: #001018;
+}</string>
      </property>
      <widget class="QWidget" name="layoutWidget_2">
       <property name="geometry">
@@ -7779,11 +7795,6 @@ QPushButton#backWbtn_U:disabled {
                   <string>Security</string>
                  </property>
                 </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
                </widget>
                <widget class="QLabel" name="staffnamelabel_U">
                 <property name="geometry">
@@ -7904,31 +7915,6 @@ QPushButton#backWbtn_U:disabled {
                 <item>
                  <property name="text">
                   <string>Pending</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
                  </property>
                 </item>
                </widget>
@@ -10278,7 +10264,7 @@ QPushButton[active=&quot;true&quot;] {
     color: #FFFFFF;
     padding-left: 18px;
 }
-QPushButton#staffmanagementBTNZ[active=&quot;true&quot;] {
+QPushButton#fishingzonemanagementBTNZ[active=&quot;true&quot;] {
     background-color: rgba(10, 102, 255, 0.35);
     border-left: 4px solid #4FC3F7;
     color: white;
@@ -10654,10 +10640,10 @@ QTableWidget QScrollBar::sub-line {
           <property name="title">
            <string/>
           </property>
-          <widget class="QPushButton" name="staffmanagementBTNZ">
+          <widget class="QPushButton" name="fishingzonemanagementBTNZ">
            <property name="geometry">
             <rect>
-             <x>-30</x>
+             <x>-10</x>
              <y>300</y>
              <width>221</width>
              <height>61</height>
@@ -10691,7 +10677,7 @@ QPushButton#fishingzonemanagementBTNZ:pressed {
 </string>
            </property>
            <property name="text">
-            <string>🗺️ FishingZone Management</string>
+            <string>🗺️FishingZone Management</string>
            </property>
            <property name="active" stdset="0">
             <bool>true</bool>
@@ -10776,10 +10762,10 @@ QPushButton#stockmanagementBTNZ:pressed {
             <string>🐟 Stock Management</string>
            </property>
           </widget>
-          <widget class="QPushButton" name="fishingzonemanagementBTNZ">
+          <widget class="QPushButton" name="staffmanagementBTNZ">
            <property name="geometry">
             <rect>
-             <x>-10</x>
+             <x>0</x>
              <y>110</y>
              <width>221</width>
              <height>51</height>
@@ -12113,7 +12099,7 @@ QTableWidget QScrollBar::sub-line {
           <property name="title">
            <string/>
           </property>
-          <widget class="QPushButton" name="staffmanagementBTN_stock">
+          <widget class="QPushButton" name="stockmanagementBTN_stock_2">
            <property name="geometry">
             <rect>
              <x>-10</x>
@@ -12142,7 +12128,7 @@ QTableWidget QScrollBar::sub-line {
             <string>💰Clients Management</string>
            </property>
           </widget>
-          <widget class="QPushButton" name="stockmanagementBTN_stock">
+          <widget class="QPushButton" name="staffmanagementBTN_stock">
            <property name="geometry">
             <rect>
              <x>-10</x>
