@@ -2610,10 +2610,10 @@ QByteArray SignIn::captureFaceFromCamera()
 
         int key = cv::waitKey(30);
 
-        if (key == 32) { // SPACE
+        if (key == 32) {
             capturedFrame = frame.clone();
             break;
-        } else if (key == 27) { // ESC
+        } else if (key == 27) {
             cap.release();
             cv::destroyAllWindows();
             return QByteArray();
@@ -2674,6 +2674,7 @@ cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
 {
     QString cascadePath = ensureFaceCascadeFile();
     if (cascadePath.isEmpty()) {
+        QMessageBox::warning(this, "Face ID", "Cascade path is empty.");
         return cv::Mat();
     }
 
@@ -2685,9 +2686,17 @@ cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
 
     cv::Mat gray;
     cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+    cv::equalizeHist(gray, gray);
 
     std::vector<cv::Rect> faces;
-    faceCascade.detectMultiScale(gray, faces, 1.3, 5);
+    faceCascade.detectMultiScale(
+        gray,
+        faces,
+        1.1,
+        3,
+        0,
+        cv::Size(80, 80)
+        );
 
     if (faces.empty()) {
         QMessageBox::warning(this, "Face ID", "No face detected.");
@@ -2695,10 +2704,14 @@ cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
     }
 
 
-    cv::Rect faceRect = faces[0];
-    cv::Mat face = frame(faceRect).clone();
+    cv::Rect bestFace = faces[0];
+    for (const auto& r : faces) {
+        if (r.area() > bestFace.area()) {
+            bestFace = r;
+        }
+    }
 
-
+    cv::Mat face = frame(bestFace).clone();
     cv::resize(face, face, cv::Size(200, 200));
 
     return face;
@@ -2706,6 +2719,7 @@ cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
 bool SignIn::compareFaces(const cv::Mat& face1, const cv::Mat& face2)
 {
     if (face1.empty() || face2.empty()) {
+        QMessageBox::warning(this, "Face Compare", "One of the faces is empty.");
         return false;
     }
 
@@ -2719,9 +2733,10 @@ bool SignIn::compareFaces(const cv::Mat& face1, const cv::Mat& face2)
 
     double distance = cv::norm(gray1, gray2, cv::NORM_L2);
 
-    qDebug() << "Face distance =" << distance;
+    QMessageBox::information(this, "Face Distance",
+                             "Distance = " + QString::number(distance));
 
-    return distance < 3000.0;
+    return distance < 9500.0;
 }
 
 
