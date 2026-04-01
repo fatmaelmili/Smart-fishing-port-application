@@ -1,5 +1,9 @@
 QT       += core gui
-
+QT += core gui widgets charts
+QT+=sql
+QT += network
+QT += charts
+QT += pdf
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
@@ -9,14 +13,20 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    fishingzone.cpp \
-    main.cpp
+    Bort.cpp \
+    connection.cpp \
+    main.cpp \
+    personnel.cpp \
+    zonepech.cpp
 
 HEADERS += \
-    fishingzone.h
+    Bort.h \
+    connection.h \
+    personnel.h \
+    zonepech.h
 
 FORMS += \
-    fishingzone.ui
+    Bort.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -28,3 +38,14 @@ RESOURCES += \
 
 DISTFILES += \
     Images/logo.png
+
+
+INCLUDEPATH += C:/opencv/build/include
+
+CONFIG(debug, debug|release) {
+    LIBS += -LC:/opencv/build/x64/vc16/lib \
+            -lopencv_world4120d
+} else {
+    LIBS += -LC:/opencv/build/x64/vc16/lib \
+            -lopencv_world4120
+}

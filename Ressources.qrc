@@ -5,12 +5,13 @@
         <file>Images/logoHeader.png</file>
         <file>Images/avatar.png</file>
         <file>Images/logoHeader1.png</file>
-        <file>Images/bateau.png</file>
-        <file>Images/bat.png</file>
-        <file>Images/bateaux.png</file>
-        <file>Images/zone.png</file>
-        <file>Images/zone2.png</file>
-        <file>Images/zone 3.png</file>
-        <file>Images/zone4.png</file>
+        <file>Images/dashhhresize.png</file>
+        <file>Images/testport.png</file>
+        <file>Images/staffdash.png</file>
+        <file>Images/cvdash.png</file>
+        <file>Images/bestresized.png</file>
+        <file>Images/profile.jpg</file>
+        <file>Images/zoneimage.png</file>
+        <file>haarcascade_frontalface_default.xml</file>
     </qresource>
 </RCC>
