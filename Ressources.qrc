@@ -6,6 +6,9 @@
         <file>Images/avatar.png</file>
         <file>Images/logoHeader1.png</file>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> zonepeche
         <file>Images/dashhhresize.png</file>
         <file>Images/testport.png</file>
         <file>Images/staffdash.png</file>
@@ -13,6 +16,7 @@
         <file>Images/bestresized.png</file>
         <file>Images/profile.jpg</file>
         <file>Images/zoneimage.png</file>
+<<<<<<< HEAD
 =======
         <file>Images/bateau.png</file>
         <file>Images/bat.png</file>
@@ -21,6 +25,9 @@
         <file>Images/zone2.png</file>
         <file>Images/zone 3.png</file>
         <file>Images/zone4.png</file>
+>>>>>>> zonepeche
+=======
+        <file>haarcascade_frontalface_default.xml</file>
 >>>>>>> zonepeche
     </qresource>
 </RCC>
