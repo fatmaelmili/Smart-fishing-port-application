@@ -246,23 +246,33 @@ void SignIn::on_backsigninBTN_clicked()
 void SignIn::on_resetbtn_clicked()
 {
 }
-
 void SignIn::on_signinbtn_clicked()
 {
+    ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
 }
+
 
 void SignIn::on_clientsmanagementBTN_W_clicked()
 {
+    ui->stackedWidget->setCurrentWidget(ui->pageStaffManagement);
 }
+
+
+
 
 void SignIn::on_backtoclientbtn_clicked()
 {
+    ui->stackedWidget->setCurrentWidget(ui->pageStaffManagement);
 }
+
 
 void SignIn::on_mainpagebtn_clicked()
 {
+    ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
 }
+
 
 void SignIn::on_clientdashboardbtn_clicked()
 {
+    ui->stackedWidget->setCurrentWidget(ui->staffdash);
 }
