@@ -1,7 +1,9 @@
 QT       += core gui
 QT += core gui widgets charts
 QT+=sql
-
+QT += network
+QT += charts
+QT += pdf
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
@@ -14,12 +16,14 @@ SOURCES += \
     Bort.cpp \
     connection.cpp \
     main.cpp \
-    personnel.cpp
+    personnel.cpp \
+    zonepech.cpp
 
 HEADERS += \
     Bort.h \
     connection.h \
-    personnel.h
+    personnel.h \
+    zonepech.h
 
 FORMS += \
     Bort.ui
@@ -34,3 +38,14 @@ RESOURCES += \
 
 DISTFILES += \
     Images/logo.png
+
+
+INCLUDEPATH += C:/opencv/build/include
+
+CONFIG(debug, debug|release) {
+    LIBS += -LC:/opencv/build/x64/vc16/lib \
+            -lopencv_world4120d
+} else {
+    LIBS += -LC:/opencv/build/x64/vc16/lib \
+            -lopencv_world4120
+}

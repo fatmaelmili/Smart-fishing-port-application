@@ -2,6 +2,12 @@
 #define BORT_H
 
 #include <QMainWindow>
+#include <QSslSocket>
+#include <QChartView>
+#include <QTableWidget>
+#include <QPdfWriter>
+#include <QPainter>
+#include <opencv2/opencv.hpp>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -18,6 +24,7 @@ public:
     ~SignIn();
 
 private slots:
+    //fatma
     void on_btnForgetmdp_clicked();
 
     void on_backsigninBTN_clicked();
@@ -195,11 +202,115 @@ private slots:
     void on_ubploacvbtn_U_clicked();
 
     void on_ubploavatarbtn_U_clicked();
+    void on_showPassCheck_toggled(bool checked);
+
+    void on_newbtn_clicked();
+
+    void on_backsigninBTNR_clicked();
+
+    void on_showPassCheckR_toggled(bool checked);
+
+    void on_sortstaff_currentTextChanged(const QString &arg1);
+
+    void on_sortstaff_U_currentTextChanged(const QString &arg1);
+
+    void on_staffsearchbarre_textChanged(const QString &arg1);
+
+    void on_staffsearchbarre_U_textChanged(const QString &arg1);
+
+    void on_exportbtn_clicked();
+
+    void on_exportpdfstaffbtn_U_clicked();
+
+    void on_exportpdfstaffbtn_clicked();
+
+    void on_addstaffbtn_A_clicked();
+
+    void on_browbtn_clicked();
+
+    void on_facebtn_clicked();
+
+    void on_withfacebtn_clicked();
+
+    void on_cvanalysebtn_U_clicked();
+
+    void on_cvanalysebtn_clicked();
+
+    void on_staffmanagementBTN_stock_clicked();
+
+
+    void on_staffmanagementBTNZ_clicked();
+    //dhia
+    void on_addZonebtn_clicked();
+    void loadZonesToTable();
+    void on_ZoneTable_cellClicked(int row, int column);
+    void on_EditZonebtn_clicked();
+    void on_DeleteZone_clicked();
 
 private:
+    //fatma
+    struct CvAnalysisResult
+    {
+        int score = 0;
+        QString decision;
+        QStringList matchedRoleKeywords;
+        QStringList matchedGeneralKeywords;
+        QString summary;
+    };
+
     Ui::SignIn *ui;
+    QByteArray captureFaceFromCamera();
+    QString ensureFaceCascadeFile();
+    cv::Mat detectAndCropFace(const cv::Mat& frame);
     QByteArray m_cvBlob;
     QByteArray m_avatarBlob;
+    QString m_currentRole;
+    QChartView *m_roleChartView = nullptr;
+    QChartView *m_cvChartView = nullptr;
+    QWidget *m_roleLegendWidget = nullptr;
+    QWidget *m_cvLegendWidget = nullptr;
+    QString m_currentUserMail;
+    int m_currentUserId = -1;
+    QString m_currentAvatarPath;
+    QByteArray m_currentAccountAvatar;
+    int m_faceAuthFailureCount = 0;
+    const int m_faceFraudThreshold = 3;
+    void registerFaceAuthFailure(const QString& reason);
+    void resetFaceAuthFailureCounter();
+    void showFaceFraudAlert(const QString& reason);
+    void updateUserProfileUI(const QString& fullName, const QByteArray& avatarBytes);
+    void applyRolePermissions(const QString& role);
+    void setModuleAccess(const QString& prefix, bool allowed, bool hide = true);
+    bool showCaptchaPuzzle();
+    bool sendSmtpCommand(QSslSocket& socket, const QString& command, const QString& expectedCode);
+    bool sendResetEmail(const QString& toMail, const QString& fullName, const QString& token);
+    void loadStaffDashboardStats();
+    void buildRoleChart();
+    void buildCvStatusChart();
+    QPixmap captureWidgetScaled(QWidget *widget, double scaleFactor = 3.0);
+    void drawRoundedCard(QPainter &painter, const QRect &rect, const QColor &fillColor,const QColor &borderColor, int radius = 24);
+    void exportStaffDashboardToPdf();
+    void exportStaffTableToPdf(QTableWidget *table, const QString &reportTitle,const QString &defaultFileName);
+    void openCurrentUserAccountPage();
+    bool loadCurrentUserAccountData();
+    void loadEmployeeCount();
+    void updateFaceIdStatusLabel();
+    double compareFacesDistance(const cv::Mat& face1, const cv::Mat& face2);
+    bool authenticateWithFaceId();
+    void runCvAnalysisForSelectedRow(QTableWidget *table);
+    QString extractTextFromPdfBlob(const QByteArray& pdfBlob) const;
+    QStringList roleKeywords(const QString& role) const;
+    bool analyzeCvAgainstRole(const QByteArray& cvBlob,const QString& role,QString* outDecision,QString* outReport) const;
+    QStringList generalCvKeywords() const;
+    CvAnalysisResult analyzeCvAdvanced(const QByteArray& cvBlob, const QString& role) const;
+    void showCvAnalysisDialog(const QString& fullName,const QString& role,const CvAnalysisResult& result);
+    void clearUpdateStaffForm();
+    void clearSignInForm(bool keepRememberedMail = false);
+    void saveRememberedUser();
+    void loadRememberedUser();
+    void loadEmployeeOfMonth();
+    //dhia
+    int selectedZoneId = -1;
 };
 
 #endif // BORT_H
