@@ -1,13 +1,12 @@
 #include "editclientdialog.h"
 #include "clients.h"
-
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
 #include <QDate>
 
-// ================== CONSTRUCTOR ==================
+// ==================contructor goes wooo(i choose the wee and the wooo s 7asb el mood)==================
 EditClientDialog::EditClientDialog(QWidget *parent)
     : QDialog(parent), clientId(-1)
 {
@@ -57,7 +56,7 @@ EditClientDialog::EditClientDialog(QWidget *parent)
     connect(cancelBtn, &QPushButton::clicked, this, &EditClientDialog::onCancelClicked);
 }
 
-// ================== SET DATA ==================
+// ==================when the data is set==================
 void EditClientDialog::setClientData(QString name, QString date, QString phone,
                                      QString article, int qte, QString modepay, int id)
 {
@@ -71,7 +70,7 @@ void EditClientDialog::setClientData(QString name, QString date, QString phone,
     paymentInput->setCurrentText(modepay);
 }
 
-// ================== SAVE ==================
+// ==================tamma tasjil al kerch bi naje7==================
 void EditClientDialog::onSaveClicked()
 {
     if(clientId == -1)
@@ -81,7 +80,8 @@ void EditClientDialog::onSaveClicked()
                               "Save changes?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
         return;
 
-    SignIn C(
+    // ✅ FIX HERE: use Client instead of SignIn
+    Client C(
         nameInput->text(),
         dateInput->date().toString("yyyy-MM-dd"),
         0,
@@ -97,9 +97,13 @@ void EditClientDialog::onSaveClicked()
         QMessageBox::information(this, "Success", "Client updated");
         accept();
     }
+    else
+    {
+        QMessageBox::critical(this, "Error", "Update failed");
+    }
 }
 
-// ================== CANCEL ==================
+// ==================cancel culture==================
 void EditClientDialog::onCancelClicked()
 {
     reject();

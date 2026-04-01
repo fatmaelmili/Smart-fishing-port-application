@@ -1,30 +1,13 @@
 #include "clients.h"
-#include "ui_clients.h"
-#include "editclientdialog.h"
-
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
-#include <QMessageBox>
 
-// ================== CONSTRUCTOR ==================
-SignIn::SignIn(QWidget *parent)
-    : QMainWindow(parent),
-    ui(new Ui::SignIn)
-{
-    ui->setupUi(this);
-    loadClients();
-}
+Client::Client(){}
 
-// ================== DESTRUCTOR ==================
-SignIn::~SignIn()
-{
-    delete ui;
-}
-
-// ================== DATA CONSTRUCTOR ==================
-SignIn::SignIn(QString type, QString datecl, float montant, QString modepay,
-               QString etat, QString description, QString article, int qte)
+Client::Client(QString type, QString datecl, float montant,
+               QString modepay, QString etat,
+               QString description, QString article, int qte)
 {
     this->type = type;
     this->datecl = datecl;
@@ -36,15 +19,13 @@ SignIn::SignIn(QString type, QString datecl, float montant, QString modepay,
     this->qte = qte;
 }
 
-// ================== ADD ==================
-bool SignIn::ajouterClient()
+//add 3ammi mo7sen
+bool Client::ajouterClient()
 {
     QSqlQuery q;
 
-    q.prepare(R"(
-        INSERT INTO CLIENTS(TYPE, DATECL, MONTANT, MODEPAY, ETAT, DESCRIPTION, ARTICLE, QTE)
-        VALUES(:type, TO_DATE(:datecl,'YYYY-MM-DD'), :montant, :modepay, :etat, :description, :article, :qte)
-    )");
+    q.prepare("INSERT INTO CLIENTS(TYPE, DATECL, MONTANT, MODEPAY, ETAT, DESCRIPTION, ARTICLE, QTE) "
+              "VALUES(:type, TO_DATE(:datecl,'YYYY-MM-DD'), :montant, :modepay, :etat, :description, :article, :qte)");
 
     q.bindValue(":type", type);
     q.bindValue(":datecl", datecl);
@@ -58,34 +39,23 @@ bool SignIn::ajouterClient()
     return q.exec();
 }
 
-// ================== DELETE ==================
-bool SignIn::supprimerClient(int idclients)
+// delete 3ammi jaballah
+bool Client::supprimerClient(int id)
 {
     QSqlQuery q;
-
     q.prepare("DELETE FROM CLIENTS WHERE IDCLIENTS = :id");
-    q.bindValue(":id", idclients);
-
+    q.bindValue(":id", id);
     return q.exec();
 }
 
-// ================== UPDATE ==================
-bool SignIn::modifierClient(int idclients)
+// update 3ammi mo7sen jaballah
+bool Client::modifierClient(int id)
 {
     QSqlQuery q;
 
-    q.prepare(R"(
-        UPDATE CLIENTS
-        SET TYPE=:type,
-            DATECL=TO_DATE(:datecl,'YYYY-MM-DD'),
-            MONTANT=:montant,
-            MODEPAY=:modepay,
-            ETAT=:etat,
-            DESCRIPTION=:description,
-            ARTICLE=:article,
-            QTE=:qte
-        WHERE IDCLIENTS=:id
-    )");
+    q.prepare("UPDATE CLIENTS SET TYPE=:type, DATECL=TO_DATE(:datecl,'YYYY-MM-DD'), "
+              "MONTANT=:montant, MODEPAY=:modepay, ETAT=:etat, DESCRIPTION=:description, "
+              "ARTICLE=:article, QTE=:qte WHERE IDCLIENTS=:id");
 
     q.bindValue(":type", type);
     q.bindValue(":datecl", datecl);
@@ -95,13 +65,13 @@ bool SignIn::modifierClient(int idclients)
     q.bindValue(":description", description);
     q.bindValue(":article", article);
     q.bindValue(":qte", qte);
-    q.bindValue(":id", idclients);
+    q.bindValue(":id", id);
 
     return q.exec();
 }
 
-// ================== FETCH ==================
-QVector<QStringList> SignIn::afficherClients()
+// fetching eyy baba
+QVector<QStringList> Client::afficherClients()
 {
     QVector<QStringList> rows;
     QSqlQuery q;
@@ -124,155 +94,4 @@ QVector<QStringList> SignIn::afficherClients()
     }
 
     return rows;
-}
-
-// ================== LOAD TABLE ==================
-void SignIn::loadClients()
-{
-    QVector<QStringList> rows = afficherClients();
-
-    ui->clienttable->setRowCount(0);
-
-    for(int i = 0; i < rows.size(); i++)
-    {
-        ui->clienttable->insertRow(i);
-
-        for(int j = 0; j < rows[i].size(); j++)
-        {
-            ui->clienttable->setItem(i, j, new QTableWidgetItem(rows[i][j]));
-        }
-    }
-}
-
-// ================== ADD BUTTON ==================
-void SignIn::on_clientaddbtn_clicked()
-{
-    if(ui->clientnameinput->text().isEmpty())
-    {
-        QMessageBox::warning(this, "Error", "Client name is required");
-        return;
-    }
-
-    type = ui->clientnameinput->text();
-    datecl = ui->clientdateinput->date().toString("yyyy-MM-dd");
-    article = ui->itemsinput->text();
-    qte = ui->quantityinput->value();
-    modepay = ui->choosepayment->currentText();
-    description = ui->phoneinput->text();
-
-    montant = 0;
-    etat = "Paid";
-
-    if(ajouterClient())
-    {
-        QMessageBox::information(this, "Success", "Client added");
-        loadClients();
-    }
-    else
-    {
-        QMessageBox::critical(this, "Error", "Failed to add client");
-    }
-}
-
-// ================== DELETE BUTTON ==================
-void SignIn::on_deleteclientbtn_clicked()
-{
-    int row = ui->clienttable->currentRow();
-
-    if(row == -1)
-    {
-        QMessageBox::warning(this, "Error", "Select a client");
-        return;
-    }
-
-    int id = ui->clienttable->item(row,0)->text().toInt();
-
-    if(QMessageBox::question(this, "Confirm",
-                              "Delete this client?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-        return;
-
-    if(supprimerClient(id))
-    {
-        QMessageBox::information(this, "Deleted", "Client deleted");
-        loadClients();
-    }
-    else
-    {
-        QMessageBox::critical(this, "Error", "Delete failed");
-    }
-}
-
-// ================== UPDATE BUTTON ==================
-void SignIn::on_updateclientbtn_clicked()
-{
-    int row = ui->clienttable->currentRow();
-
-    if(row == -1)
-    {
-        QMessageBox::warning(this, "Error", "Select a client");
-        return;
-    }
-
-    int id = ui->clienttable->item(row,0)->text().toInt();
-
-    EditClientDialog dialog(this);
-
-    dialog.setClientData(
-        ui->clienttable->item(row,1)->text(),
-        ui->clienttable->item(row,2)->text(),
-        ui->clienttable->item(row,6)->text(),
-        ui->clienttable->item(row,7)->text(),
-        ui->clienttable->item(row,8)->text().toInt(),
-        ui->clienttable->item(row,4)->text(),
-        id
-        );
-
-    if(dialog.exec() == QDialog::Accepted)
-    {
-        loadClients();
-    }
-}
-
-// ================== MISSING UI SLOTS ==================
-
-void SignIn::on_btnForgetmdp_clicked()
-{
-}
-
-void SignIn::on_backsigninBTN_clicked()
-{
-}
-
-void SignIn::on_resetbtn_clicked()
-{
-}
-void SignIn::on_signinbtn_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
-}
-
-
-void SignIn::on_clientsmanagementBTN_W_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(ui->pageStaffManagement);
-}
-
-
-
-
-void SignIn::on_backtoclientbtn_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(ui->pageStaffManagement);
-}
-
-
-void SignIn::on_mainpagebtn_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
-}
-
-
-void SignIn::on_clientdashboardbtn_clicked()
-{
-    ui->stackedWidget->setCurrentWidget(ui->staffdash);
 }

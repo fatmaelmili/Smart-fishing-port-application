@@ -1,5 +1,6 @@
-#include "clients.h"
+#include "bort.h"
 #include "connection.h"
+
 #include <QApplication>
 #include <QSqlDatabase>
 #include <QDebug>
@@ -13,7 +14,9 @@ int main(int argc, char *argv[])
 
     connection& c = connection::createInsatance();
     bool test = c.createconnect();
+
     qDebug() << QSqlDatabase::database().isOpen();
+
     if(!test)
         qDebug() << "Database connection failed";
 
