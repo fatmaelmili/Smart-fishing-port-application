@@ -18,7 +18,6 @@ public:
     ~SignIn();
 
 private slots:
-    // NAVIGATION
     void on_btnForgetmdp_clicked();
     void on_backsigninBTN_clicked();
     void on_resetbtn_clicked();
@@ -27,16 +26,17 @@ private slots:
     void on_clientdashboardbtn_clicked();
     void on_backtoclientbtn_clicked();
     void on_clientsmanagementBTN_W_clicked();
-
-    // CLIENT MANAGEMENT
     void on_clientaddbtn_clicked();
     void on_deleteclientbtn_clicked();
     void on_updateclientbtn_clicked();
+    void on_clientpdfbtn_clicked();
+    void on_searchclient_textChanged(const QString &text);
+    void on_clientsort_currentTextChanged(const QString &text);
 
 private:
     Ui::SignIn *ui;
 
-    void loadClients();
+    void loadClients(QString search = "", QString sort = "");
 };
 
 #endif // BORT_H

@@ -1,11 +1,13 @@
 #include "bort.h"
 #include "ui_clients.h"
-
 #include "clients.h"
 #include "editclientdialog.h"
-
 #include <QMessageBox>
 #include <QDebug>
+#include <QFileDialog>
+#include <QPdfWriter>
+#include <QPainter>
+#include <QDateTime>
 
 // ==================constructor goes weeeeee==================
 SignIn::SignIn(QWidget *parent)
@@ -13,7 +15,7 @@ SignIn::SignIn(QWidget *parent)
     ui(new Ui::SignIn)
 {
     ui->setupUi(this);
-    loadClients();
+    loadClients("", "");
 }
 
 // ==================destructor goes wooo==================
@@ -74,11 +76,10 @@ void SignIn::on_clientsmanagementBTN_W_clicked()
 }
 
 // ==================all mo7sen jaballah loads==================
-
-void SignIn::loadClients()
+void SignIn::loadClients(QString search, QString sort)
 {
     Client C;
-    QVector<QStringList> rows = C.afficherClients();
+    QVector<QStringList> rows = C.afficherClients(search, sort);
 
     ui->clienttable->setRowCount(0);
 
@@ -117,7 +118,7 @@ void SignIn::on_clientaddbtn_clicked()
     if(C.ajouterClient())
     {
         QMessageBox::information(this, "Success", "Client added");
-        loadClients();
+        loadClients("", "");
     }
     else
     {
@@ -148,7 +149,7 @@ void SignIn::on_deleteclientbtn_clicked()
     if(C.supprimerClient(id))
     {
         QMessageBox::information(this, "Deleted", "Client deleted");
-        loadClients();
+        loadClients("", "");
     }
     else
     {
@@ -184,6 +185,75 @@ void SignIn::on_updateclientbtn_clicked()
 
     if(dialog.exec() == QDialog::Accepted)
     {
-        loadClients();
+        loadClients("", "");
     }
 }
+
+// ==================pdf file ama the good kind==================
+void SignIn::on_clientpdfbtn_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Save PDF", "clients.pdf", "*.pdf");
+    if(fileName.isEmpty()) return;
+    QPdfWriter pdf(fileName);
+    pdf.setPageSize(QPageSize(QPageSize::A4));
+    pdf.setResolution(300);
+    QPainter painter(&pdf);
+    int margin = 100;
+    int y = margin;
+    painter.setFont(QFont("Arial", 18, QFont::Bold));
+    painter.drawText(margin, y, "Clients Report");
+    painter.setFont(QFont("Arial", 9));
+    painter.drawText(pdf.width() - 1500, y, QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
+    y += 200;
+    int cols = ui->clienttable->columnCount();
+    int rows = ui->clienttable->rowCount();
+    int tableWidth = pdf.width() - 2 * margin;
+    int colWidth = tableWidth / cols;
+    int rowHeight = 200;
+    painter.setFont(QFont("Arial", 10, QFont::Bold));
+    for(int col = 0; col < cols; col++)
+    {
+        QRect rect(margin + col * colWidth, y, colWidth, rowHeight);
+        painter.fillRect(rect, QColor(200, 200, 200));
+        painter.drawRect(rect);
+
+        QString header = ui->clienttable->horizontalHeaderItem(col)->text();
+        painter.drawText(rect, Qt::AlignCenter, header);
+    }
+    y += rowHeight;
+    painter.setFont(QFont("Arial", 9));
+    for(int row = 0; row < rows; row++)
+    {
+        for(int col = 0; col < cols; col++)
+        {
+            QRect rect(margin + col * colWidth, y, colWidth, rowHeight);
+            if(row % 2 == 0)
+                painter.fillRect(rect, QColor(245, 245, 245));
+            painter.drawRect(rect);
+            QTableWidgetItem *item = ui->clienttable->item(row, col);
+            if(item)
+                painter.drawText(rect.adjusted(5, 5, -5, -5), Qt::AlignLeft | Qt::AlignVCenter, item->text());
+        }
+        y += rowHeight;
+        if(y > pdf.height() - margin)
+        {
+            pdf.newPage();
+            y = margin;
+        }
+    }
+    painter.end();
+    QMessageBox::information(this, "Success", "PDF generated successfully");
+}
+
+// ==================searching for the one piece==================
+void SignIn::on_searchclient_textChanged(const QString &text)
+{
+    loadClients(text, ui->clientsort->currentText());
+    qDebug() << "Searching:" << text;
+}
+//==================sorting the one piece==================
+void SignIn::on_clientsort_currentTextChanged(const QString &text)
+{
+    loadClients(ui->searchclient->text(), text);
+}
+

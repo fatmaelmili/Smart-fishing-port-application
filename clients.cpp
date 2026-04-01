@@ -70,17 +70,41 @@ bool Client::modifierClient(int id)
     return q.exec();
 }
 
-// fetching eyy baba
-QVector<QStringList> Client::afficherClients()
+// fetch search a sort the big three
+QVector<QStringList> Client::afficherClients(QString search, QString sort)
 {
     QVector<QStringList> rows;
     QSqlQuery q;
 
-    q.prepare("SELECT * FROM CLIENTS ORDER BY IDCLIENTS DESC");
+    QString query = "SELECT * FROM CLIENTS";
 
-    if(!q.exec())
+    if(!search.trimmed().isEmpty())
     {
-        qDebug() << q.lastError();
+        QString s = search.trimmed();
+
+        query += " WHERE "
+                 "UPPER(TYPE) LIKE '%" + s.toUpper() + "%' OR "
+                                 "UPPER(MODEPAY) LIKE '%" + s.toUpper() + "%' OR "
+                                 "TO_CHAR(DATECL,'YYYY-MM-DD') LIKE '%" + s + "%' OR "
+                       "TO_CHAR(IDCLIENTS) LIKE '%" + s + "%'";
+    }
+
+    if(sort == "client's name")
+        query += " ORDER BY TYPE ASC";
+    else if(sort == "date of birth")
+        query += " ORDER BY DATECL ASC";
+    else if(sort == "payment type")
+        query += " ORDER BY MODEPAY ASC";
+    else if(sort == "article")
+        query += " ORDER BY ARTICLE ASC";
+    else
+        query += " ORDER BY IDCLIENTS DESC";
+
+    qDebug() << "FINAL QUERY:" << query;
+
+    if(!q.exec(query))
+    {
+        qDebug() << "SQL ERROR:" << q.lastError();
         return rows;
     }
 

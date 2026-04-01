@@ -16,18 +16,15 @@ private:
     QString description;
     QString article;
     int qte;
-
 public:
     Client();
     Client(QString type, QString datecl, float montant,
            QString modepay, QString etat,
            QString description, QString article, int qte);
-
     bool ajouterClient();
     bool supprimerClient(int id);
     bool modifierClient(int id);
-
-    QVector<QStringList> afficherClients();
+    QVector<QStringList> afficherClients(QString search = "", QString sort = "");
 };
 
 #endif
