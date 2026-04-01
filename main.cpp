@@ -1,4 +1,13 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
 #include "Bort.h"
+=======
+#include "fishingzone.h"
+>>>>>>> zonepeche
+
+=======
+#include "Bort.h"
+>>>>>>> zonepeche
 #include <QApplication>
 #include <QMessageBox>
 #include "connection.h"
@@ -32,3 +41,10 @@ int main(int argc, char *argv[])
 
 
 }
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+//test push lel github
+>>>>>>> zonepeche
+=======
+>>>>>>> zonepeche

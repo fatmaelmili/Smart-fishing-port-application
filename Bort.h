@@ -2,12 +2,15 @@
 #define BORT_H
 
 #include <QMainWindow>
+<<<<<<< HEAD
+=======
 #include <QSslSocket>
 #include <QChartView>
 #include <QTableWidget>
 #include <QPdfWriter>
 #include <QPainter>
 #include <opencv2/opencv.hpp>
+>>>>>>> zonepeche
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -24,7 +27,10 @@ public:
     ~SignIn();
 
 private slots:
+<<<<<<< HEAD
+=======
     //fatma
+>>>>>>> zonepeche
     void on_btnForgetmdp_clicked();
 
     void on_backsigninBTN_clicked();
@@ -185,6 +191,10 @@ private slots:
 
     void on_clientsmanagementBTN_D_clicked();
 
+<<<<<<< HEAD
+private:
+    Ui::SignIn *ui;
+=======
     void on_ubploaAvatarbtn_clicked();
 
     void on_addstaffbtn_clicked();
@@ -311,6 +321,7 @@ private:
     void loadEmployeeOfMonth();
     //dhia
     int selectedZoneId = -1;
+>>>>>>> zonepeche
 };
 
 #endif // BORT_H

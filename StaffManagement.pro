@@ -1,9 +1,14 @@
 QT       += core gui
 QT += core gui widgets charts
+<<<<<<< HEAD
+
+
+=======
 QT+=sql
 QT += network
 QT += charts
 QT += pdf
+>>>>>>> zonepeche
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
@@ -14,6 +19,12 @@ CONFIG += c++17
 
 SOURCES += \
     Bort.cpp \
+<<<<<<< HEAD
+    main.cpp
+
+HEADERS += \
+    Bort.h
+=======
     connection.cpp \
     main.cpp \
     personnel.cpp \
@@ -24,6 +35,7 @@ HEADERS += \
     connection.h \
     personnel.h \
     zonepech.h
+>>>>>>> zonepeche
 
 FORMS += \
     Bort.ui
@@ -38,6 +50,8 @@ RESOURCES += \
 
 DISTFILES += \
     Images/logo.png
+<<<<<<< HEAD
+=======
 
 
 INCLUDEPATH += C:/opencv/build/include
@@ -49,3 +63,4 @@ CONFIG(debug, debug|release) {
     LIBS += -LC:/opencv/build/x64/vc16/lib \
             -lopencv_world4120
 }
+>>>>>>> zonepeche
