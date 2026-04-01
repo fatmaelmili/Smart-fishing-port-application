@@ -1,6 +1,7 @@
 #include "Bort.h"
 #include "ui_Bort.h"
 #include "personnel.h"
+#include "zonepech.h"
 #include <opencv2/opencv.hpp>
 #include <QBuffer>
 #include<QStyle>
@@ -53,6 +54,7 @@ SignIn::SignIn(QWidget *parent)
     , ui(new Ui::SignIn)
 {
     ui->setupUi(this);
+    this->setFixedSize(1280, 720);
     ui->statrole->hide();
     ui->statcv->hide();
     refreshStaffTable();
@@ -2947,7 +2949,7 @@ bool SignIn::authenticateWithFaceId()
     qDebug() << "Best Face ID match =" << bestRecord.mail
              << "| distance =" << bestDistance;
 
-    // seuil plus strict
+
     if (bestDistance > 30000.0) {
         registerFaceAuthFailure("Face not recognized");
         QMessageBox::warning(this, "Face ID", "Face ID not recognized.");
@@ -3466,4 +3468,192 @@ void SignIn::loadEmployeeOfMonth()
             ui->bestEmployeeAvatar->clear();
         }
     }
+}
+
+
+
+
+
+
+
+
+//dhia
+void SignIn::on_addZonebtn_clicked()
+{
+    QString nom = ui->ZoneName->text().trimmed();
+    QString longitude = ui->Longitude->text().trimmed();
+    QString latitude = ui->Latitude->text().trimmed();
+    QString typeZone = ui->zoneEdit->currentText().trimmed();
+    QString risque = ui->RiskLevel->currentText().trimmed();
+    QString description = ui->DescriptionEdit->toPlainText().trimmed();
+
+    if (nom.isEmpty() || longitude.isEmpty() || latitude.isEmpty()
+        || typeZone.isEmpty() || risque.isEmpty() || description.isEmpty()) {
+        QMessageBox::warning(this, "Input Error", "Please fill in all fields.");
+        return;
+    }
+
+    if (!QSqlDatabase::database().isOpen()) {
+        QMessageBox::critical(this, "Error", "Database connection is not open.");
+        return;
+    }
+
+    ZonePech z(nom, longitude, latitude, typeZone, risque, description);
+
+    if (z.ajouter()) {
+        QMessageBox::information(this, "Success", "Zone created successfully.");
+        loadZonesToTable();
+
+        ui->ZoneName->clear();
+        ui->Longitude->clear();
+        ui->Latitude->clear();
+        ui->DescriptionEdit->clear();
+        ui->zoneEdit->setCurrentIndex(0);
+        ui->RiskLevel->setCurrentIndex(0);
+    } else {
+        QMessageBox::critical(this, "Error", "Insert failed.");
+    }
+}
+void SignIn::on_EditZonebtn_clicked()
+{
+    if (selectedZoneId == -1) {
+        QMessageBox::warning(this, "Edit", "Select a zone from the table first.");
+        return;
+    }
+
+    QString nom = ui->ZoneName->text().trimmed();
+    QString longitude = ui->Longitude->text().trimmed();
+    QString latitude = ui->Latitude->text().trimmed();
+    QString typeZone = ui->zoneEdit->currentText().trimmed();
+    QString risque = ui->RiskLevel->currentText().trimmed();
+    QString description = ui->DescriptionEdit->toPlainText().trimmed();
+
+    if (nom.isEmpty() || longitude.isEmpty() || latitude.isEmpty()
+        || typeZone.isEmpty() || risque.isEmpty() || description.isEmpty()) {
+        QMessageBox::warning(this, "Edit", "Please fill in all fields.");
+        return;
+    }
+
+    if (QMessageBox::question(this, "Confirm", "Apply changes to this zone?")
+        != QMessageBox::Yes) {
+        return;
+    }
+
+    if (!QSqlDatabase::database().isOpen()) {
+        QMessageBox::critical(this, "Error", "Database connection is not open.");
+        return;
+    }
+
+    ZonePech z(nom, longitude, latitude, typeZone, risque, description);
+
+    if (z.modifier(selectedZoneId)) {
+        QMessageBox::information(this, "Edit", "Zone updated.");
+        loadZonesToTable();
+
+        selectedZoneId = -1;
+        ui->ZoneName->clear();
+        ui->Longitude->clear();
+        ui->Latitude->clear();
+        ui->DescriptionEdit->clear();
+        ui->zoneEdit->setCurrentIndex(0);
+        ui->RiskLevel->setCurrentIndex(0);
+    } else {
+        QMessageBox::critical(this, "Edit", "Update failed.");
+    }
+}
+void SignIn::on_DeleteZone_clicked()
+{
+    if (selectedZoneId == -1) {
+        QMessageBox::warning(this, "Delete", "Select a zone from the table first.");
+        return;
+    }
+
+    auto rep = QMessageBox::question(
+        this,
+        "Confirm delete",
+        "Delete the selected zone permanently?",
+        QMessageBox::Yes | QMessageBox::No
+        );
+
+    if (rep != QMessageBox::Yes)
+        return;
+
+    if (!QSqlDatabase::database().isOpen()) {
+        QMessageBox::critical(this, "Error", "Database connection is not open.");
+        return;
+    }
+
+    ZonePech z;
+    if (z.supprimer(selectedZoneId)) {
+        QMessageBox::information(this, "Delete", "Zone deleted.");
+
+        selectedZoneId = -1;
+        ui->ZoneName->clear();
+        ui->Longitude->clear();
+        ui->Latitude->clear();
+        ui->DescriptionEdit->clear();
+        ui->zoneEdit->setCurrentIndex(0);
+        ui->RiskLevel->setCurrentIndex(0);
+
+        loadZonesToTable();
+    } else {
+        QMessageBox::critical(this, "Delete", "Delete failed.");
+    }
+}
+
+void SignIn::loadZonesToTable()
+{
+    ui->ZoneTable->setColumnCount(8); // hidden ID + 7 visible columns
+    ui->ZoneTable->setRowCount(0);
+
+    if (!QSqlDatabase::database().isOpen()) {
+        qDebug() << "DB not open";
+        return;
+    }
+
+    QSqlQuery q;
+    if (!q.exec("SELECT IDZONE, NOM, LATITUDE, LONGITUDE, TYPEZONE, PERIODEAUTORISEE, NIVEAURISQUE, DESCRIPTION FROM ZONEPECHES")) {
+        qDebug() << "SELECT failed";
+        return;
+    }
+
+    int row = 0;
+    while (q.next()) {
+        ui->ZoneTable->insertRow(row);
+
+        ui->ZoneTable->setItem(row, 0, new QTableWidgetItem(q.value(0).toString())); // IDZONE
+        ui->ZoneTable->setItem(row, 1, new QTableWidgetItem(q.value(1).toString())); // NOM
+        ui->ZoneTable->setItem(row, 2, new QTableWidgetItem(q.value(2).toString())); // LATITUDE
+        ui->ZoneTable->setItem(row, 3, new QTableWidgetItem(q.value(3).toString())); // LONGITUDE
+        ui->ZoneTable->setItem(row, 4, new QTableWidgetItem(q.value(4).toString())); // TYPEZONE
+        ui->ZoneTable->setItem(row, 5, new QTableWidgetItem(q.value(5).toString())); // PERIODEAUTORISEE
+        ui->ZoneTable->setItem(row, 6, new QTableWidgetItem(q.value(6).toString())); // NIVEAURISQUE
+        ui->ZoneTable->setItem(row, 7, new QTableWidgetItem(q.value(7).toString())); // DESCRIPTION
+
+        row++;
+    }
+
+    ui->ZoneTable->setColumnHidden(0, true);
+    ui->ZoneTable->resizeColumnsToContents();
+}
+void SignIn::on_ZoneTable_cellClicked(int row, int)
+{
+    auto idItem = ui->ZoneTable->item(row, 0);
+    if (!idItem) return;
+
+    selectedZoneId = idItem->text().toInt();
+
+    auto nameItem = ui->ZoneTable->item(row, 1);
+    auto latItem  = ui->ZoneTable->item(row, 2);
+    auto lonItem  = ui->ZoneTable->item(row, 3);
+    auto typeItem = ui->ZoneTable->item(row, 4);
+    auto riskItem = ui->ZoneTable->item(row, 6);
+    auto descItem = ui->ZoneTable->item(row, 7);
+
+    if (nameItem) ui->ZoneName->setText(nameItem->text());
+    if (lonItem)  ui->Longitude->setText(lonItem->text());
+    if (latItem)  ui->Latitude->setText(latItem->text());
+    if (typeItem) ui->zoneEdit->setCurrentText(typeItem->text());
+    if (riskItem) ui->RiskLevel->setCurrentText(riskItem->text());
+    if (descItem) ui->DescriptionEdit->setPlainText(descItem->text());
 }

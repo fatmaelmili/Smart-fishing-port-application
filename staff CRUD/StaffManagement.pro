@@ -16,12 +16,14 @@ SOURCES += \
     Bort.cpp \
     connection.cpp \
     main.cpp \
-    personnel.cpp
+    personnel.cpp \
+    zonepech.cpp
 
 HEADERS += \
     Bort.h \
     connection.h \
-    personnel.h
+    personnel.h \
+    zonepech.h
 
 FORMS += \
     Bort.ui

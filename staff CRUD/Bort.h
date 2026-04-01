@@ -24,6 +24,7 @@ public:
     ~SignIn();
 
 private slots:
+    //fatma
     void on_btnForgetmdp_clicked();
 
     void on_backsigninBTN_clicked();
@@ -239,8 +240,15 @@ private slots:
 
 
     void on_staffmanagementBTNZ_clicked();
+    //dhia
+    void on_addZonebtn_clicked();
+    void loadZonesToTable();
+    void on_ZoneTable_cellClicked(int row, int column);
+    void on_EditZonebtn_clicked();
+    void on_DeleteZone_clicked();
 
 private:
+    //fatma
     struct CvAnalysisResult
     {
         int score = 0;
@@ -301,6 +309,8 @@ private:
     void saveRememberedUser();
     void loadRememberedUser();
     void loadEmployeeOfMonth();
+    //dhia
+    int selectedZoneId = -1;
 };
 
 #endif // BORT_H
