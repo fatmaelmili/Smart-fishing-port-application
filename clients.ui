@@ -2866,6 +2866,108 @@ QPushButton:pressed {
                    <string>Date of birth</string>
                   </property>
                  </widget>
+                 <widget class="QLabel" name="clientnamelabel">
+                  <property name="geometry">
+                   <rect>
+                    <x>100</x>
+                    <y>150</y>
+                    <width>261</width>
+                    <height>16</height>
+                   </rect>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">color: red;
+font-size: 11px;</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                 <widget class="QLabel" name="clientnamelabel_2">
+                  <property name="geometry">
+                   <rect>
+                    <x>120</x>
+                    <y>220</y>
+                    <width>261</width>
+                    <height>16</height>
+                   </rect>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">color: red;
+font-size: 11px;</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                 <widget class="QLabel" name="clientnamelabel_3">
+                  <property name="geometry">
+                   <rect>
+                    <x>120</x>
+                    <y>380</y>
+                    <width>261</width>
+                    <height>16</height>
+                   </rect>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">color: red;
+font-size: 11px;</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                 <widget class="QLabel" name="itemslabel">
+                  <property name="geometry">
+                   <rect>
+                    <x>120</x>
+                    <y>380</y>
+                    <width>261</width>
+                    <height>20</height>
+                   </rect>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">color: red;
+font-size: 11px;</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                 <widget class="QLabel" name="quantitylabel">
+                  <property name="geometry">
+                   <rect>
+                    <x>120</x>
+                    <y>450</y>
+                    <width>261</width>
+                    <height>16</height>
+                   </rect>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">color: red;
+font-size: 11px;</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                 <widget class="QLabel" name="paymentlabel">
+                  <property name="geometry">
+                   <rect>
+                    <x>120</x>
+                    <y>520</y>
+                    <width>261</width>
+                    <height>16</height>
+                   </rect>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">color: red;
+font-size: 11px;</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
                 </widget>
                </widget>
               </widget>
@@ -3204,7 +3306,7 @@ QPushButton:pressed {
              </column>
              <column>
               <property name="text">
-               <string>‎ </string>
+               <string/>
               </property>
              </column>
              <column>
