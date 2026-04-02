@@ -2,11 +2,16 @@
 #define SIGNIN_H
 
 #include <QMainWindow>
+#include <QTableWidgetItem>
+#include <QSpinBox>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QWidget>
 
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class SignIn;
-}
+namespace Ui { class SignIn; }
 QT_END_NAMESPACE
 
 class SignIn : public QMainWindow
@@ -14,61 +19,43 @@ class SignIn : public QMainWindow
     Q_OBJECT
 
 public:
-    SignIn(QWidget *parent = nullptr);
+    explicit SignIn(QWidget *parent = nullptr);
     ~SignIn();
 
 private slots:
-    void on_btnForgetmdp_clicked();
-
-    void on_backsigninBTN_clicked();
-
-    void on_resetbtn_clicked();
-
-    void on_ubploacvbtn_clicked();
-
-    void on_signinbtn_clicked();
-
-    void on_staffmanagementBTN_W_clicked();
-
-
-
-    void on_backstfbtn_clicked();
-
-    void on_backWbtn_clicked();
-
-    void on_staticbtn_clicked();
-
-    void on_backWbtn_U_clicked();
-
-    void on_staticbtn_U_clicked();
-
-    void on_modifystaffbtn_clicked();
-
-    void on_logOutBTN_W_clicked();
-
-    void on_logOutBTN_U_clicked();
-
-    void on_logOutBTN_D_clicked();
-
-    void on_logOutBTN_clicked();
-
-    void on_logOutBTN_A_clicked();
-
-    void on_backWbtn_A_clicked();
-
-    void on_userprofiledetails_A_clicked();
-
-    void on_userprofiledetails_W_clicked();
-
-    void on_userprofiledetails_clicked();
-
-    void on_userprofiledetails_U_clicked();
-
-    void on_userprofiledetails_D_clicked();
-
-    void on_staffmanagementBTN_A_clicked();
+    void loadEquipmentList();
+    void on_addEqbtn_F_clicked();
+    void filterAndSortTable();
+    void on_exportpdfbtnE_L_clicked();
+    void on_chatbotbtn_L_clicked();
+    void editRowInline(int row);
+    void deleteRowInline(int row);
 
 private:
     Ui::SignIn *ui;
+
+    QSpinBox  *m_qtySpinBox  = nullptr;
+    QSpinBox  *m_capSpinBox  = nullptr;
+
+    struct EqRow { QString name, type, state; int qty = 0, cap = 0; };
+    QList<EqRow> m_allEq;
+
+    static constexpr int COL_NAME  = 0;
+    static constexpr int COL_TYPE  = 1;
+    static constexpr int COL_STATE = 2;
+    static constexpr int COL_QTY   = 3;
+    static constexpr int COL_CAP   = 4;
+    static constexpr int COL_EDIT  = 5;
+    static constexpr int COL_DEL   = 6;
+
+    void setupFormWidgets();
+    void setupTableStyle();
+    void setupSearchBar();
+    void setupSortCombo();
+    void setupButtonStyles();
+    void setupNavHighlight();
+    void addRowButtons(int row);
+    QPushButton* makeIconBtn(const QString &, const QString &, const QString &, QWidget *);
 };
-#endif // SIGNIN_H
+
+#endif

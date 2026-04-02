@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1017</width>
-    <height>729</height>
+    <height>1080</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,9 +52,7 @@ QStackedWidget {
     border: 2px solid #1e3a5f;
     width: 380px;
     height: 580px;
-    margin: 0;
-    padding: 0;
-}
+/* Removed invalid position/transform properties */
 
 /* ===== LOGO - PARFAITEMENT CENTRÉ ===== */
 #logo {
@@ -176,44 +174,28 @@ QLineEdit:hover {
 }
 
 /* ===== BOUTON SIGN IN (LARGEUR RÉDUITE) ===== */
-#signinbtn {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-        stop:0 #0277bd,
-        stop:0.5 #01579b,
-        stop:1 #003f6b);
+/* === PREMIUM ACTION BUTTON (Global) === */
+QPushButton#signinbtn, QPushButton#addEqbtn_F {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #1e88e5, stop:1 #1565c0);
     color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 14px;
+    border: 1px solid #42a5f5;
+    border-radius: 12px;
+    padding: 10px;
     font-size: 14px;
     font-weight: bold;
-    min-height: 44px;
-    max-height: 44px;
-    min-width: 280px;
-    max-width: 280px;
-    margin-left: 50px;
-    margin-right: 50px;
-    margin-bottom: 12px;
-    letter-spacing: 0.5px;
     text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+QPushButton#signinbtn:hover, QPushButton#addEqbtn_F:hover {
+    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #42a5f5, stop:1 #1e88e5);
+    border: 1px solid #90caf9;
+}
+QPushButton#signinbtn:pressed, QPushButton#addEqbtn_F:pressed {
+    background-color: #0d47a1;
+    padding-top: 12px;
 }
 
-#signinbtn:hover {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-        stop:0 #0288d1,
-        stop:0.5 #0277bd,
-        stop:1 #01579b);
-    border: 1px solid #4fc3f7;
-}
 
-#signinbtn:pressed {
-    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-        stop:0 #01579b,
-        stop:0.5 #013a63,
-        stop:1 #002642);
-    padding-top: 15px;
-    padding-bottom: 13px;
-}
 
 /* ===== BOUTON FACE ID (LARGEUR RÉDUITE) ===== */
 #withfacebtn {
@@ -309,7 +291,7 @@ QLabel[objectName*=&quot;error&quot;] {
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>4</number>
     </property>
     <widget class="QWidget" name="pageSignIn">
      <property name="styleSheet">
@@ -342,11 +324,6 @@ QWidget#page_1, QWidget[objectName=&quot;page_1&quot;], QWidget#centralwidget {
     min-width: 380px;
     max-width: 380px;
     min-height: 520px;
-    margin: auto;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
 }
 
 /* ===== LOGO - CENTRALISÉ ===== */
@@ -715,7 +692,7 @@ QLabel[objectName*=&quot;status&quot;] {
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="Ressources.qrc">:/Images/logo.png</pixmap>
+       <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/logo.png</pixmap>
       </property>
      </widget>
     </widget>
@@ -844,7 +821,7 @@ QPushButton#backsigninBTN:hover {
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="Ressources.qrc">:/Images/logo.png</pixmap>
+           <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/logo.png</pixmap>
           </property>
           <property name="alignment">
            <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -1345,7 +1322,7 @@ QFrame#cardWeather {
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="Ressources.qrc">:/Images/logoHeader1.png</pixmap>
+         <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/logoHeader1.png</pixmap>
         </property>
        </widget>
       </widget>
@@ -1423,7 +1400,7 @@ QFrame#cardWeather {
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="Ressources.qrc">:/Images/avatar.png</pixmap>
+           <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/avatar.png</pixmap>
           </property>
          </widget>
         </widget>
@@ -1455,7 +1432,7 @@ QFrame#cardWeather {
        <string/>
       </property>
       <property name="pixmap">
-       <pixmap resource="Ressources.qrc">:/Images/testport.png</pixmap>
+       <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/testport.png</pixmap>
       </property>
      </widget>
      <widget class="QGroupBox" name="infocont">
@@ -1837,2518 +1814,9 @@ QFrame#cardWeather {
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="Ressources.qrc">:/Images/dashhhresize.png</pixmap>
+        <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/dashhhresize.png</pixmap>
        </property>
       </widget>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="pageStaffManagement">
-     <property name="styleSheet">
-      <string notr="true">/* =================================================
-   PAGE STAFF MANAGEMENT - BACKGROUND
-   ================================================= */
-QWidget#pageStaffManagement {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-        stop:0 #071a2c,
-        stop:0.35 #082136,
-        stop:0.7 #071c2d,
-        stop:1 #040f1a);
-    font-family: &quot;Segoe UI&quot;;
-    color: #EAF0FF;
-}
-
-/* =================================================
-   HEADER + SIDEBAR (SAME STYLE)
-   ================================================= */
-QFrame#header,
-QFrame#sidebarMenu {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-        stop:0 rgba(12, 42, 75, 0.95),
-        stop:0.55 rgba(8, 30, 55, 0.95),
-        stop:1 rgba(6, 22, 40, 0.95));
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 16px;
-}
-
-QFrame#header {
-    padding: 10px 16px;
-}
-
-QFrame#sidebarMenu {
-    padding: 12px;
-}
-
-/* =================================================
-   HEADER CONTENT
-   ================================================= */
-QLabel#titreHeader {
-    color: #EAF0FF;
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-}
-
-QLabel#avatar {
-    min-width: 42px;
-    max-width: 42px;
-    min-height: 42px;
-    max-height: 42px;
-    border-radius: 21px;
-    border: 2px solid rgba(88,184,255,0.6);
-    background-color: rgba(255,255,255,0.06);
-}
-
-/* User profile button */
-QCommandLinkButton#userprofiledetails {
-    background-color: rgba(8, 18, 38, 0.55);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 12px;
-    padding: 8px 14px;
-    color: #EAF0FF;
-    font-weight: 700;
-}
-
-QCommandLinkButton#userprofiledetails:hover {
-    background-color: rgba(88,184,255,0.15);
-    border: 1px solid rgba(88,184,255,0.45);
-}
-
-QCommandLinkButton#userprofiledetails:pressed {
-    background-color: rgba(88,184,255,0.25);
-}
-
-/* =================================================
-   SIDEBAR GROUP
-   ================================================= */
-QGroupBox#groupBox {
-    border: none;
-    margin-top: 6px;
-}
-
-/* =================================================
-   SIDEBAR BUTTONS (BASE)
-   ================================================= */
-QPushButton#clientsmanagementBTN,
-QPushButton#equipmentmanagementBTN,
-QPushButton#fishingzonemanagementBTN,
-QPushButton#staffmanagementBTN,
-QPushButton#stockmanagementBTN {
-    background: transparent;
-    border: none;
-    color: rgba(234,240,255,0.80);
-    padding: 12px 14px;
-    border-radius: 12px;
-    text-align: left;
-    font-size: 13px;
-    font-weight: 650;
-}
-
-/* Hover effect */
-QPushButton#clientsmanagementBTN:hover,
-QPushButton#equipmentmanagementBTN:hover,
-QPushButton#fishingzonemanagementBTN:hover,
-QPushButton#staffmanagementBTN:hover,
-QPushButton#stockmanagementBTN:hover {
-    background-color: rgba(88,184,255,0.14);
-    border: 1px solid rgba(88,184,255,0.25);
-    color: #FFFFFF;
-}
-
-/* Pressed */
-QPushButton#clientsmanagementBTN:pressed,
-QPushButton#equipmentmanagementBTN:pressed,
-QPushButton#fishingzonemanagementBTN:pressed,
-QPushButton#staffmanagementBTN:pressed,
-QPushButton#stockmanagementBTN:pressed {
-    background-color: rgba(88,184,255,0.25);
-}
-
-/* =================================================
-   ACTIVE / SELECTED BUTTON (Staff Management)
-   ================================================= */
-QPushButton[active=&quot;true&quot;] {
-    background-color: rgba(10, 102, 255, 0.28);
-    border: 1px solid rgba(10, 102, 255, 0.55);
-    color: #FFFFFF;
-    padding-left: 18px;
-}
-QPushButton#staffmanagementBTN[active=&quot;true&quot;] {
-    background-color: rgba(10, 102, 255, 0.35);
-    border-left: 4px solid #4FC3F7;
-    color: white;
-    font-weight: 600;
-}
-
-/* =================================================
-   LOG OUT BUTTON
-   ================================================= */
-QPushButton#logOutBTN {
-    background: transparent;
-    border: none;
-    color: rgba(234,240,255,0.65);
-    padding: 12px 14px;
-    border-radius: 12px;
-    text-align: left;
-    font-weight: 650;
-}
-
-QPushButton#logOutBTN:hover {
-    background-color: rgba(255, 120, 120, 0.12);
-    border: 1px solid rgba(255, 120, 120, 0.25);
-    color: #FFC1C1;
-}
-
-/* =================================================
-   MAIN CONTENT AREA
-   ================================================= */
-QFrame#contenumain {
-    background-color: transparent;
-}
-
-/* =================================================
-   MENUBAR + STATUSBAR
-   ================================================= */
-QMenuBar {
-    background-color: rgba(6, 22, 40, 0.95);
-    color: rgba(234,240,255,0.85);
-    border-bottom: 1px solid rgba(255,255,255,0.12);
-    padding: 6px;
-}
-
-QStatusBar {
-    background-color: rgba(6, 22, 40, 0.95);
-    color: rgba(234,240,255,0.70);
-    border-top: 1px solid rgba(255,255,255,0.12);
-}
-/* =======================
-   FORM CARD (LEFT)
-   objectName: formAddStaff
-   ======================= */
-QFrame#formAddStaff {
-    background-color: rgba(255,255,255,0.06);
-    border: 1px solid rgba(79,195,247,0.18);
-    border-radius: 16px;
-}
-
-/* Title label (labeladdstaff) */
-QLabel#labeladdstaff {
-    color: #E3F2FD;
-    font-size: 18px;
-    font-weight: 700;
-    padding: 8px 0;
-}
-
-/* All labels inside the form */
-QFrame#formAddStaff QLabel {
-    color: rgba(227,242,253,0.88);
-    font-size: 13px;
-    font-weight: 600;
-}
-
-/* Inputs (LineEdits) */
-QLineEdit {
-    background-color: rgba(10, 35, 55, 0.65);
-    color: #E3F2FD;
-    border: 1px solid rgba(79,195,247,0.25);
-    border-radius: 10px;
-    padding: 8px 12px;
-    min-height: 36px;
-    font-size: 13px;
-}
-
-QLineEdit:focus {
-    border: 1px solid #4FC3F7;
-    background-color: rgba(10, 35, 55, 0.85);
-}
-
-/* ComboBoxes (role, cvstat) */
-QComboBox {
-    background-color: rgba(10, 35, 55, 0.65);
-    color: #E3F2FD;
-    border: 1px solid rgba(79,195,247,0.25);
-    border-radius: 10px;
-    padding: 7px 12px;
-    min-height: 36px;
-    font-size: 13px;
-}
-
-QComboBox:hover {
-    border: 1px solid rgba(79,195,247,0.45);
-}
-
-QComboBox:focus {
-    border: 1px solid #4FC3F7;
-    background-color: rgba(10, 35, 55, 0.85);
-}
-
-QComboBox::drop-down {
-    width: 36px;
-    border: none;
-}
-
-QComboBox::down-arrow {
-    image: none;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 8px solid rgba(227,242,253,0.8);
-    margin-right: 10px;
-}
-
-/* Upload CV Button (uploadcvbtn) */
-QPushButton#uploadcvbtn {
-    background-color: rgba(255,255,255,0.08);
-    color: #E3F2FD;
-    border: 1px dashed rgba(79,195,247,0.6);
-    border-radius: 10px;
-    padding: 8px 12px;
-    font-weight: 600;
-}
-
-/* Hover Upload */
-QPushButton#uploadcvbtn:hover {
-    background-color: rgba(79,195,247,0.2);
-    border-color: #4FC3F7;
-}
-
-/* Add Staff Button (addstaffbtn) */
-QPushButton#addstaffbtn {
-    background-color: #0288D1;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    min-height: 40px;
-    font-weight: bold;
-}
-
-QPushButton#addstaffbtn:hover {
-    background-color: #039BE5;
-}
-
-QPushButton#addstaffbtn:pressed {
-    background-color: #01579B;
-}
-/* ================================================= */
-/* ============ STAFF LIST CONTAINER =============== */
-/* ================================================= */
-
-#liststaffff {
-    background-color: rgba(12, 32, 52, 0.95);
-    border: 1px solid rgba(79, 195, 247, 0.25);
-    border-radius: 18px;
-    padding: 15px;
-    margin-left: 10px;
-}
-
-#liststaffff::title {
-    subcontrol-origin: margin;
-    left: 15px;
-    top: 8px;
-    padding: 0 8px;
-    color: #4fc3f7;
-    font-weight: 700;
-    font-size: 14px;
-}
-
-/* ================================================= */
-/* ================= SEARCH BAR ==================== */
-/* ================================================= */
-
-#staffsearchbarre {
-    background-color: rgba(20, 45, 70, 0.9);
-    border: 1px solid rgba(79, 195, 247, 0.4);
-    border-radius: 14px;
-    padding: 10px 15px;
-    color: white;
-    font-size: 13px;
-}
-
-#staffsearchbarre:focus {
-    border: 1px solid #4fc3f7;
-    background-color: rgba(30, 75, 120, 0.9);
-}
-
-/* ================================================= */
-/* ================= SORT COMBO ==================== */
-/* ================================================= */
-
-#sortstaff {
-    background-color: rgba(20, 45, 70, 0.9);
-    border: 1px solid rgba(79, 195, 247, 0.4);
-    border-radius: 12px;
-    padding: 6px 12px;
-    color: #e3f2fd;
-}
-
-#sortstaff:hover {
-    background-color: rgba(79, 195, 247, 0.25);
-}
-
-/* ================================================= */
-/* ================== TABLE ======================== */
-/* ================================================= */
-
-#tablestaff {
-    background-color: rgba(10, 25, 40, 0.95);
-    border: 1px solid rgba(79, 195, 247, 0.3);
-    border-radius: 14px;
-    gridline-color: rgba(79, 195, 247, 0.15);
-    color: #e3f2fd;
-    font-size: 12px;
-}
-
-#tablestaff::item {
-    padding: 8px;
-}
-
-#tablestaff::item:selected {
-    background-color: rgba(79, 195, 247, 0.35);
-    color: white;
-}
-
-QHeaderView::section {
-    background-color: rgba(15, 55, 90, 0.95);
-    color: #4fc3f7;
-    padding: 8px;
-    border: none;
-    font-weight: bold;
-}
-
-/* Scrollbars table */
-QTableWidget QScrollBar:vertical {
-    background: transparent;
-    width: 8px;
-}
-
-QTableWidget QScrollBar::handle:vertical {
-    background: #4fc3f7;
-    border-radius: 4px;
-}
-
-QTableWidget QScrollBar::add-line,
-QTableWidget QScrollBar::sub-line {
-    height: 0;
-}
-
-/* ================================================= */
-/* ================= BUTTONS ======================= */
-/* ================================================= */
-
-
-#cvanalysebtn,
-#staticbtn,
-#exportpdfstaffbtn {
-    background-color: rgba(20, 60, 95, 0.9);
-    border: 1px solid rgba(79, 195, 247, 0.4);
-    border-radius: 12px;
-    color: #e3f2fd;
-    padding: 10px 16px;
-    font-weight: 600;
-}
-
-
-#cvanalysebtn:hover,
-#staticbtn:hover,
-#exportpdfstaffbtn:hover {
-    background-color: rgba(79, 195, 247, 0.35);
-    color: white;
-}
-
-/* ===== DELETE BUTTON ===== */
-#deletestaffbtn {
-    background-color: rgba(183, 28, 28, 0.9);
-    border: none;
-    border-radius: 12px;
-    color: white;
-    padding: 10px 16px;
-    font-weight: 600;
-}
-
-#deletestaffbtn:hover {
-    background-color: #e53935;
-    box-shadow: 0 0 15px rgba(244, 67, 54, 0.6);
-}
-/* ======================================= */
-/* ========= MODIFY STAFF BUTTON ========= */
-/* ======================================= */
-
-#modifystaffbtn {
-    background-color: #f9a825;            /* Jaune principal */
-    color: #1a1a1a;
-    border: none;
-    border-radius: 14px;
-    padding: 12px 20px;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-/* Hover */
-#modifystaffbtn:hover {
-    background-color: #fbc02d;            /* Jaune plus clair */
-    box-shadow: 0 0 15px rgba(251, 192, 45, 0.6);
-}
-
-/* Click (pressed) */
-#modifystaffbtn:pressed {
-    background-color: #f57f17;            /* Jaune foncé */
-    box-shadow: inset 0 3px 6px rgba(0,0,0,0.35);
-}
-/* =========================================================
-   BACK TO WELCOME BUTTON
-   ========================================================= */
-QPushButton#backWbtn {
-    background: rgba(20, 38, 58, 0.65);   /* navy soft */
-    color: rgba(234,240,255,0.90);
-    border-radius: 14px;
-    padding: 10px 18px;
-    border: 1px solid rgba(120,160,200,0.25);
-    font-size: 13px;
-    font-weight: 700;
-}
-
-/* Hover */
-QPushButton#backWbtn:hover {
-    background: rgba(37, 99, 235, 0.20);  /* blue highlight */
-    border: 1px solid rgba(88,184,255,0.55);
-    color: #FFFFFF;
-}
-
-/* Pressed */
-QPushButton#backWbtn:pressed {
-    background: rgba(15, 23, 42, 0.95);
-    border: 1px solid rgba(88,184,255,0.75);
-}
-
-/* Optional: disabled */
-QPushButton#backWbtn:disabled {
-    background: rgba(20, 38, 58, 0.35);
-    color: rgba(234,240,255,0.45);
-    border: 1px solid rgba(120,160,200,0.15);
-}
-</string>
-     </property>
-     <widget class="QWidget" name="layoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>1491</width>
-        <height>761</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QFrame" name="sidebarMenu">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>200</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::Shape::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Shadow::Raised</enum>
-         </property>
-         <widget class="QGroupBox" name="groupBox">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>100</y>
-            <width>200</width>
-            <height>581</height>
-           </rect>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>200</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="title">
-           <string/>
-          </property>
-          <widget class="QPushButton" name="staffmanagementBTN">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>80</y>
-             <width>181</width>
-             <height>61</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>👩🏻‍💼Staff Management</string>
-           </property>
-           <property name="active" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="clientsmanagementBTN">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>150</y>
-             <width>191</width>
-             <height>51</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>💰Clients Management</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="stockmanagementBTN">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>210</y>
-             <width>171</width>
-             <height>51</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>🐟 Stock Management</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="fishingzonemanagementBTN">
-           <property name="geometry">
-            <rect>
-             <x>-10</x>
-             <y>320</y>
-             <width>221</width>
-             <height>51</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>🗺️ FishingZone Management</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="equipmentmanagementBTN">
-           <property name="geometry">
-            <rect>
-             <x>-10</x>
-             <y>270</y>
-             <width>201</width>
-             <height>41</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>⚓Equipment Management</string>
-           </property>
-          </widget>
-         </widget>
-         <widget class="QLabel" name="logoheader">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>10</y>
-            <width>181</width>
-            <height>151</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="pixmap">
-           <pixmap resource="Ressources.qrc">:/Images/logoHeader1.png</pixmap>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="logOutBTN">
-          <property name="geometry">
-           <rect>
-            <x>40</x>
-            <y>650</y>
-            <width>121</width>
-            <height>61</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>⏻ Log Out</string>
-          </property>
-         </widget>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="contenumain">
-         <property name="frameShape">
-          <enum>QFrame::Shape::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Shadow::Raised</enum>
-         </property>
-         <property name="active" stdset="0">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="verticalLayoutWidget">
-          <property name="geometry">
-           <rect>
-            <x>-270</x>
-            <y>0</y>
-            <width>1431</width>
-            <height>101</height>
-           </rect>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QFrame" name="header">
-             <property name="frameShape">
-              <enum>QFrame::Shape::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Shadow::Raised</enum>
-             </property>
-             <widget class="QLabel" name="titreHeader">
-              <property name="geometry">
-               <rect>
-                <x>220</x>
-                <y>20</y>
-                <width>461</width>
-                <height>61</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>BORT- Smart Fishing Port Application</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-             <widget class="QCommandLinkButton" name="userprofiledetails">
-              <property name="geometry">
-               <rect>
-                <x>830</x>
-                <y>20</y>
-                <width>211</width>
-                <height>51</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Fatma El Mili</string>
-              </property>
-             </widget>
-             <widget class="QLabel" name="avatar">
-              <property name="geometry">
-               <rect>
-                <x>990</x>
-                <y>20</y>
-                <width>46</width>
-                <height>46</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="pixmap">
-               <pixmap resource="Ressources.qrc">:/Images/avatar.png</pixmap>
-              </property>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="layoutWidget">
-          <property name="geometry">
-           <rect>
-            <x>-10</x>
-            <y>100</y>
-            <width>831</width>
-            <height>621</height>
-           </rect>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QFrame" name="liststaff">
-             <property name="frameShape">
-              <enum>QFrame::Shape::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Shadow::Raised</enum>
-             </property>
-             <widget class="QFrame" name="formAddStaff">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>0</y>
-                <width>411</width>
-                <height>619</height>
-               </rect>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
-              </property>
-              <widget class="QGroupBox" name="formcontdd">
-               <property name="geometry">
-                <rect>
-                 <x>10</x>
-                 <y>10</y>
-                 <width>401</width>
-                 <height>601</height>
-                </rect>
-               </property>
-               <property name="title">
-                <string/>
-               </property>
-               <widget class="QLabel" name="labeladdstaff">
-                <property name="geometry">
-                 <rect>
-                  <x>100</x>
-                  <y>0</y>
-                  <width>151</width>
-                  <height>41</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Form Add Staff</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignmentFlag::AlignCenter</set>
-                </property>
-               </widget>
-               <widget class="QComboBox" name="role">
-                <property name="geometry">
-                 <rect>
-                  <x>0</x>
-                  <y>400</y>
-                  <width>161</width>
-                  <height>52</height>
-                 </rect>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Staff Role</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Admin</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>An accountant</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Human resource</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Regulatory manager</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Fisherman</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Security</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-               </widget>
-               <widget class="QLabel" name="staffnamelabel">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>70</y>
-                  <width>131</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Staff Full Name</string>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="staffnameedit">
-                <property name="geometry">
-                 <rect>
-                  <x>150</x>
-                  <y>50</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QLabel" name="staffaddresslabel">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>130</y>
-                  <width>111</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Staff Address</string>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="staffaddressedit">
-                <property name="geometry">
-                 <rect>
-                  <x>150</x>
-                  <y>120</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QLabel" name="tellabel">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>210</y>
-                  <width>141</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Staff Phone Number</string>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="teledit">
-                <property name="geometry">
-                 <rect>
-                  <x>150</x>
-                  <y>190</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QLabel" name="maillabel">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>270</y>
-                  <width>151</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Staff Mail</string>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="mailedit">
-                <property name="geometry">
-                 <rect>
-                  <x>150</x>
-                  <y>260</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QComboBox" name="cvstat">
-                <property name="geometry">
-                 <rect>
-                  <x>190</x>
-                  <y>400</y>
-                  <width>161</width>
-                  <height>52</height>
-                 </rect>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>CvStatus</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Rejected
-Accepted
-Pending</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-               </widget>
-               <widget class="QLabel" name="passlab">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>340</y>
-                  <width>141</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Staff Password</string>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="passlab_2">
-                <property name="geometry">
-                 <rect>
-                  <x>150</x>
-                  <y>330</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QPushButton" name="ubploacvbtn">
-                <property name="geometry">
-                 <rect>
-                  <x>130</x>
-                  <y>460</y>
-                  <width>90</width>
-                  <height>29</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Upload Cv</string>
-                </property>
-               </widget>
-               <widget class="QPushButton" name="addstaffbtn">
-                <property name="geometry">
-                 <rect>
-                  <x>50</x>
-                  <y>520</y>
-                  <width>261</width>
-                  <height>60</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>➕Add Staff</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="cvpathEdit">
-                <property name="geometry">
-                 <rect>
-                  <x>30</x>
-                  <y>490</y>
-                  <width>311</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignmentFlag::AlignCenter</set>
-                </property>
-               </widget>
-              </widget>
-             </widget>
-             <widget class="QGroupBox" name="liststaffff">
-              <property name="geometry">
-               <rect>
-                <x>420</x>
-                <y>0</y>
-                <width>391</width>
-                <height>621</height>
-               </rect>
-              </property>
-              <property name="title">
-               <string/>
-              </property>
-              <widget class="QLineEdit" name="staffsearchbarre">
-               <property name="geometry">
-                <rect>
-                 <x>20</x>
-                 <y>10</y>
-                 <width>361</width>
-                 <height>58</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>🔍Search with staff full name,role,cvstatus....</string>
-               </property>
-              </widget>
-              <widget class="QComboBox" name="sortstaff">
-               <property name="geometry">
-                <rect>
-                 <x>230</x>
-                 <y>80</y>
-                 <width>151</width>
-                 <height>54</height>
-                </rect>
-               </property>
-               <item>
-                <property name="text">
-                 <string>Sort with.....</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Staff Full Name</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Staff Role</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Staff CvStatus</string>
-                </property>
-               </item>
-              </widget>
-              <widget class="QLabel" name="stafflistlabel">
-               <property name="geometry">
-                <rect>
-                 <x>30</x>
-                 <y>80</y>
-                 <width>191</width>
-                 <height>51</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>Staff List</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignmentFlag::AlignCenter</set>
-               </property>
-              </widget>
-              <widget class="QTableWidget" name="tablestaff">
-               <property name="geometry">
-                <rect>
-                 <x>10</x>
-                 <y>150</y>
-                 <width>381</width>
-                 <height>221</height>
-                </rect>
-               </property>
-               <property name="verticalScrollBarPolicy">
-                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
-               </property>
-               <property name="horizontalScrollBarPolicy">
-                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
-               </property>
-               <property name="rowCount">
-                <number>2</number>
-               </property>
-               <property name="columnCount">
-                <number>8</number>
-               </property>
-               <row/>
-               <row/>
-               <column>
-                <property name="text">
-                 <string>Staff Full Name</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Staff Address</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Phone Number</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Staff Mail</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Staff Password</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Staff Role</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Cv Status</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Cv</string>
-                </property>
-               </column>
-              </widget>
-              <widget class="QPushButton" name="modifystaffbtn">
-               <property name="geometry">
-                <rect>
-                 <x>20</x>
-                 <y>380</y>
-                 <width>161</width>
-                 <height>41</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>🛠️Edit Staff</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="deletestaffbtn">
-               <property name="geometry">
-                <rect>
-                 <x>210</x>
-                 <y>380</y>
-                 <width>171</width>
-                 <height>41</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>🚯Delete Staff</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="cvanalysebtn">
-               <property name="geometry">
-                <rect>
-                 <x>80</x>
-                 <y>430</y>
-                 <width>261</width>
-                 <height>41</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>🤖AI agent CV analysis</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="staticbtn">
-               <property name="geometry">
-                <rect>
-                 <x>30</x>
-                 <y>490</y>
-                 <width>171</width>
-                 <height>41</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>📈Go To Dashboard</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="exportpdfstaffbtn">
-               <property name="geometry">
-                <rect>
-                 <x>220</x>
-                 <y>490</y>
-                 <width>161</width>
-                 <height>41</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>📝Export As PDF</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="backWbtn">
-               <property name="geometry">
-                <rect>
-                 <x>110</x>
-                 <y>550</y>
-                 <width>211</width>
-                 <height>61</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>↩️Back to Welcome Page</string>
-               </property>
-              </widget>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="pageupdate">
-     <property name="styleSheet">
-      <string notr="true">/* =================================================
-   PAGE STAFF MANAGEMENT - BACKGROUND
-   ================================================= */
-QWidget#pageupdate {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-        stop:0 #071a2c,
-        stop:0.35 #082136,
-        stop:0.7 #071c2d,
-        stop:1 #040f1a);
-    font-family: &quot;Segoe UI&quot;;
-    color: #EAF0FF;
-}
-
-/* =================================================
-   HEADER + SIDEBAR (SAME STYLE)
-   ================================================= */
-QFrame#header_U,
-QFrame#sidebarMenu_U {
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-        stop:0 rgba(12, 42, 75, 0.95),
-        stop:0.55 rgba(8, 30, 55, 0.95),
-        stop:1 rgba(6, 22, 40, 0.95));
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 16px;
-}
-
-QFrame#header_U{
-    padding: 10px 16px;
-}
-
-QFrame#sidebarMenu_U {
-    padding: 12px;
-}
-
-/* =================================================
-   HEADER CONTENT
-   ================================================= */
-QLabel#titreHeader_U {
-    color: #EAF0FF;
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-}
-
-QLabel#avatar_U {
-    min-width: 42px;
-    max-width: 42px;
-    min-height: 42px;
-    max-height: 42px;
-    border-radius: 21px;
-    border: 2px solid rgba(88,184,255,0.6);
-    background-color: rgba(255,255,255,0.06);
-}
-
-/* User profile button */
-QCommandLinkButton#userprofiledetails_U {
-    background-color: rgba(8, 18, 38, 0.55);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 12px;
-    padding: 8px 14px;
-    color: #EAF0FF;
-    font-weight: 700;
-}
-
-QCommandLinkButton#userprofiledetails_U:hover {
-    background-color: rgba(88,184,255,0.15);
-    border: 1px solid rgba(88,184,255,0.45);
-}
-
-QCommandLinkButton#userprofiledetails_U:pressed {
-    background-color: rgba(88,184,255,0.25);
-}
-
-/* =================================================
-   SIDEBAR GROUP
-   ================================================= */
-QGroupBox#groupBox_U {
-    border: none;
-    margin-top: 6px;
-}
-
-/* =================================================
-   SIDEBAR BUTTONS (BASE)
-   ================================================= */
-QPushButton#clientsmanagementBTN_U,
-QPushButton#equipmentmanagementBTN_U,
-QPushButton#fishingzonemanagementBTN_U,
-QPushButton#staffmanagementBTN_U,
-QPushButton#stockmanagementBTN_U {
-    background: transparent;
-    border: none;
-    color: rgba(234,240,255,0.80);
-    padding: 12px 14px;
-    border-radius: 12px;
-    text-align: left;
-    font-size: 13px;
-    font-weight: 650;
-}
-
-/* Hover effect */
-QPushButton#clientsmanagementBTN_U:hover,
-QPushButton#equipmentmanagementBTN_U:hover,
-QPushButton#fishingzonemanagementBTN_U:hover,
-QPushButton#staffmanagementBTN_U:hover,
-QPushButton#stockmanagementBTN_U:hover {
-    background-color: rgba(88,184,255,0.14);
-    border: 1px solid rgba(88,184,255,0.25);
-    color: #FFFFFF;
-}
-
-/* Pressed */
-QPushButton#clientsmanagementBTN_U:pressed,
-QPushButton#equipmentmanagementBTN_U:pressed,
-QPushButton#fishingzonemanagementBTN_U:pressed,
-QPushButton#staffmanagementBTN_U:pressed,
-QPushButton#stockmanagementBTN_U:pressed {
-    background-color: rgba(88,184,255,0.25);
-}
-
-/* =================================================
-   ACTIVE / SELECTED BUTTON (Staff Management)
-   ================================================= */
-QPushButton[active=&quot;true&quot;] {
-    background-color: rgba(10, 102, 255, 0.28);
-    border: 1px solid rgba(10, 102, 255, 0.55);
-    color: #FFFFFF;
-    padding-left: 18px;
-}
-QPushButton#staffmanagementBTN_U[active=&quot;true&quot;] {
-    background-color: rgba(10, 102, 255, 0.35);
-    border-left: 4px solid #4FC3F7;
-    color: white;
-    font-weight: 600;
-}
-
-/* =================================================
-   LOG OUT BUTTON
-   ================================================= */
-QPushButton#logOutBTN_U {
-    background: transparent;
-    border: none;
-    color: rgba(234,240,255,0.65);
-    padding: 12px 14px;
-    border-radius: 12px;
-    text-align: left;
-    font-weight: 650;
-}
-
-QPushButton#logOutBTN_U:hover {
-    background-color: rgba(255, 120, 120, 0.12);
-    border: 1px solid rgba(255, 120, 120, 0.25);
-    color: #FFC1C1;
-}
-
-/* =================================================
-   MAIN CONTENT AREA
-   ================================================= */
-QFrame#contenumain_U {
-    background-color: transparent;
-}
-
-/* =================================================
-   MENUBAR + STATUSBAR
-   ================================================= */
-QMenuBar_U {
-    background-color: rgba(6, 22, 40, 0.95);
-    color: rgba(234,240,255,0.85);
-    border-bottom: 1px solid rgba(255,255,255,0.12);
-    padding: 6px;
-}
-
-QStatusBar_U {
-    background-color: rgba(6, 22, 40, 0.95);
-    color: rgba(234,240,255,0.70);
-    border-top: 1px solid rgba(255,255,255,0.12);
-}
-/* =======================
-   FORM CARD (LEFT)
-   objectName: formAddStaff
-   ======================= */
-QFrame#formAddStaff_U {
-    background-color: rgba(255,255,255,0.06);
-    border: 1px solid rgba(79,195,247,0.18);
-    border-radius: 16px;
-}
-
-/* Title label (labeladdstaff) */
-QLabel#labeladdstaff_U {
-    color: #E3F2FD;
-    font-size: 18px;
-    font-weight: 700;
-    padding: 8px 0;
-}
-
-/* All labels inside the form */
-QFrame#formAddStaff_U QLabel {
-    color: rgba(227,242,253,0.88);
-    font-size: 13px;
-    font-weight: 600;
-}
-
-/* Inputs (LineEdits) */
-QLineEdit {
-    background-color: rgba(10, 35, 55, 0.65);
-    color: #E3F2FD;
-    border: 1px solid rgba(79,195,247,0.25);
-    border-radius: 10px;
-    padding: 8px 12px;
-    min-height: 36px;
-    font-size: 13px;
-}
-
-QLineEdit:focus {
-    border: 1px solid #4FC3F7;
-    background-color: rgba(10, 35, 55, 0.85);
-}
-
-/* ComboBoxes (role, cvstat) */
-QComboBox {
-    background-color: rgba(10, 35, 55, 0.65);
-    color: #E3F2FD;
-    border: 1px solid rgba(79,195,247,0.25);
-    border-radius: 10px;
-    padding: 7px 12px;
-    min-height: 36px;
-    font-size: 13px;
-}
-
-QComboBox:hover {
-    border: 1px solid rgba(79,195,247,0.45);
-}
-
-QComboBox:focus {
-    border: 1px solid #4FC3F7;
-    background-color: rgba(10, 35, 55, 0.85);
-}
-
-QComboBox::drop-down {
-    width: 36px;
-    border: none;
-}
-
-QComboBox::down-arrow {
-    image: none;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 8px solid rgba(227,242,253,0.8);
-    margin-right: 10px;
-}
-
-/* Upload CV Button (uploadcvbtn) */
-QPushButton#uploadcvbtn_U {
-    background-color: rgba(255,255,255,0.08);
-    color: #E3F2FD;
-    border: 1px dashed rgba(79,195,247,0.6);
-    border-radius: 10px;
-    padding: 8px 12px;
-    font-weight: 600;
-}
-
-/* Hover Upload */
-QPushButton#uploadcvbtn_U:hover {
-    background-color: rgba(79,195,247,0.2);
-    border-color: #4FC3F7;
-}
-
-/* Add Staff Button (addstaffbtn) */
-QPushButton#addstaffbtn_U {
-    background-color: #0288D1;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    min-height: 40px;
-    font-weight: bold;
-}
-
-QPushButton#addstaffbtn_U:hover {
-    background-color: #039BE5;
-}
-
-QPushButton#addstaffbtn_U:pressed {
-    background-color: #01579B;
-}
-/* ================================================= */
-/* ============ STAFF LIST CONTAINER =============== */
-/* ================================================= */
-
-#liststaffff_U {
-    background-color: rgba(12, 32, 52, 0.95);
-    border: 1px solid rgba(79, 195, 247, 0.25);
-    border-radius: 18px;
-    padding: 15px;
-    margin-left: 10px;
-}
-
-#liststaffff_U::title {
-    subcontrol-origin: margin;
-    left: 15px;
-    top: 8px;
-    padding: 0 8px;
-    color: #4fc3f7;
-    font-weight: 700;
-    font-size: 14px;
-}
-
-/* ================================================= */
-/* ================= SEARCH BAR ==================== */
-/* ================================================= */
-
-#staffsearchbarre_U {
-    background-color: rgba(20, 45, 70, 0.9);
-    border: 1px solid rgba(79, 195, 247, 0.4);
-    border-radius: 14px;
-    padding: 10px 15px;
-    color: white;
-    font-size: 13px;
-}
-
-#staffsearchbarre_U:focus {
-    border: 1px solid #4fc3f7;
-    background-color: rgba(30, 75, 120, 0.9);
-}
-
-/* ================================================= */
-/* ================= SORT COMBO ==================== */
-/* ================================================= */
-
-#sortstaff_U {
-    background-color: rgba(20, 45, 70, 0.9);
-    border: 1px solid rgba(79, 195, 247, 0.4);
-    border-radius: 12px;
-    padding: 6px 12px;
-    color: #e3f2fd;
-}
-
-#sortstaff_U:hover {
-    background-color: rgba(79, 195, 247, 0.25);
-}
-
-/* ================================================= */
-/* ================== TABLE ======================== */
-/* ================================================= */
-
-#tablestaff_U {
-    background-color: rgba(10, 25, 40, 0.95);
-    border: 1px solid rgba(79, 195, 247, 0.3);
-    border-radius: 14px;
-    gridline-color: rgba(79, 195, 247, 0.15);
-    color: #e3f2fd;
-    font-size: 12px;
-}
-
-#tablestaff_U::item {
-    padding: 8px;
-}
-
-#tablestaff_U::item:selected {
-    background-color: rgba(79, 195, 247, 0.35);
-    color: white;
-}
-
-QHeaderView::section {
-    background-color: rgba(15, 55, 90, 0.95);
-    color: #4fc3f7;
-    padding: 8px;
-    border: none;
-    font-weight: bold;
-}
-
-/* Scrollbars table */
-QTableWidget QScrollBar:vertical {
-    background: transparent;
-    width: 8px;
-}
-
-QTableWidget QScrollBar::handle:vertical {
-    background: #4fc3f7;
-    border-radius: 4px;
-}
-
-QTableWidget QScrollBar::add-line,
-QTableWidget QScrollBar::sub-line {
-    height: 0;
-}
-
-/* ================================================= */
-/* ================= BUTTONS ======================= */
-/* ================================================= */
-
-
-#cvanalysebtn_U,
-#staticbtn_U,
-#exportpdfstaffbtn_U {
-    background-color: rgba(20, 60, 95, 0.9);
-    border: 1px solid rgba(79, 195, 247, 0.4);
-    border-radius: 12px;
-    color: #e3f2fd;
-    padding: 10px 16px;
-    font-weight: 600;
-}
-
-
-#cvanalysebtn_U:hover,
-#staticbtn_U:hover,
-#exportpdfstaffbtn_U:hover {
-    background-color: rgba(79, 195, 247, 0.35);
-    color: white;
-}
-
-/* ===== DELETE BUTTON ===== */
-#deletestaffbtn_U {
-    background-color: rgba(183, 28, 28, 0.9);
-    border: none;
-    border-radius: 12px;
-    color: white;
-    padding: 10px 16px;
-    font-weight: 600;
-}
-
-#deletestaffbtn_U:hover {
-    background-color: #e53935;
-    box-shadow: 0 0 15px rgba(244, 67, 54, 0.6);
-}
-/* ======================================= */
-/* ========= MODIFY STAFF BUTTON ========= */
-/* ======================================= */
-
-#modifystaffbtn_U {
-    background-color: #f9a825;            /* Jaune principal */
-    color: #1a1a1a;
-    border: none;
-    border-radius: 14px;
-    padding: 12px 20px;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-/* Hover */
-#modifystaffbtn_U:hover {
-    background-color: #fbc02d;            /* Jaune plus clair */
-    box-shadow: 0 0 15px rgba(251, 192, 45, 0.6);
-}
-
-/* Click (pressed) */
-#modifystaffbtn_U:pressed {
-    background-color: #f57f17;            /* Jaune foncé */
-    box-shadow: inset 0 3px 6px rgba(0,0,0,0.35);
-}
-/* =========================================================
-   BACK TO WELCOME BUTTON
-   ========================================================= */
-QPushButton#backWbtn_U {
-    background: rgba(20, 38, 58, 0.65);   /* navy soft */
-    color: rgba(234,240,255,0.90);
-    border-radius: 14px;
-    padding: 10px 18px;
-    border: 1px solid rgba(120,160,200,0.25);
-    font-size: 13px;
-    font-weight: 700;
-}
-
-/* Hover */
-QPushButton#backWbtn_U:hover {
-    background: rgba(37, 99, 235, 0.20);  /* blue highlight */
-    border: 1px solid rgba(88,184,255,0.55);
-    color: #FFFFFF;
-}
-
-/* Pressed */
-QPushButton#backWbtn_U:pressed {
-    background: rgba(15, 23, 42, 0.95);
-    border: 1px solid rgba(88,184,255,0.75);
-}
-
-/* Optional: disabled */
-QPushButton#backWbtn_U:disabled {
-    background: rgba(20, 38, 58, 0.35);
-    color: rgba(234,240,255,0.45);
-    border: 1px solid rgba(120,160,200,0.15);
-}
-</string>
-     </property>
-     <widget class="QWidget" name="layoutWidget_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>-10</y>
-        <width>1491</width>
-        <height>761</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QFrame" name="sidebarMenu_U">
-         <property name="minimumSize">
-          <size>
-           <width>200</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>200</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::Shape::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Shadow::Raised</enum>
-         </property>
-         <widget class="QGroupBox" name="groupBox_U">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>100</y>
-            <width>200</width>
-            <height>581</height>
-           </rect>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>200</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>200</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="title">
-           <string/>
-          </property>
-          <widget class="QPushButton" name="staffmanagementBTN_U">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>80</y>
-             <width>181</width>
-             <height>61</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>👩🏻‍💼Staff Management</string>
-           </property>
-           <property name="active" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="clientsmanagementBTN_U">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>150</y>
-             <width>191</width>
-             <height>51</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>💰Clients Management</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="stockmanagementBTN_U">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>210</y>
-             <width>171</width>
-             <height>51</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>🐟 Stock Management</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="fishingzonemanagementBTN_U">
-           <property name="geometry">
-            <rect>
-             <x>-20</x>
-             <y>320</y>
-             <width>221</width>
-             <height>51</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>🗺️ FishingZone Management</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="equipmentmanagementBTN_U">
-           <property name="geometry">
-            <rect>
-             <x>-10</x>
-             <y>270</y>
-             <width>201</width>
-             <height>41</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>⚓Equipment Management</string>
-           </property>
-          </widget>
-         </widget>
-         <widget class="QLabel" name="logoheader_U">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>10</y>
-            <width>181</width>
-            <height>151</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="pixmap">
-           <pixmap resource="Ressources.qrc">:/Images/logoHeader1.png</pixmap>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="logOutBTN_U">
-          <property name="geometry">
-           <rect>
-            <x>40</x>
-            <y>650</y>
-            <width>121</width>
-            <height>61</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>⏻ Log Out</string>
-          </property>
-         </widget>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="contenumain_U">
-         <property name="frameShape">
-          <enum>QFrame::Shape::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Shadow::Raised</enum>
-         </property>
-         <property name="active" stdset="0">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="verticalLayoutWidget_4">
-          <property name="geometry">
-           <rect>
-            <x>-270</x>
-            <y>0</y>
-            <width>1431</width>
-            <height>101</height>
-           </rect>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <item>
-            <widget class="QFrame" name="header_U">
-             <property name="frameShape">
-              <enum>QFrame::Shape::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Shadow::Raised</enum>
-             </property>
-             <widget class="QLabel" name="titreHeader_U">
-              <property name="geometry">
-               <rect>
-                <x>220</x>
-                <y>20</y>
-                <width>461</width>
-                <height>61</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>BORT- Smart Fishing Port Application</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-             <widget class="QCommandLinkButton" name="userprofiledetails_U">
-              <property name="geometry">
-               <rect>
-                <x>830</x>
-                <y>20</y>
-                <width>211</width>
-                <height>51</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Fatma El Mili</string>
-              </property>
-             </widget>
-             <widget class="QLabel" name="avatar_U">
-              <property name="geometry">
-               <rect>
-                <x>990</x>
-                <y>20</y>
-                <width>46</width>
-                <height>46</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="pixmap">
-               <pixmap resource="Ressources.qrc">:/Images/avatar.png</pixmap>
-              </property>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="layoutWidget_3">
-          <property name="geometry">
-           <rect>
-            <x>-10</x>
-            <y>100</y>
-            <width>831</width>
-            <height>621</height>
-           </rect>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
-           <item>
-            <widget class="QFrame" name="liststaff_U">
-             <property name="frameShape">
-              <enum>QFrame::Shape::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Shadow::Raised</enum>
-             </property>
-             <widget class="QFrame" name="formAddStaff_U">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>0</y>
-                <width>411</width>
-                <height>619</height>
-               </rect>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::Shape::StyledPanel</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
-              </property>
-              <widget class="QGroupBox" name="formcontdd_U">
-               <property name="geometry">
-                <rect>
-                 <x>10</x>
-                 <y>10</y>
-                 <width>401</width>
-                 <height>601</height>
-                </rect>
-               </property>
-               <property name="title">
-                <string/>
-               </property>
-               <widget class="QLabel" name="labeladdstaff_U">
-                <property name="geometry">
-                 <rect>
-                  <x>100</x>
-                  <y>0</y>
-                  <width>151</width>
-                  <height>41</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Form Edit Staff</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignmentFlag::AlignCenter</set>
-                </property>
-               </widget>
-               <widget class="QComboBox" name="role_U">
-                <property name="geometry">
-                 <rect>
-                  <x>0</x>
-                  <y>400</y>
-                  <width>161</width>
-                  <height>52</height>
-                 </rect>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Staff Role</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Admin</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>An accountant</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Human resource</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Regulatory manager</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Fisherman</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Security</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-               </widget>
-               <widget class="QLabel" name="staffnamelabel_U">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>70</y>
-                  <width>131</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Staff Full Name</string>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="staffnameedit_U">
-                <property name="geometry">
-                 <rect>
-                  <x>150</x>
-                  <y>50</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QLabel" name="staffaddresslabel_U">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>130</y>
-                  <width>111</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Staff Address</string>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="staffaddressedit_U">
-                <property name="geometry">
-                 <rect>
-                  <x>150</x>
-                  <y>120</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QLabel" name="tellabel_U">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>210</y>
-                  <width>141</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Staff Phone Number</string>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="teledit_U">
-                <property name="geometry">
-                 <rect>
-                  <x>150</x>
-                  <y>190</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QLabel" name="maillabel_U">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>270</y>
-                  <width>151</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Staff Mail</string>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="mailedit_U">
-                <property name="geometry">
-                 <rect>
-                  <x>150</x>
-                  <y>260</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QComboBox" name="cvstat_U">
-                <property name="geometry">
-                 <rect>
-                  <x>190</x>
-                  <y>400</y>
-                  <width>161</width>
-                  <height>52</height>
-                 </rect>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>CvStatus</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Rejected
-Accepted
-Pending</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string/>
-                 </property>
-                </item>
-               </widget>
-               <widget class="QLabel" name="passlab_U">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>340</y>
-                  <width>141</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Staff Password</string>
-                </property>
-               </widget>
-               <widget class="QLineEdit" name="passlab_U_2">
-                <property name="geometry">
-                 <rect>
-                  <x>150</x>
-                  <y>330</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QPushButton" name="ubploacvbtn_U">
-                <property name="geometry">
-                 <rect>
-                  <x>130</x>
-                  <y>460</y>
-                  <width>90</width>
-                  <height>29</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Upload Cv</string>
-                </property>
-               </widget>
-               <widget class="QPushButton" name="addstaffbtn_U">
-                <property name="geometry">
-                 <rect>
-                  <x>50</x>
-                  <y>520</y>
-                  <width>261</width>
-                  <height>60</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>✔️Confirm </string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="cvpathEdit_U">
-                <property name="geometry">
-                 <rect>
-                  <x>30</x>
-                  <y>490</y>
-                  <width>311</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignmentFlag::AlignCenter</set>
-                </property>
-               </widget>
-              </widget>
-             </widget>
-             <widget class="QGroupBox" name="liststaffff_U">
-              <property name="geometry">
-               <rect>
-                <x>420</x>
-                <y>0</y>
-                <width>391</width>
-                <height>621</height>
-               </rect>
-              </property>
-              <property name="title">
-               <string/>
-              </property>
-              <widget class="QLineEdit" name="staffsearchbarre_U">
-               <property name="geometry">
-                <rect>
-                 <x>20</x>
-                 <y>10</y>
-                 <width>361</width>
-                 <height>58</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>🔍Search with staff full name,role,cvstatus....</string>
-               </property>
-              </widget>
-              <widget class="QComboBox" name="sortstaff_U">
-               <property name="geometry">
-                <rect>
-                 <x>230</x>
-                 <y>80</y>
-                 <width>151</width>
-                 <height>54</height>
-                </rect>
-               </property>
-               <item>
-                <property name="text">
-                 <string>Sort with.....</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Staff Full Name</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Staff Role</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Staff CvStatus</string>
-                </property>
-               </item>
-              </widget>
-              <widget class="QLabel" name="stafflistlabel_U">
-               <property name="geometry">
-                <rect>
-                 <x>30</x>
-                 <y>80</y>
-                 <width>191</width>
-                 <height>51</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>Staff List</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignmentFlag::AlignCenter</set>
-               </property>
-              </widget>
-              <widget class="QTableWidget" name="tablestaff_U">
-               <property name="geometry">
-                <rect>
-                 <x>10</x>
-                 <y>150</y>
-                 <width>381</width>
-                 <height>221</height>
-                </rect>
-               </property>
-               <property name="verticalScrollBarPolicy">
-                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
-               </property>
-               <property name="horizontalScrollBarPolicy">
-                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
-               </property>
-               <property name="rowCount">
-                <number>2</number>
-               </property>
-               <property name="columnCount">
-                <number>8</number>
-               </property>
-               <row/>
-               <row/>
-               <column>
-                <property name="text">
-                 <string>Staff Full Name</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Staff Address</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Phone Number</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Staff Mail</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Staff Password</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Staff Role</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Cv Status</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Cv</string>
-                </property>
-               </column>
-              </widget>
-              <widget class="QPushButton" name="deletestaffbtn_U">
-               <property name="geometry">
-                <rect>
-                 <x>30</x>
-                 <y>380</y>
-                 <width>341</width>
-                 <height>41</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>🚯Delete Staff</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="cvanalysebtn_U">
-               <property name="geometry">
-                <rect>
-                 <x>30</x>
-                 <y>430</y>
-                 <width>341</width>
-                 <height>41</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>🤖AI agent CV analysis</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="staticbtn_U">
-               <property name="geometry">
-                <rect>
-                 <x>30</x>
-                 <y>490</y>
-                 <width>171</width>
-                 <height>41</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>📈Go To Dashboard</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="exportpdfstaffbtn_U">
-               <property name="geometry">
-                <rect>
-                 <x>220</x>
-                 <y>490</y>
-                 <width>161</width>
-                 <height>41</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>📝Export As PDF</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="backWbtn_U">
-               <property name="geometry">
-                <rect>
-                 <x>110</x>
-                 <y>550</y>
-                 <width>211</width>
-                 <height>61</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>↩️Back to Add Page</string>
-               </property>
-              </widget>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </widget>
-       </item>
-      </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="staffdash">
@@ -4795,7 +2263,7 @@ QLineEdit:focus {
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap resource="Ressources.qrc">:/Images/avatar.png</pixmap>
+            <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/avatar.png</pixmap>
            </property>
           </widget>
          </widget>
@@ -4843,7 +2311,7 @@ QLineEdit:focus {
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="Ressources.qrc">:/Images/cvdash.png</pixmap>
+         <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/cvdash.png</pixmap>
         </property>
        </widget>
       </widget>
@@ -4872,7 +2340,7 @@ QLineEdit:focus {
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="Ressources.qrc">:/Images/staffdash.png</pixmap>
+         <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/staffdash.png</pixmap>
         </property>
        </widget>
       </widget>
@@ -4886,7 +2354,7 @@ QLineEdit:focus {
         </rect>
        </property>
        <property name="text">
-        <string>📝Export As Pdf</string>
+        <string>📝Export To Pdf</string>
        </property>
       </widget>
       <widget class="QPushButton" name="backstfbtn">
@@ -5003,7 +2471,7 @@ QLineEdit:focus {
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="Ressources.qrc">:/Images/bestresized.png</pixmap>
+         <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/bestresized.png</pixmap>
         </property>
        </widget>
        <widget class="QPushButton" name="browse">
@@ -5193,7 +2661,7 @@ QLineEdit:focus {
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="Ressources.qrc">:/Images/logoHeader1.png</pixmap>
+        <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/logoHeader1.png</pixmap>
        </property>
       </widget>
       <widget class="QPushButton" name="logOutBTN_D">
@@ -5211,12 +2679,38 @@ QLineEdit:focus {
       </widget>
      </widget>
     </widget>
-    <widget class="QWidget" name="pageupdateaccount">
+    <widget class="QWidget" name="pageEquipmentForm">
      <property name="styleSheet">
-      <string notr="true">/* =================================================
-   PAGE STAFF MANAGEMENT - BACKGROUND
+      <string notr="true">
+QWidget#pageEquipmentForm, QWidget#pageEquipmentList {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #071a2c, stop:0.35 #082136, stop:0.7 #071c2d, stop:1 #040f1a);
+    font-family: &quot;Segoe UI&quot;;
+    color: #EAF0FF;
+}
+
+QFrame#headerE_F, QFrame#sidebarMenuE_F {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgba(12,42,75,0.95), stop:0.55 rgba(8,30,55,0.95), stop:1 rgba(6,22,40,0.95));
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+}
+
+QFrame#formEq {
+    background-color: rgba(255,255,255,0.06);
+    border: 1px solid rgba(79,195,247,0.18);
+    border-radius: 16px;
+}
+
+QPushButton#equipmentmanagementBTNe_F[active=&quot;true&quot;] {
+    background-color: rgba(10,102,255,0.35);
+    border-left: 4px solid #4FC3F7;
+    color: white;
+    font-weight: 600;
+}
+
+/* =================================================
+   PAGE EQUIPMENT - BACKGROUND
    ================================================= */
-QWidget#pageupdateaccount {
+QWidget#pageEquipment {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
         stop:0 #071a2c,
         stop:0.35 #082136,
@@ -5229,8 +2723,8 @@ QWidget#pageupdateaccount {
 /* =================================================
    HEADER + SIDEBAR (SAME STYLE)
    ================================================= */
-QFrame#header_A,
-QFrame#sidebarMenu_A {
+QFrame#headerE,
+QFrame#sidebarMenuE {
     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
         stop:0 rgba(12, 42, 75, 0.95),
         stop:0.55 rgba(8, 30, 55, 0.95),
@@ -5239,25 +2733,25 @@ QFrame#sidebarMenu_A {
     border-radius: 16px;
 }
 
-QFrame#header_A{
+QFrame#headerE {
     padding: 10px 16px;
 }
 
-QFrame#sidebarMenu_A {
+QFrame#sidebarMenuE {
     padding: 12px;
 }
 
 /* =================================================
    HEADER CONTENT
    ================================================= */
-QLabel#titreHeader_A {
+QLabel#titreHeaderE {
     color: #EAF0FF;
     font-size: 15px;
     font-weight: 800;
     letter-spacing: 0.5px;
 }
 
-QLabel#avatar_A {
+QLabel#avatarE {
     min-width: 42px;
     max-width: 42px;
     min-height: 42px;
@@ -5268,7 +2762,7 @@ QLabel#avatar_A {
 }
 
 /* User profile button */
-QCommandLinkButton#userprofiledetails_A {
+QCommandLinkButton#userprofiledetailsE {
     background-color: rgba(8, 18, 38, 0.55);
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 12px;
@@ -5277,19 +2771,19 @@ QCommandLinkButton#userprofiledetails_A {
     font-weight: 700;
 }
 
-QCommandLinkButton#userprofiledetails_A:hover {
+QCommandLinkButton#userprofiledetailsE:hover {
     background-color: rgba(88,184,255,0.15);
     border: 1px solid rgba(88,184,255,0.45);
 }
 
-QCommandLinkButton#userprofiledetails_A:pressed {
+QCommandLinkButton#userprofiledetailsE:pressed {
     background-color: rgba(88,184,255,0.25);
 }
 
 /* =================================================
    SIDEBAR GROUP
    ================================================= */
-QGroupBox#groupBox_A {
+QGroupBox#groupBox {
     border: none;
     margin-top: 6px;
 }
@@ -5297,51 +2791,37 @@ QGroupBox#groupBox_A {
 /* =================================================
    SIDEBAR BUTTONS (BASE)
    ================================================= */
-QPushButton#clientsmanagementBTN_A,
-QPushButton#equipmentmanagementBTN_A,
-QPushButton#fishingzonemanagementBTN_A,
-QPushButton#staffmanagementBTN_A,
-QPushButton#stockmanagementBTN_A {
-    background: transparent;
-    border: none;
-    color: rgba(234,240,255,0.80);
+QPushButton#clientsmanagementBTNe,
+QPushButton#equipmentmanagementBTNe,
+QPushButton#fishingzonemanagementBTNe,
+QPushButton#staffmanagementBTNe,
+QPushButton#stockmanagementBTNe {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #90caf9;
     padding: 12px 14px;
-    border-radius: 12px;
+    border-radius: 10px;
     text-align: left;
-    font-size: 13px;
-    font-weight: 650;
+    font-weight: 600;
 }
 
-/* Hover effect */
-QPushButton#clientsmanagementBTN_A:hover,
-QPushButton#equipmentmanagementBTN_A:hover,
-QPushButton#fishingzonemanagementBTN_A:hover,
-QPushButton#staffmanagementBTN_A:hover,
-QPushButton#stockmanagementBTN_A:hover {
-    background-color: rgba(88,184,255,0.14);
-    border: 1px solid rgba(88,184,255,0.25);
-    color: #FFFFFF;
+QPushButton#clientsmanagementBTNe:hover,
+QPushButton#equipmentmanagementBTNe:hover,
+QPushButton#fishingzonemanagementBTNe:hover,
+QPushButton#staffmanagementBTNe:hover,
+QPushButton#stockmanagementBTNe:hover {
+    background-color: rgba(41, 182, 246, 0.2);
+    border: 1px solid #4fc3f7;
+    color: white;
 }
 
-/* Pressed */
-QPushButton#clientsmanagementBTN_A:pressed,
-QPushButton#equipmentmanagementBTN_A:pressed,
-QPushButton#fishingzonemanagementBTN_A:pressed,
-QPushButton#staffmanagementBTN_A:pressed,
-QPushButton#stockmanagementBTN_A:pressed {
-    background-color: rgba(88,184,255,0.25);
-}
-
-/* =================================================
-   ACTIVE / SELECTED BUTTON (Staff Management)
-   ================================================= */
 QPushButton[active=&quot;true&quot;] {
-    background-color: rgba(10, 102, 255, 0.28);
-    border: 1px solid rgba(10, 102, 255, 0.55);
-    color: #FFFFFF;
+    background-color: rgba(10, 102, 255, 0.25);
+    border: 1px solid #29b6f6;
+    color: white;
     padding-left: 18px;
 }
-QPushButton#staffmanagementBTN_A[active=&quot;true&quot;] {
+QPushButton#equipmentmanagementBTNe[active=&quot;true&quot;] {
     background-color: rgba(10, 102, 255, 0.35);
     border-left: 4px solid #4FC3F7;
     color: white;
@@ -5351,7 +2831,7 @@ QPushButton#staffmanagementBTN_A[active=&quot;true&quot;] {
 /* =================================================
    LOG OUT BUTTON
    ================================================= */
-QPushButton#logOutBTN_A {
+QPushButton#logOutBTNe {
     background: transparent;
     border: none;
     color: rgba(234,240,255,0.65);
@@ -5361,7 +2841,7 @@ QPushButton#logOutBTN_A {
     font-weight: 650;
 }
 
-QPushButton#logOutBTN_A:hover {
+QPushButton#logOutBTNe:hover {
     background-color: rgba(255, 120, 120, 0.12);
     border: 1px solid rgba(255, 120, 120, 0.25);
     color: #FFC1C1;
@@ -5370,37 +2850,37 @@ QPushButton#logOutBTN_A:hover {
 /* =================================================
    MAIN CONTENT AREA
    ================================================= */
-QFrame#contenumain_A {
+QFrame#contenumainEq {
     background-color: transparent;
 }
 
 /* =================================================
    MENUBAR + STATUSBAR
    ================================================= */
-QMenuBar_A {
+QMenuBar {
     background-color: rgba(6, 22, 40, 0.95);
     color: rgba(234,240,255,0.85);
     border-bottom: 1px solid rgba(255,255,255,0.12);
     padding: 6px;
 }
 
-QStatusBar_A {
+QStatusBar {
     background-color: rgba(6, 22, 40, 0.95);
     color: rgba(234,240,255,0.70);
     border-top: 1px solid rgba(255,255,255,0.12);
 }
 /* =======================
    FORM CARD (LEFT)
-   objectName: formAddStaff
+   objectName: formEq
    ======================= */
-QFrame#formAddStaff_A{
+QFrame#formEq {
     background-color: rgba(255,255,255,0.06);
     border: 1px solid rgba(79,195,247,0.18);
     border-radius: 16px;
 }
 
-/* Title label (labeladdstaff) */
-QLabel#labeladdstaff_A {
+/* Title label */
+QLabel#labeladdeq {
     color: #E3F2FD;
     font-size: 18px;
     font-weight: 700;
@@ -5408,7 +2888,7 @@ QLabel#labeladdstaff_A {
 }
 
 /* All labels inside the form */
-QFrame#formAddStaff_A QLabel {
+QFrame#formEq QLabel {
     color: rgba(227,242,253,0.88);
     font-size: 13px;
     font-weight: 600;
@@ -5430,7 +2910,7 @@ QLineEdit:focus {
     background-color: rgba(10, 35, 55, 0.85);
 }
 
-/* ComboBoxes (role, cvstat) */
+/* ComboBoxes  */
 QComboBox {
     background-color: rgba(10, 35, 55, 0.65);
     color: #E3F2FD;
@@ -5463,24 +2943,10 @@ QComboBox::down-arrow {
     margin-right: 10px;
 }
 
-/* Upload CV Button (uploadcvbtn) */
-QPushButton#uploadcvbtn_A {
-    background-color: rgba(255,255,255,0.08);
-    color: #E3F2FD;
-    border: 1px dashed rgba(79,195,247,0.6);
-    border-radius: 10px;
-    padding: 8px 12px;
-    font-weight: 600;
-}
 
-/* Hover Upload */
-QPushButton#uploadcvbtn_A:hover {
-    background-color: rgba(79,195,247,0.2);
-    border-color: #4FC3F7;
-}
 
-/* Add Staff Button (addstaffbtn) */
-QPushButton#addstaffbtn_A {
+/* Add Staff Button (addEqbtn) */
+QPushButton#addEqbtn {
     background-color: #0288D1;
     color: white;
     border: none;
@@ -5489,18 +2955,18 @@ QPushButton#addstaffbtn_A {
     font-weight: bold;
 }
 
-QPushButton#addstaffbtn_A:hover {
+QPushButton#addEqbtn:hover {
     background-color: #039BE5;
 }
 
-QPushButton#addstaffbtn_A:pressed {
+QPushButton#addEqbtn:pressed {
     background-color: #01579B;
 }
 /* ================================================= */
-/* ============ STAFF LIST CONTAINER =============== */
+/* ============ Equi LIST CONTAINER =============== */
 /* ================================================= */
 
-#liststaffff_A {
+#listequi {
     background-color: rgba(12, 32, 52, 0.95);
     border: 1px solid rgba(79, 195, 247, 0.25);
     border-radius: 18px;
@@ -5508,7 +2974,7 @@ QPushButton#addstaffbtn_A:pressed {
     margin-left: 10px;
 }
 
-#liststaffff_A::title {
+#listequi::title {
     subcontrol-origin: margin;
     left: 15px;
     top: 8px;
@@ -5522,7 +2988,7 @@ QPushButton#addstaffbtn_A:pressed {
 /* ================= SEARCH BAR ==================== */
 /* ================================================= */
 
-#staffsearchbarre_A {
+#searchbar {
     background-color: rgba(20, 45, 70, 0.9);
     border: 1px solid rgba(79, 195, 247, 0.4);
     border-radius: 14px;
@@ -5531,7 +2997,7 @@ QPushButton#addstaffbtn_A:pressed {
     font-size: 13px;
 }
 
-#staffsearchbarre_A:focus {
+#searchbar:focus {
     border: 1px solid #4fc3f7;
     background-color: rgba(30, 75, 120, 0.9);
 }
@@ -5540,7 +3006,7 @@ QPushButton#addstaffbtn_A:pressed {
 /* ================= SORT COMBO ==================== */
 /* ================================================= */
 
-#sortstaff_A {
+#sortEq {
     background-color: rgba(20, 45, 70, 0.9);
     border: 1px solid rgba(79, 195, 247, 0.4);
     border-radius: 12px;
@@ -5548,7 +3014,7 @@ QPushButton#addstaffbtn_A:pressed {
     color: #e3f2fd;
 }
 
-#sortstaff_A:hover {
+#sortEq:hover {
     background-color: rgba(79, 195, 247, 0.25);
 }
 
@@ -5556,7 +3022,7 @@ QPushButton#addstaffbtn_A:pressed {
 /* ================== TABLE ======================== */
 /* ================================================= */
 
-#tablestaff_A {
+#tableeq {
     background-color: rgba(10, 25, 40, 0.95);
     border: 1px solid rgba(79, 195, 247, 0.3);
     border-radius: 14px;
@@ -5565,11 +3031,11 @@ QPushButton#addstaffbtn_A:pressed {
     font-size: 12px;
 }
 
-#tablestaff_A::item {
+#tableeq::item {
     padding: 8px;
 }
 
-#tablestaff_A::item:selected {
+#tableeq::item:selected {
     background-color: rgba(79, 195, 247, 0.35);
     color: white;
 }
@@ -5603,9 +3069,10 @@ QTableWidget QScrollBar::sub-line {
 /* ================================================= */
 
 
-#cvanalysebtn_A,
-#staticbtn_A,
-#exportpdfstaffbtn_A{
+#chatbotbtn,
+#chatbotbtn_2,
+#staticbtnE,
+#exportpdfbtnE {
     background-color: rgba(20, 60, 95, 0.9);
     border: 1px solid rgba(79, 195, 247, 0.4);
     border-radius: 12px;
@@ -5615,15 +3082,16 @@ QTableWidget QScrollBar::sub-line {
 }
 
 
-#cvanalysebtn_A:hover,
-#staticbtn_A:hover,
-#exportpdfstaffbtn_A:hover {
+#chatbotbtn:hover,
+#chatbotbtn_2:hover,
+#staticbtnE:hover,
+#exportpdfbtnE:hover {
     background-color: rgba(79, 195, 247, 0.35);
     color: white;
 }
 
 /* ===== DELETE BUTTON ===== */
-#deletestaffbtn_A {
+#deletebtnE {
     background-color: rgba(183, 28, 28, 0.9);
     border: none;
     border-radius: 12px;
@@ -5632,7 +3100,7 @@ QTableWidget QScrollBar::sub-line {
     font-weight: 600;
 }
 
-#deletestaffbtn_A:hover {
+#deletebtnE:hover {
     background-color: #e53935;
     box-shadow: 0 0 15px rgba(244, 67, 54, 0.6);
 }
@@ -5640,7 +3108,7 @@ QTableWidget QScrollBar::sub-line {
 /* ========= MODIFY STAFF BUTTON ========= */
 /* ======================================= */
 
-#browbtn{
+#modifybtn {
     background-color: #f9a825;            /* Jaune principal */
     color: #1a1a1a;
     border: none;
@@ -5651,20 +3119,20 @@ QTableWidget QScrollBar::sub-line {
 }
 
 /* Hover */
-#browbtn:hover {
+#modifybtn:hover {
     background-color: #fbc02d;            /* Jaune plus clair */
     box-shadow: 0 0 15px rgba(251, 192, 45, 0.6);
 }
 
 /* Click (pressed) */
-#browbtn:pressed {
+#modifybtn:pressed {
     background-color: #f57f17;            /* Jaune foncé */
     box-shadow: inset 0 3px 6px rgba(0,0,0,0.35);
 }
 /* =========================================================
    BACK TO WELCOME BUTTON
    ========================================================= */
-QPushButton#backWbtn_A {
+QPushButton#backWbtnE {
     background: rgba(20, 38, 58, 0.65);   /* navy soft */
     color: rgba(234,240,255,0.90);
     border-radius: 14px;
@@ -5675,38 +3143,38 @@ QPushButton#backWbtn_A {
 }
 
 /* Hover */
-QPushButton#backWbtn_A:hover {
+QPushButton#backWbtnE:hover {
     background: rgba(37, 99, 235, 0.20);  /* blue highlight */
     border: 1px solid rgba(88,184,255,0.55);
     color: #FFFFFF;
 }
 
 /* Pressed */
-QPushButton#backWbtn_A:pressed {
+QPushButton#backWbtnE:pressed {
     background: rgba(15, 23, 42, 0.95);
     border: 1px solid rgba(88,184,255,0.75);
 }
 
 /* Optional: disabled */
-QPushButton#backWbtn_A:disabled {
+QPushButton#backWbtnE:disabled {
     background: rgba(20, 38, 58, 0.35);
     color: rgba(234,240,255,0.45);
     border: 1px solid rgba(120,160,200,0.15);
 }
 </string>
      </property>
-     <widget class="QWidget" name="layoutWidget_4">
+     <widget class="QWidget" name="layoutWidget_F_main">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-10</y>
-        <width>1491</width>
-        <height>761</height>
+        <y>0</y>
+        <width>1021</width>
+        <height>741</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <layout class="QHBoxLayout" name="horizontalLayout_F_2">
        <item>
-        <widget class="QFrame" name="sidebarMenu_A">
+        <widget class="QFrame" name="sidebarMenuE_F">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -5725,7 +3193,7 @@ QPushButton#backWbtn_A:disabled {
          <property name="frameShadow">
           <enum>QFrame::Shadow::Raised</enum>
          </property>
-         <widget class="QGroupBox" name="groupBox_A">
+         <widget class="QGroupBox" name="groupBoxE_F">
           <property name="geometry">
            <rect>
             <x>10</x>
@@ -5749,7 +3217,7 @@ QPushButton#backWbtn_A:disabled {
           <property name="title">
            <string/>
           </property>
-          <widget class="QPushButton" name="staffmanagementBTN_A">
+          <widget class="QPushButton" name="staffmanagementBTNe_F">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -5765,7 +3233,7 @@ QPushButton#backWbtn_A:disabled {
             <bool>false</bool>
            </property>
           </widget>
-          <widget class="QPushButton" name="clientsmanagementBTN_A">
+          <widget class="QPushButton" name="clientsmanagementBTNe_F">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -5778,7 +3246,7 @@ QPushButton#backWbtn_A:disabled {
             <string>💰Clients Management</string>
            </property>
           </widget>
-          <widget class="QPushButton" name="stockmanagementBTN_A">
+          <widget class="QPushButton" name="stockmanagementBTNe_F">
            <property name="geometry">
             <rect>
              <x>0</x>
@@ -5791,7 +3259,7 @@ QPushButton#backWbtn_A:disabled {
             <string>🐟 Stock Management</string>
            </property>
           </widget>
-          <widget class="QPushButton" name="fishingzonemanagementBTN_A">
+          <widget class="QPushButton" name="fishingzonemanagementBTNe_F">
            <property name="geometry">
             <rect>
              <x>-10</x>
@@ -5804,7 +3272,7 @@ QPushButton#backWbtn_A:disabled {
             <string>🗺️ FishingZone Management</string>
            </property>
           </widget>
-          <widget class="QPushButton" name="equipmentmanagementBTN_A">
+          <widget class="QPushButton" name="equipmentmanagementBTNe_F">
            <property name="geometry">
             <rect>
              <x>-10</x>
@@ -5816,9 +3284,12 @@ QPushButton#backWbtn_A:disabled {
            <property name="text">
             <string>⚓Equipment Management</string>
            </property>
+           <property name="active" stdset="0">
+            <bool>true</bool>
+           </property>
           </widget>
          </widget>
-         <widget class="QLabel" name="logoheader_A">
+         <widget class="QLabel" name="logoheaderE_F">
           <property name="geometry">
            <rect>
             <x>0</x>
@@ -5831,10 +3302,10 @@ QPushButton#backWbtn_A:disabled {
            <string/>
           </property>
           <property name="pixmap">
-           <pixmap resource="Ressources.qrc">:/Images/logoHeader1.png</pixmap>
+           <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/logoHeader1.png</pixmap>
           </property>
          </widget>
-         <widget class="QPushButton" name="logOutBTN_A">
+         <widget class="QPushButton" name="logOutBTNe_F">
           <property name="geometry">
            <rect>
             <x>40</x>
@@ -5850,7 +3321,7 @@ QPushButton#backWbtn_A:disabled {
         </widget>
        </item>
        <item>
-        <widget class="QFrame" name="contenumain_A">
+        <widget class="QFrame" name="contenumainEq_F">
          <property name="frameShape">
           <enum>QFrame::Shape::StyledPanel</enum>
          </property>
@@ -5860,7 +3331,7 @@ QPushButton#backWbtn_A:disabled {
          <property name="active" stdset="0">
           <bool>true</bool>
          </property>
-         <widget class="QWidget" name="verticalLayoutWidget_5">
+         <widget class="QWidget" name="verticalLayoutWidget_F">
           <property name="geometry">
            <rect>
             <x>-270</x>
@@ -5869,16 +3340,16 @@ QPushButton#backWbtn_A:disabled {
             <height>101</height>
            </rect>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_6">
+          <layout class="QVBoxLayout" name="verticalLayout_F_header">
            <item>
-            <widget class="QFrame" name="header_A">
+            <widget class="QFrame" name="headerE_F">
              <property name="frameShape">
               <enum>QFrame::Shape::StyledPanel</enum>
              </property>
              <property name="frameShadow">
               <enum>QFrame::Shadow::Raised</enum>
              </property>
-             <widget class="QLabel" name="titreHeader_A">
+             <widget class="QLabel" name="titreHeaderE_F">
               <property name="geometry">
                <rect>
                 <x>220</x>
@@ -5894,7 +3365,7 @@ QPushButton#backWbtn_A:disabled {
                <set>Qt::AlignmentFlag::AlignCenter</set>
               </property>
              </widget>
-             <widget class="QCommandLinkButton" name="userprofiledetails_A">
+             <widget class="QCommandLinkButton" name="userprofiledetailsE_F">
               <property name="geometry">
                <rect>
                 <x>830</x>
@@ -5904,10 +3375,10 @@ QPushButton#backWbtn_A:disabled {
                </rect>
               </property>
               <property name="text">
-               <string>Fatma El Mili</string>
+               <string>Nour Ben Hmida</string>
               </property>
              </widget>
-             <widget class="QLabel" name="avatar_A">
+             <widget class="QLabel" name="avatarE_F">
               <property name="geometry">
                <rect>
                 <x>990</x>
@@ -5920,14 +3391,14 @@ QPushButton#backWbtn_A:disabled {
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="Ressources.qrc">:/Images/avatar.png</pixmap>
+               <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/avatar.png</pixmap>
               </property>
              </widget>
             </widget>
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="layoutWidget_5">
+         <widget class="QWidget" name="layoutWidget_F">
           <property name="geometry">
            <rect>
             <x>-10</x>
@@ -5936,21 +3407,21 @@ QPushButton#backWbtn_A:disabled {
             <height>621</height>
            </rect>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="QFrame" name="liststaff_A">
+            <widget class="QFrame" name="listEq_F">
              <property name="frameShape">
               <enum>QFrame::Shape::StyledPanel</enum>
              </property>
              <property name="frameShadow">
               <enum>QFrame::Shadow::Raised</enum>
              </property>
-             <widget class="QFrame" name="formAddStaff_A">
+             <widget class="QFrame" name="formEq">
               <property name="geometry">
                <rect>
-                <x>10</x>
+                <x>40</x>
                 <y>0</y>
-                <width>411</width>
+                <width>741</width>
                 <height>619</height>
                </rect>
               </property>
@@ -5960,234 +3431,1137 @@ QPushButton#backWbtn_A:disabled {
               <property name="frameShadow">
                <enum>QFrame::Shadow::Raised</enum>
               </property>
-              <widget class="QGroupBox" name="formcontdd_A">
+              <widget class="QGroupBox" name="formcontEq_F">
                <property name="geometry">
                 <rect>
-                 <x>0</x>
-                 <y>0</y>
-                 <width>401</width>
-                 <height>571</height>
+                 <x>10</x>
+                 <y>10</y>
+                 <width>731</width>
+                 <height>601</height>
                 </rect>
                </property>
                <property name="title">
                 <string/>
                </property>
-               <widget class="QLabel" name="labeladdstaff_A">
+               <widget class="QLabel" name="Eqnamelabel_F">
                 <property name="geometry">
                  <rect>
-                  <x>130</x>
-                  <y>0</y>
-                  <width>151</width>
-                  <height>41</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Update Your Account</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignmentFlag::AlignCenter</set>
-                </property>
-               </widget>
-               <widget class="QLabel" name="staffnamelabel_A">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
+                  <x>150</x>
                   <y>70</y>
                   <width>131</width>
                   <height>20</height>
                  </rect>
                 </property>
                 <property name="text">
-                 <string>User Name</string>
+                 <string>Equipment Name</string>
                 </property>
                </widget>
-               <widget class="QLineEdit" name="staffnameedit_A">
+               <widget class="QLabel" name="Eqaddresslabel_F">
                 <property name="geometry">
                  <rect>
-                  <x>150</x>
-                  <y>50</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QLabel" name="staffaddresslabel_A">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
+                  <x>160</x>
                   <y>130</y>
                   <width>111</width>
                   <height>20</height>
                  </rect>
                 </property>
                 <property name="text">
-                 <string>Your Adress</string>
+                 <string>Equipment Type</string>
                 </property>
                </widget>
-               <widget class="QLineEdit" name="staffaddressedit_A">
+               <widget class="QLabel" name="statelabel_F">
                 <property name="geometry">
                  <rect>
                   <x>150</x>
-                  <y>120</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QLabel" name="tellabel_A">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>210</y>
+                  <y>200</y>
                   <width>141</width>
                   <height>20</height>
                  </rect>
                 </property>
                 <property name="text">
-                 <string>Your Phone Number</string>
+                 <string>State</string>
                 </property>
                </widget>
-               <widget class="QLineEdit" name="teledit_A">
+               <widget class="QLabel" name="quantitylabel_F">
                 <property name="geometry">
                  <rect>
-                  <x>150</x>
-                  <y>190</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QLabel" name="maillabel_A">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
+                  <x>140</x>
                   <y>270</y>
                   <width>151</width>
                   <height>20</height>
                  </rect>
                 </property>
                 <property name="text">
-                 <string>Your Mail</string>
+                 <string>Quantity</string>
                 </property>
                </widget>
-               <widget class="QLineEdit" name="mailedit_A">
+               <widget class="QLabel" name="capacitylab_F">
                 <property name="geometry">
                  <rect>
-                  <x>150</x>
-                  <y>260</y>
-                  <width>221</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-               </widget>
-               <widget class="QLabel" name="passlab_A_2">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
+                  <x>140</x>
                   <y>340</y>
                   <width>141</width>
                   <height>20</height>
                  </rect>
                 </property>
                 <property name="text">
-                 <string>Your Password</string>
+                 <string>Capacity</string>
                 </property>
                </widget>
-               <widget class="QLineEdit" name="passlab_A">
+               <widget class="QPushButton" name="addEqbtn_F">
                 <property name="geometry">
                  <rect>
-                  <x>150</x>
-                  <y>330</y>
-                  <width>221</width>
-                  <height>54</height>
+                  <x>190</x>
+                  <y>410</y>
+                  <width>321</width>
+                  <height>61</height>
                  </rect>
                 </property>
+                <property name="styleSheet">
+                 <string notr="true"> background-color: #0288D1;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    min-height: 40px;
+    font-weight: bold;</string>
+                </property>
+                <property name="text">
+                 <string>➕Add Equipment </string>
+                </property>
                </widget>
-               <widget class="QLabel" name="cvpathEdit_2">
+               <widget class="QPushButton" name="goToListBtnE">
                 <property name="geometry">
                  <rect>
-                  <x>30</x>
-                  <y>490</y>
-                  <width>311</width>
-                  <height>20</height>
+                  <x>490</x>
+                  <y>530</y>
+                  <width>200</width>
+                  <height>40</height>
                  </rect>
                 </property>
                 <property name="text">
-                 <string/>
+                 <string>📋 View Equipment List</string>
+                </property>
+               </widget>
+               <widget class="QLabel" name="labeladdeq_F">
+                <property name="geometry">
+                 <rect>
+                  <x>180</x>
+                  <y>-10</y>
+                  <width>371</width>
+                  <height>51</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Form Add Equipments</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignmentFlag::AlignCenter</set>
                 </property>
                </widget>
-               <widget class="QLabel" name="profile_A">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>420</y>
-                  <width>141</width>
-                  <height>20</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Your Password</string>
-                </property>
-               </widget>
-               <widget class="QPushButton" name="browbtn">
-                <property name="geometry">
-                 <rect>
-                  <x>130</x>
-                  <y>400</y>
-                  <width>261</width>
-                  <height>60</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Browse To choose your photo </string>
-                </property>
-               </widget>
-               <widget class="QPushButton" name="addstaffbtn_A">
+               <widget class="QPushButton" name="backWbtnE_F">
                 <property name="geometry">
                  <rect>
                   <x>20</x>
-                  <y>470</y>
-                  <width>371</width>
-                  <height>60</height>
+                  <y>530</y>
+                  <width>321</width>
+                  <height>61</height>
                  </rect>
                 </property>
                 <property name="text">
-                 <string>✔️Confirm Your Modification</string>
+                 <string>↩️Back to Welcome Page</string>
                 </property>
                </widget>
               </widget>
-              <widget class="QPushButton" name="backWbtn_A">
+              <widget class="QLineEdit" name="Eqnameedit_F">
                <property name="geometry">
                 <rect>
-                 <x>20</x>
-                 <y>540</y>
-                 <width>371</width>
-                 <height>61</height>
+                 <x>310</x>
+                 <y>60</y>
+                 <width>221</width>
+                 <height>54</height>
                 </rect>
                </property>
-               <property name="text">
-                <string>↩️Back to Welcome Page</string>
+              </widget>
+              <widget class="QLineEdit" name="Eqaddressedit_F">
+               <property name="geometry">
+                <rect>
+                 <x>310</x>
+                 <y>130</y>
+                 <width>221</width>
+                 <height>54</height>
+                </rect>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="stateedit_F">
+               <property name="geometry">
+                <rect>
+                 <x>310</x>
+                 <y>200</y>
+                 <width>221</width>
+                 <height>54</height>
+                </rect>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="quantityedit_F">
+               <property name="geometry">
+                <rect>
+                 <x>310</x>
+                 <y>270</y>
+                 <width>221</width>
+                 <height>54</height>
+                </rect>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="capacity_F">
+               <property name="geometry">
+                <rect>
+                 <x>310</x>
+                 <y>340</y>
+                 <width>221</width>
+                 <height>54</height>
+                </rect>
                </property>
               </widget>
              </widget>
-             <widget class="QLabel" name="imgcover">
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="pageEquipmentList">
+     <property name="styleSheet">
+      <string notr="true">
+QWidget#pageEquipmentForm, QWidget#pageEquipmentList {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #071a2c, stop:0.35 #082136, stop:0.7 #071c2d, stop:1 #040f1a);
+    font-family: &quot;Segoe UI&quot;;
+    color: #EAF0FF;
+}
+
+QFrame#headerE_L, QFrame#sidebarMenuE_L {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 rgba(12,42,75,0.95), stop:0.55 rgba(8,30,55,0.95), stop:1 rgba(6,22,40,0.95));
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+}
+
+QFrame#formEq {
+    background-color: rgba(255,255,255,0.06);
+    border: 1px solid rgba(79,195,247,0.18);
+    border-radius: 16px;
+}
+
+QPushButton#equipmentmanagementBTNe_L[active=&quot;true&quot;] {
+    background-color: rgba(10,102,255,0.35);
+    border-left: 4px solid #4FC3F7;
+    color: white;
+    font-weight: 600;
+}
+
+/* =================================================
+   PAGE EQUIPMENT - BACKGROUND
+   ================================================= */
+QWidget#pageEquipment {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+        stop:0 #071a2c,
+        stop:0.35 #082136,
+        stop:0.7 #071c2d,
+        stop:1 #040f1a);
+    font-family: &quot;Segoe UI&quot;;
+    color: #EAF0FF;
+}
+
+/* =================================================
+   HEADER + SIDEBAR (SAME STYLE)
+   ================================================= */
+QFrame#headerE,
+QFrame#sidebarMenuE {
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+        stop:0 rgba(12, 42, 75, 0.95),
+        stop:0.55 rgba(8, 30, 55, 0.95),
+        stop:1 rgba(6, 22, 40, 0.95));
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+}
+
+QFrame#headerE {
+    padding: 10px 16px;
+}
+
+QFrame#sidebarMenuE {
+    padding: 12px;
+}
+
+/* =================================================
+   HEADER CONTENT
+   ================================================= */
+QLabel#titreHeaderE {
+    color: #EAF0FF;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+QLabel#avatarE {
+    min-width: 42px;
+    max-width: 42px;
+    min-height: 42px;
+    max-height: 42px;
+    border-radius: 21px;
+    border: 2px solid rgba(88,184,255,0.6);
+    background-color: rgba(255,255,255,0.06);
+}
+
+/* User profile button */
+QCommandLinkButton#userprofiledetailsE {
+    background-color: rgba(8, 18, 38, 0.55);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 8px 14px;
+    color: #EAF0FF;
+    font-weight: 700;
+}
+
+QCommandLinkButton#userprofiledetailsE:hover {
+    background-color: rgba(88,184,255,0.15);
+    border: 1px solid rgba(88,184,255,0.45);
+}
+
+QCommandLinkButton#userprofiledetailsE:pressed {
+    background-color: rgba(88,184,255,0.25);
+}
+
+/* =================================================
+   SIDEBAR GROUP
+   ================================================= */
+QGroupBox#groupBox {
+    border: none;
+    margin-top: 6px;
+}
+
+/* =================================================
+   SIDEBAR BUTTONS (BASE)
+   ================================================= */
+/* === UTILITY BUTTONS (Modify/Delete) === */
+QPushButton#modifybtn_L {
+    background-color: rgba(255, 179, 0, 0.15);
+    border: 1px solid #ffb300;
+    color: #ffb300;
+    padding: 8px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+QPushButton#modifybtn_L:hover {
+    background-color: rgba(255, 179, 0, 0.3);
+}
+
+QPushButton#deletebtnE_L {
+    background-color: rgba(229, 57, 53, 0.15);
+    border: 1px solid #e53935;
+    color: #ef9a9a;
+    padding: 8px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+QPushButton#deletebtnE_L:hover {
+    background-color: rgba(229, 57, 53, 0.3);
+}
+
+/* Navigation Outlines */
+QPushButton#goToListBtnE, QPushButton#goToFormBtnE, QPushButton#backWbtnE_F {
+    border: 1px solid #90caf9;
+    color: #90caf9;
+    background: transparent;
+    padding: 8px 16px;
+    border-radius: 12px;
+}
+QPushButton#goToListBtnE:hover, QPushButton#goToFormBtnE:hover, QPushButton#backWbtnE_F:hover {
+    background-color: rgba(144, 202, 249, 0.1);
+    color: white;
+}
+QPushButton#equipmentmanagementBTNe[active=&quot;true&quot;] {
+    background-color: rgba(10, 102, 255, 0.35);
+    border-left: 4px solid #4FC3F7;
+    color: white;
+    font-weight: 600;
+}
+
+/* =================================================
+   LOG OUT BUTTON
+   ================================================= */
+QPushButton#logOutBTNe {
+    background: transparent;
+    border: none;
+    color: rgba(234,240,255,0.65);
+    padding: 12px 14px;
+    border-radius: 12px;
+    text-align: left;
+    font-weight: 650;
+}
+
+QPushButton#logOutBTNe:hover {
+    background-color: rgba(255, 120, 120, 0.12);
+    border: 1px solid rgba(255, 120, 120, 0.25);
+    color: #FFC1C1;
+}
+
+/* =================================================
+   MAIN CONTENT AREA
+   ================================================= */
+QFrame#contenumainEq {
+    background-color: transparent;
+}
+
+/* =================================================
+   MENUBAR + STATUSBAR
+   ================================================= */
+QMenuBar {
+    background-color: rgba(6, 22, 40, 0.95);
+    color: rgba(234,240,255,0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    padding: 6px;
+}
+
+QStatusBar {
+    background-color: rgba(6, 22, 40, 0.95);
+    color: rgba(234,240,255,0.70);
+    border-top: 1px solid rgba(255,255,255,0.12);
+}
+/* =======================
+   FORM CARD (LEFT)
+   objectName: formEq
+   ======================= */
+QFrame#formEq {
+    background-color: rgba(255,255,255,0.06);
+    border: 1px solid rgba(79,195,247,0.18);
+    border-radius: 16px;
+}
+
+/* Title label */
+QLabel#labeladdeq {
+    color: #E3F2FD;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 8px 0;
+}
+
+/* All labels inside the form */
+QFrame#formEq QLabel {
+    color: rgba(227,242,253,0.88);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Inputs (LineEdits) */
+QLineEdit {
+    background-color: rgba(10, 35, 55, 0.65);
+    color: #E3F2FD;
+    border: 1px solid rgba(79,195,247,0.25);
+    border-radius: 10px;
+    padding: 8px 12px;
+    min-height: 36px;
+    font-size: 13px;
+}
+
+QLineEdit:focus {
+    border: 1px solid #4FC3F7;
+    background-color: rgba(10, 35, 55, 0.85);
+}
+
+/* ComboBoxes  */
+QComboBox {
+    background-color: rgba(10, 35, 55, 0.65);
+    color: #E3F2FD;
+    border: 1px solid rgba(79,195,247,0.25);
+    border-radius: 10px;
+    padding: 7px 12px;
+    min-height: 36px;
+    font-size: 13px;
+}
+
+QComboBox:hover {
+    border: 1px solid rgba(79,195,247,0.45);
+}
+
+QComboBox:focus {
+    border: 1px solid #4FC3F7;
+    background-color: rgba(10, 35, 55, 0.85);
+}
+
+QComboBox::drop-down {
+    width: 36px;
+    border: none;
+}
+
+QComboBox::down-arrow {
+    image: none;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid rgba(227,242,253,0.8);
+    margin-right: 10px;
+}
+
+
+
+/* Add Staff Button (addEqbtn) */
+QPushButton#addEqbtn {
+    background-color: #0288D1;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    min-height: 40px;
+    font-weight: bold;
+}
+
+QPushButton#addEqbtn:hover {
+    background-color: #039BE5;
+}
+
+QPushButton#addEqbtn:pressed {
+    background-color: #01579B;
+}
+/* ================================================= */
+/* ============ Equi LIST CONTAINER =============== */
+/* ================================================= */
+
+#listequi {
+    background-color: rgba(12, 32, 52, 0.95);
+    border: 1px solid rgba(79, 195, 247, 0.25);
+    border-radius: 18px;
+    padding: 15px;
+    margin-left: 10px;
+}
+
+#listequi::title {
+    subcontrol-origin: margin;
+    left: 15px;
+    top: 8px;
+    padding: 0 8px;
+    color: #4fc3f7;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+/* ================================================= */
+/* ================= SEARCH BAR ==================== */
+/* ================================================= */
+
+#searchbar {
+    background-color: rgba(20, 45, 70, 0.9);
+    border: 1px solid rgba(79, 195, 247, 0.4);
+    border-radius: 14px;
+    padding: 10px 15px;
+    color: white;
+    font-size: 13px;
+}
+
+#searchbar:focus {
+    border: 1px solid #4fc3f7;
+    background-color: rgba(30, 75, 120, 0.9);
+}
+
+/* ================================================= */
+/* ================= SORT COMBO ==================== */
+/* ================================================= */
+
+#sortEq {
+    background-color: rgba(20, 45, 70, 0.9);
+    border: 1px solid rgba(79, 195, 247, 0.4);
+    border-radius: 12px;
+    padding: 6px 12px;
+    color: #e3f2fd;
+}
+
+#sortEq:hover {
+    background-color: rgba(79, 195, 247, 0.25);
+}
+
+/* ================================================= */
+/* ================== TABLE ======================== */
+/* ================================================= */
+
+#tableeq {
+    background-color: rgba(10, 25, 40, 0.95);
+    border: 1px solid rgba(79, 195, 247, 0.3);
+    border-radius: 14px;
+    gridline-color: rgba(79, 195, 247, 0.15);
+    color: #e3f2fd;
+    font-size: 12px;
+}
+
+#tableeq::item {
+    padding: 8px;
+}
+
+#tableeq::item:selected {
+    background-color: rgba(79, 195, 247, 0.35);
+    color: white;
+}
+
+QHeaderView::section {
+    background-color: rgba(15, 55, 90, 0.95);
+    color: #4fc3f7;
+    padding: 8px;
+    border: none;
+    font-weight: bold;
+}
+
+/* Scrollbars table */
+QTableWidget QScrollBar:vertical {
+    background: transparent;
+    width: 8px;
+}
+
+QTableWidget QScrollBar::handle:vertical {
+    background: #4fc3f7;
+    border-radius: 4px;
+}
+
+QTableWidget QScrollBar::add-line,
+QTableWidget QScrollBar::sub-line {
+    height: 0;
+}
+
+/* ================================================= */
+/* ================= BUTTONS ======================= */
+/* ================================================= */
+
+
+#chatbotbtn,
+#chatbotbtn_2,
+#staticbtnE,
+#exportpdfbtnE {
+    background-color: rgba(20, 60, 95, 0.9);
+    border: 1px solid rgba(79, 195, 247, 0.4);
+    border-radius: 12px;
+    color: #e3f2fd;
+    padding: 10px 16px;
+    font-weight: 600;
+}
+
+
+#chatbotbtn:hover,
+#chatbotbtn_2:hover,
+#staticbtnE:hover,
+#exportpdfbtnE:hover {
+    background-color: rgba(79, 195, 247, 0.35);
+    color: white;
+}
+
+/* ===== DELETE BUTTON ===== */
+#deletebtnE {
+    background-color: rgba(183, 28, 28, 0.9);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 10px 16px;
+    font-weight: 600;
+}
+
+#deletebtnE:hover {
+    background-color: #e53935;
+    box-shadow: 0 0 15px rgba(244, 67, 54, 0.6);
+}
+/* ======================================= */
+/* ========= MODIFY STAFF BUTTON ========= */
+/* ======================================= */
+
+#modifybtn {
+    background-color: #f9a825;            /* Jaune principal */
+    color: #1a1a1a;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Hover */
+#modifybtn:hover {
+    background-color: #fbc02d;            /* Jaune plus clair */
+    box-shadow: 0 0 15px rgba(251, 192, 45, 0.6);
+}
+
+/* Click (pressed) */
+#modifybtn:pressed {
+    background-color: #f57f17;            /* Jaune foncé */
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.35);
+}
+/* =========================================================
+   BACK TO WELCOME BUTTON
+   ========================================================= */
+QPushButton#backWbtnE {
+    background: rgba(20, 38, 58, 0.65);   /* navy soft */
+    color: rgba(234,240,255,0.90);
+    border-radius: 14px;
+    padding: 10px 18px;
+    border: 1px solid rgba(120,160,200,0.25);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Hover */
+QPushButton#backWbtnE:hover {
+    background: rgba(37, 99, 235, 0.20);  /* blue highlight */
+    border: 1px solid rgba(88,184,255,0.55);
+    color: #FFFFFF;
+}
+
+/* Pressed */
+QPushButton#backWbtnE:pressed {
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(88,184,255,0.75);
+}
+
+/* Optional: disabled */
+QPushButton#backWbtnE:disabled {
+    background: rgba(20, 38, 58, 0.35);
+    color: rgba(234,240,255,0.45);
+    border: 1px solid rgba(120,160,200,0.15);
+}
+</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget_L_main">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1021</width>
+        <height>741</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_L_2">
+       <item>
+        <widget class="QFrame" name="sidebarMenuE_L">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::Shape::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+         <widget class="QGroupBox" name="groupBoxE_L">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>100</y>
+            <width>200</width>
+            <height>581</height>
+           </rect>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string/>
+          </property>
+          <widget class="QPushButton" name="staffmanagementBTNe_L">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>80</y>
+             <width>181</width>
+             <height>61</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>👩🏻‍💼Staff Management</string>
+           </property>
+           <property name="active" stdset="0">
+            <bool>false</bool>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="clientsmanagementBTNe_L">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>150</y>
+             <width>191</width>
+             <height>51</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>💰Clients Management</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="stockmanagementBTNe_L">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>210</y>
+             <width>171</width>
+             <height>51</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>🐟 Stock Management</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="fishingzonemanagementBTNe_L">
+           <property name="geometry">
+            <rect>
+             <x>-10</x>
+             <y>320</y>
+             <width>221</width>
+             <height>51</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>🗺️ FishingZone Management</string>
+           </property>
+          </widget>
+          <widget class="QPushButton" name="equipmentmanagementBTNe_L">
+           <property name="geometry">
+            <rect>
+             <x>-10</x>
+             <y>270</y>
+             <width>201</width>
+             <height>41</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>⚓Equipment Management</string>
+           </property>
+           <property name="active" stdset="0">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QLabel" name="logoheaderE_L">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>10</y>
+            <width>181</width>
+            <height>151</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="pixmap">
+           <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/logoHeader1.png</pixmap>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="logOutBTNe_L">
+          <property name="geometry">
+           <rect>
+            <x>40</x>
+            <y>650</y>
+            <width>121</width>
+            <height>61</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>⏻ Log Out</string>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="contenumainEq_L">
+         <property name="frameShape">
+          <enum>QFrame::Shape::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Shadow::Raised</enum>
+         </property>
+         <property name="active" stdset="0">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="verticalLayoutWidget_L">
+          <property name="geometry">
+           <rect>
+            <x>-270</x>
+            <y>0</y>
+            <width>1431</width>
+            <height>101</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_L_2">
+           <item>
+            <widget class="QFrame" name="headerE_L">
+             <property name="frameShape">
+              <enum>QFrame::Shape::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Shadow::Raised</enum>
+             </property>
+             <widget class="QLabel" name="titreHeaderE_L">
               <property name="geometry">
                <rect>
-                <x>420</x>
-                <y>0</y>
-                <width>401</width>
-                <height>621</height>
+                <x>220</x>
+                <y>20</y>
+                <width>461</width>
+                <height>61</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>BORT- Smart Fishing Port Application</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+             </widget>
+             <widget class="QCommandLinkButton" name="userprofiledetailsE_L">
+              <property name="geometry">
+               <rect>
+                <x>830</x>
+                <y>20</y>
+                <width>211</width>
+                <height>51</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Nour Ben Hmida</string>
+              </property>
+             </widget>
+             <widget class="QLabel" name="avatarE_L">
+              <property name="geometry">
+               <rect>
+                <x>990</x>
+                <y>20</y>
+                <width>46</width>
+                <height>46</height>
                </rect>
               </property>
               <property name="text">
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="Ressources.qrc">:/Images/profile.jpg</pixmap>
+               <pixmap resource="../../EquipmentManagement lkhedma kbal man separi signin twali 2/EquipmentManagement 1.0/Ressources.qrc">:/Images/avatar.png</pixmap>
               </property>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="layoutWidget_L">
+          <property name="geometry">
+           <rect>
+            <x>-10</x>
+            <y>100</y>
+            <width>831</width>
+            <height>621</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_L_sub">
+           <item>
+            <widget class="QFrame" name="listEq_L">
+             <property name="frameShape">
+              <enum>QFrame::Shape::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Shadow::Raised</enum>
+             </property>
+             <widget class="QGroupBox" name="listequi">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>811</width>
+                <height>621</height>
+               </rect>
+              </property>
+              <property name="title">
+               <string/>
+              </property>
+              <widget class="QLineEdit" name="searchbar_L">
+               <property name="geometry">
+                <rect>
+                 <x>20</x>
+                 <y>10</y>
+                 <width>391</width>
+                 <height>58</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>🔍Search with Equipment name,state,type....</string>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="sortEq_L">
+               <property name="geometry">
+                <rect>
+                 <x>630</x>
+                 <y>10</y>
+                 <width>151</width>
+                 <height>54</height>
+                </rect>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Sort with.....</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>equipment name</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>equipment type</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>equipment state</string>
+                </property>
+               </item>
+              </widget>
+              <widget class="QLabel" name="equipmentlist_L">
+               <property name="geometry">
+                <rect>
+                 <x>430</x>
+                 <y>10</y>
+                 <width>191</width>
+                 <height>51</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Equipment List</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+              </widget>
+              <widget class="QTableWidget" name="tableeq_L">
+               <property name="geometry">
+                <rect>
+                 <x>20</x>
+                 <y>120</y>
+                 <width>781</width>
+                 <height>221</height>
+                </rect>
+               </property>
+               <property name="verticalScrollBarPolicy">
+                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+               </property>
+               <property name="rowCount">
+                <number>3</number>
+               </property>
+               <property name="columnCount">
+                <number>5</number>
+               </property>
+               <row/>
+               <row/>
+               <row/>
+               <column>
+                <property name="text">
+                 <string>Eq name</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Eq Type </string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>State</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Quantity</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Capacity</string>
+                </property>
+               </column>
+              </widget>
+              <widget class="QPushButton" name="chatbotbtn_L">
+               <property name="geometry">
+                <rect>
+                 <x>80</x>
+                 <y>350</y>
+                 <width>261</width>
+                 <height>41</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>🤖 ChatBot</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="staticbtnE_L">
+               <property name="geometry">
+                <rect>
+                 <x>170</x>
+                 <y>430</y>
+                 <width>171</width>
+                 <height>41</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>📈Go To Dashboard</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="exportpdfbtnE_L">
+               <property name="geometry">
+                <rect>
+                 <x>420</x>
+                 <y>430</y>
+                 <width>161</width>
+                 <height>41</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>📝Export as PDF</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="chatbotbtn_2_L">
+               <property name="geometry">
+                <rect>
+                 <x>440</x>
+                 <y>350</y>
+                 <width>261</width>
+                 <height>41</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>🤖 AI agent prediction</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="goToFormBtnE">
+               <property name="geometry">
+                <rect>
+                 <x>300</x>
+                 <y>520</y>
+                 <width>191</width>
+                 <height>40</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>➕ Add Equipment</string>
+               </property>
+              </widget>
              </widget>
             </widget>
            </item>
@@ -6199,6 +4573,38 @@ QPushButton#backWbtn_A:disabled {
      </widget>
     </widget>
    </widget>
+   <widget class="QPushButton" name="deletebtnE_L">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>790</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>🚯Delete </string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="modifybtn_L">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>790</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="toolTipDuration">
+     <number>-1</number>
+    </property>
+    <property name="text">
+     <string>🛠️Modify </string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -6206,14 +4612,12 @@ QPushButton#backWbtn_A:disabled {
      <x>0</x>
      <y>0</y>
      <width>1017</width>
-     <height>0</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources>
-  <include location="Ressources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

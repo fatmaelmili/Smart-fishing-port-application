@@ -10,6 +10,5 @@
         <file>Images/staffdash.png</file>
         <file>Images/cvdash.png</file>
         <file>Images/bestresized.png</file>
-        <file>Images/profile.jpg</file>
     </qresource>
 </RCC>
