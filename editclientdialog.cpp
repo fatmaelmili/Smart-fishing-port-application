@@ -1,5 +1,6 @@
 #include "editclientdialog.h"
-#include "clients.h"
+
+#include "client.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>

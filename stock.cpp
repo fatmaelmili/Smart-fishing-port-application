@@ -34,7 +34,7 @@ bool Stock::ajouter()
 {
     QSqlQuery query(QSqlDatabase::database());
 
-    QString sql = "INSERT INTO \"BORT\".\"STOCKS\" (\"QTE\", \"TYPEPOISSON\", \"ETAT\") VALUES ("
+    QString sql = "INSERT INTO \"FATMA\".\"STOCKS\" (\"QTE\", \"TYPEPOISSON\", \"ETAT\") VALUES ("
                   + QString::number(quantity) + ", '"
                   + typePoisson + "', '"
                   + etat + "')";
@@ -57,7 +57,7 @@ QSqlQueryModel* Stock::afficher()
 {
     QSqlQueryModel* model = new QSqlQueryModel();
 
-    model->setQuery("SELECT IDSTOCK, QTE, TYPEPOISSON, ETAT FROM \"BORT\".\"STOCKS\"");
+    model->setQuery("SELECT IDSTOCK, QTE, TYPEPOISSON, ETAT FROM \"FATMA\".\"STOCKS\"");
 
     qDebug() << "Rows fetched:" << model->rowCount();
     qDebug() << "Error (if any):" << model->lastError().text();
@@ -69,7 +69,7 @@ bool Stock::modifier(int id)
 {
     QSqlQuery query;
 
-    QString sql = "UPDATE BORT.STOCKS SET "
+    QString sql = "UPDATE STOCKS SET "
                   "QTE = :qte, "
                   "TYPEPOISSON = :type, "
                   "ETAT = :etat "
@@ -99,7 +99,7 @@ bool Stock::supprimer(int id)
 {
     QSqlQuery query;
 
-    query.prepare("DELETE FROM BORT.STOCKS WHERE IDSTOCK = :id");
+    query.prepare("DELETE FROM FATMA.STOCKS WHERE IDSTOCK = :id");
     query.bindValue(":id", id);
 
     if(query.exec())

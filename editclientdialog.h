@@ -1,6 +1,5 @@
 #ifndef EDITCLIENTDIALOG_H
 #define EDITCLIENTDIALOG_H
-
 #include <QDialog>
 #include <QLineEdit>
 #include <QDateEdit>
@@ -41,4 +40,4 @@ private:
     QPushButton *cancelBtn;
 };
 
-#endif
+#endif // EDITCLIENTDIALOG_H
