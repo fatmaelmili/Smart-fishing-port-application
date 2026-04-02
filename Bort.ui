@@ -309,7 +309,11 @@ QLabel[objectName*=&quot;error&quot;] {
      <string notr="true"/>
     </property>
     <property name="currentIndex">
+<<<<<<< HEAD
      <number>1</number>
+=======
+     <number>0</number>
+>>>>>>> gestion_clients
     </property>
     <widget class="QWidget" name="pageSignIn">
      <property name="styleSheet">
@@ -9630,7 +9634,11 @@ QPushButton#backWbtn_A:disabled {
                <string/>
               </property>
               <property name="pixmap">
+<<<<<<< HEAD
                <pixmap resource="Ressources.qrc">:/Images/profile.jpg</pixmap>
+=======
+               <pixmap>:/Images/profile.jpg</pixmap>
+>>>>>>> gestion_clients
               </property>
              </widget>
             </widget>
@@ -11088,7 +11096,11 @@ li.checked::marker { content: &quot;\2612&quot;; }
                 <string/>
                </property>
                <property name="pixmap">
+<<<<<<< HEAD
                 <pixmap resource="Ressources.qrc">:/Images/zoneimage.png</pixmap>
+=======
+                <pixmap>:/Images/zoneimage.png</pixmap>
+>>>>>>> gestion_clients
                </property>
               </widget>
              </widget>
