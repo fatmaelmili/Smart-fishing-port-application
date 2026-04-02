@@ -8,6 +8,8 @@
 #include <QPdfWriter>
 #include <QPainter>
 #include <QDateTime>
+#include <QSqlQuery>
+#include <QSqlError>
 
 // ==================constructor goes weeeeee==================
 SignIn::SignIn(QWidget *parent)
@@ -16,6 +18,7 @@ SignIn::SignIn(QWidget *parent)
 {
     ui->setupUi(this);
     loadClients("", "");
+    loadItems();
 }
 
 // ==================destructor goes wooo==================
@@ -111,7 +114,7 @@ void SignIn::on_clientaddbtn_clicked()
         ui->choosepayment->currentText(),
         "Paid",
         ui->phoneinput->text(),
-        ui->itemsinput->text(),
+        ui->itemsinput->currentText(),
         ui->quantityinput->value()
         );
 
@@ -255,5 +258,70 @@ void SignIn::on_searchclient_textChanged(const QString &text)
 void SignIn::on_clientsort_currentTextChanged(const QString &text)
 {
     loadClients(ui->searchclient->text(), text);
+}
+//==================showing the goods==================
+void SignIn::loadItems()
+{
+    ui->itemsinput->clear();
+
+    QSqlDatabase db = QSqlDatabase::database();
+    QSqlQuery q(db);
+
+    ui->itemsinput->addItem("----- STOCKS -----");
+
+    if(q.exec("SELECT TYPEPOISSON FROM STOCKS"))
+    {
+        while(q.next())
+        {
+            QString val = q.value(0).toString();
+            qDebug() << "STOCK:" << val;
+            ui->itemsinput->addItem(val);
+        }
+    }
+    else
+    {
+        qDebug() << "STOCK ERROR:" << q.lastError();
+    }
+
+    ui->itemsinput->addItem("----- EQUIPEMENTS -----");
+
+    // 🔥 IMPORTANT: reset query before reuse
+    q.finish();
+
+    if(q.exec("SELECT NOMEQ FROM EQUIPEMENTS"))
+    {
+        while(q.next())
+        {
+            QString val = q.value(0).toString();
+            qDebug() << "EQUIPEMENT:" << val;
+            ui->itemsinput->addItem(val);
+        }
+    }
+    else
+    {
+        qDebug() << "EQUIPEMENTS ERROR:" << q.lastError();
+    }
+}
+//==================maxing brrr==================
+int SignIn::getMaxQuantity(QString item)
+{
+    QSqlQuery q;
+    q.prepare("SELECT QTE FROM STOCKS WHERE TYPEPOISSON = :item");
+    q.bindValue(":item", item);
+    if(q.exec() && q.next())
+        return q.value(0).toInt();
+    q.prepare("SELECT QTE FROM EQUIPEMENTS WHERE NOMEQ = :item");
+    q.bindValue(":item", item);
+    if(q.exec() && q.next())
+        return q.value(0).toInt();
+    return 0;
+}
+
+void SignIn::on_itemsinput_currentTextChanged(const QString &text)
+{
+    int max = getMaxQuantity(text);
+    ui->quantityinput->setMaximum(max);
+    if(ui->quantityinput->value() > max)
+        ui->quantityinput->setValue(max);
 }
 

@@ -2693,16 +2693,6 @@ QPushButton#backWbtn:disabled {
                    </property>
                   </item>
                  </widget>
-                 <widget class="QLineEdit" name="itemsinput">
-                  <property name="geometry">
-                   <rect>
-                    <x>170</x>
-                    <y>320</y>
-                    <width>211</width>
-                    <height>54</height>
-                   </rect>
-                  </property>
-                 </widget>
                  <widget class="QLabel" name="paymentlable">
                   <property name="geometry">
                    <rect>
@@ -2966,6 +2956,16 @@ font-size: 11px;</string>
                   </property>
                   <property name="text">
                    <string/>
+                  </property>
+                 </widget>
+                 <widget class="QComboBox" name="itemsinput">
+                  <property name="geometry">
+                   <rect>
+                    <x>170</x>
+                    <y>320</y>
+                    <width>211</width>
+                    <height>52</height>
+                   </rect>
                   </property>
                  </widget>
                 </widget>

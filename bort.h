@@ -32,6 +32,9 @@ private slots:
     void on_clientpdfbtn_clicked();
     void on_searchclient_textChanged(const QString &text);
     void on_clientsort_currentTextChanged(const QString &text);
+    void loadItems();
+    int getMaxQuantity(QString item);
+    void on_itemsinput_currentTextChanged(const QString &text);
 
 private:
     Ui::SignIn *ui;
