@@ -26,7 +26,6 @@ HEADERS += \
 
 FORMS += \
     clients.ui \
-    $$PWD/editclientdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

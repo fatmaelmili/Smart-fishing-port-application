@@ -172,6 +172,9 @@ void SignIn::on_updateclientbtn_clicked()
         return;
     }
 
+    if(!ui->clienttable->item(row,0))
+        return;
+
     int id = ui->clienttable->item(row,0)->text().toInt();
 
     EditClientDialog dialog(this);
@@ -284,8 +287,6 @@ void SignIn::loadItems()
     }
 
     ui->itemsinput->addItem("----- EQUIPEMENTS -----");
-
-    // 🔥 IMPORTANT: reset query before reuse
     q.finish();
 
     if(q.exec("SELECT NOMEQ FROM EQUIPEMENTS"))
