@@ -4,7 +4,10 @@ QT+=sql
 QT += network
 QT += charts
 QT += pdf
+<<<<<<< HEAD
 QT += multimedia
+=======
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
@@ -17,12 +20,22 @@ SOURCES += \
     Bort.cpp \
     connection.cpp \
     main.cpp \
+<<<<<<< HEAD
     personnel.cpp
+=======
+    personnel.cpp \
+    zonepech.cpp
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 
 HEADERS += \
     Bort.h \
     connection.h \
+<<<<<<< HEAD
     personnel.h
+=======
+    personnel.h \
+    zonepech.h
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 
 FORMS += \
     Bort.ui

@@ -1,6 +1,10 @@
 #include "Bort.h"
 #include "ui_Bort.h"
 #include "personnel.h"
+<<<<<<< HEAD
+=======
+#include "zonepech.h"
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 #include <opencv2/opencv.hpp>
 #include <QBuffer>
 #include<QStyle>
@@ -53,6 +57,10 @@ SignIn::SignIn(QWidget *parent)
     , ui(new Ui::SignIn)
 {
     ui->setupUi(this);
+<<<<<<< HEAD
+=======
+    this->setFixedSize(1280, 720);
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
     ui->statrole->hide();
     ui->statcv->hide();
     refreshStaffTable();
@@ -107,6 +115,7 @@ SignIn::SignIn(QWidget *parent)
 
 
 }
+<<<<<<< HEAD
 //APRESINTEGRATION
 QString SignIn::extractAvatarInitials(const QString& fullName) const
 {
@@ -250,6 +259,8 @@ void SignIn::generateAvatarForUpdateStaff()
     m_avatarBlob = avatarBytes;
     ui->avatarpathEdit_U->setText("Generated avatar: " + extractAvatarInitials(fullName));
 }
+=======
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 void SignIn::on_showPassCheck_toggled(bool checked)
 {
     ui->PasswordEdit->setEchoMode(checked ? QLineEdit::Normal: QLineEdit::Password);
@@ -304,10 +315,14 @@ SignIn::~SignIn()
 
 void SignIn::on_btnForgetmdp_clicked()
 {
+<<<<<<< HEAD
     ui->resetlineEdit->clear();
     ui->resetlabel->clear();
     ui->stackedWidget->setCurrentWidget(ui->pageForgetpass);
     ui->resetlineEdit->setFocus();
+=======
+    ui->stackedWidget->setCurrentWidget(ui->pageForgetpass);
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 }
 
 
@@ -530,7 +545,30 @@ void SignIn::on_ubploacvbtn_clicked()
 }
 void SignIn::on_ubploaAvatarbtn_clicked()
 {
+<<<<<<< HEAD
     generateAvatarForAddStaff();
+=======
+    QString filePath = QFileDialog::getOpenFileName(
+        this,
+        "Select an avatar",
+        QDir::homePath(),
+        "Images (*.jpg *.jpeg *.png *.webp);;Tous les fichiers (*.*)"
+        );
+
+    if (filePath.isEmpty())
+        return;
+
+    QFile f(filePath);
+    if (!f.open(QIODevice::ReadOnly)) {
+        QMessageBox::critical(this, "Error", "Cannot open avatar file.");
+        return;
+    }
+
+    m_avatarBlob = f.readAll();
+    f.close();
+
+    ui->avatarpathEdit->setText(QFileInfo(filePath).fileName());
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 }
 
 void SignIn::on_signinbtn_clicked()
@@ -589,7 +627,11 @@ void SignIn::on_signinbtn_clicked()
         m_currentUserMail = mail;
         m_currentUserId = prof.idPers;
         m_currentAccountAvatar = prof.avatar;
+<<<<<<< HEAD
        updateUserProfileUI(fullName, role, prof.avatar);
+=======
+        updateUserProfileUI(fullName, prof.avatar);
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
     }
     saveRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
@@ -1236,7 +1278,11 @@ void SignIn::on_addstaffbtn_clicked()
     if (m_avatarBlob.isEmpty()) {
         QMessageBox::warning(this,
                              "Avatar required",
+<<<<<<< HEAD
                              "Please generate an avatar image before adding staff.");
+=======
+                             "Please upload an avatar image before adding staff.");
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
         ui->avatarpathEdit->setFocus();
         return;
     }
@@ -1514,7 +1560,11 @@ void SignIn::on_addstaffbtn_U_clicked()
     if (m_avatarBlob.isEmpty() && hasAv != "Yes") {
         QMessageBox::warning(this,
                              "Avatar required",
+<<<<<<< HEAD
                              "Please generate an avatar image before updating staff.");
+=======
+                             "Please upload an avatar image before updating staff.");
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
         ui->avatarpathEdit_U->setFocus();
         return;
     }
@@ -1634,7 +1684,30 @@ void SignIn::on_ubploacvbtn_U_clicked()
 
 void SignIn::on_ubploavatarbtn_U_clicked()
 {
+<<<<<<< HEAD
    generateAvatarForUpdateStaff();
+=======
+    QString filePath = QFileDialog::getOpenFileName(
+        this,
+        "Select an avatar",
+        QDir::homePath(),
+        "Images (*.jpg *.jpeg *.png *.webp);;Tous les fichiers (*.*)"
+        );
+
+    if (filePath.isEmpty())
+        return;
+
+    QFile f(filePath);
+    if (!f.open(QIODevice::ReadOnly)) {
+        QMessageBox::critical(this, "Error", "Cannot open avatar file.");
+        return;
+    }
+
+    m_avatarBlob = f.readAll();
+    f.close();
+
+    ui->avatarpathEdit_U->setText(QFileInfo(filePath).fileName());
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 
 }
 
@@ -1682,6 +1755,7 @@ void SignIn::applyRolePermissions(const QString& role)
         setModuleAccess("equipmentmanagementBTN", true);
     }
 }
+<<<<<<< HEAD
 void SignIn::updateUserProfileUI(const QString& fullName, const QString& role, const QByteArray& avatarBytes)
 {
     const auto profileBtns = this->findChildren<QCommandLinkButton*>();
@@ -1707,6 +1781,16 @@ void SignIn::updateUserProfileUI(const QString& fullName, const QString& role, c
                     font-weight: 500;
                 }
             )");
+=======
+void SignIn::updateUserProfileUI(const QString& fullName, const QByteArray& avatarBytes)
+{
+
+    const auto profileBtns = this->findChildren<QCommandLinkButton*>();
+    for (QCommandLinkButton* btn : profileBtns) {
+        if (!btn) continue;
+        if (btn->objectName().startsWith("userprofiledetails")) {
+            btn->setText(fullName);
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
         }
     }
 
@@ -2629,7 +2713,10 @@ bool SignIn::loadCurrentUserAccountData()
 
     m_currentUserId = acc.idPers;
     m_currentUserMail = acc.mail;
+<<<<<<< HEAD
     m_currentRole = acc.role;
+=======
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
     m_currentAccountAvatar = acc.avatar;
 
     ui->staffnameedit_A->setText((acc.prenom + " " + acc.nom).trimmed());
@@ -2777,7 +2864,11 @@ void SignIn::on_addstaffbtn_A_clicked()
     }
 
     QString refreshedFullName = ui->staffnameedit_A->text().trimmed();
+<<<<<<< HEAD
     updateUserProfileUI(refreshedFullName, m_currentRole, m_currentAccountAvatar);
+=======
+    updateUserProfileUI(refreshedFullName, m_currentAccountAvatar);
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 
     refreshStaffTable();
     refreshStaffTable_U();
@@ -3073,7 +3164,11 @@ bool SignIn::authenticateWithFaceId()
     qDebug() << "Best Face ID match =" << bestRecord.mail
              << "| distance =" << bestDistance;
 
+<<<<<<< HEAD
     // seuil plus strict
+=======
+
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
     if (bestDistance > 30000.0) {
         registerFaceAuthFailure("Face not recognized");
         QMessageBox::warning(this, "Face ID", "Face ID not recognized.");
@@ -3098,7 +3193,11 @@ bool SignIn::authenticateWithFaceId()
         if (Personnel::fetchProfileByMail(authMail, &profile)) {
             m_currentUserId = profile.idPers;
             m_currentAccountAvatar = profile.avatar;
+<<<<<<< HEAD
             updateUserProfileUI((profile.prenom + " " + profile.nom).trimmed(), authRole, profile.avatar);
+=======
+            updateUserProfileUI((profile.prenom + " " + profile.nom).trimmed(), profile.avatar);
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
         }
 
         applyRolePermissions(m_currentRole);
@@ -3593,6 +3692,7 @@ void SignIn::loadEmployeeOfMonth()
         }
     }
 }
+<<<<<<< HEAD
 QByteArray SignIn::captureVoiceFromMicrophone(int durationMs)
 {
     QAudioDevice inputDevice = QMediaDevices::defaultAudioInput();
@@ -3973,3 +4073,193 @@ void SignIn::on_withvoicebtn_clicked()
     authenticateWithVoiceId();
 }
 
+=======
+
+
+
+
+
+
+
+
+//dhia
+void SignIn::on_addZonebtn_clicked()
+{
+    QString nom = ui->ZoneName->text().trimmed();
+    QString longitude = ui->Longitude->text().trimmed();
+    QString latitude = ui->Latitude->text().trimmed();
+    QString typeZone = ui->zoneEdit->currentText().trimmed();
+    QString risque = ui->RiskLevel->currentText().trimmed();
+    QString description = ui->DescriptionEdit->toPlainText().trimmed();
+
+    if (nom.isEmpty() || longitude.isEmpty() || latitude.isEmpty()
+        || typeZone.isEmpty() || risque.isEmpty() || description.isEmpty()) {
+        QMessageBox::warning(this, "Input Error", "Please fill in all fields.");
+        return;
+    }
+
+    if (!QSqlDatabase::database().isOpen()) {
+        QMessageBox::critical(this, "Error", "Database connection is not open.");
+        return;
+    }
+
+    ZonePech z(nom, longitude, latitude, typeZone, risque, description);
+
+    if (z.ajouter()) {
+        QMessageBox::information(this, "Success", "Zone created successfully.");
+        loadZonesToTable();
+
+        ui->ZoneName->clear();
+        ui->Longitude->clear();
+        ui->Latitude->clear();
+        ui->DescriptionEdit->clear();
+        ui->zoneEdit->setCurrentIndex(0);
+        ui->RiskLevel->setCurrentIndex(0);
+    } else {
+        QMessageBox::critical(this, "Error", "Insert failed.");
+    }
+}
+void SignIn::on_EditZonebtn_clicked()
+{
+    if (selectedZoneId == -1) {
+        QMessageBox::warning(this, "Edit", "Select a zone from the table first.");
+        return;
+    }
+
+    QString nom = ui->ZoneName->text().trimmed();
+    QString longitude = ui->Longitude->text().trimmed();
+    QString latitude = ui->Latitude->text().trimmed();
+    QString typeZone = ui->zoneEdit->currentText().trimmed();
+    QString risque = ui->RiskLevel->currentText().trimmed();
+    QString description = ui->DescriptionEdit->toPlainText().trimmed();
+
+    if (nom.isEmpty() || longitude.isEmpty() || latitude.isEmpty()
+        || typeZone.isEmpty() || risque.isEmpty() || description.isEmpty()) {
+        QMessageBox::warning(this, "Edit", "Please fill in all fields.");
+        return;
+    }
+
+    if (QMessageBox::question(this, "Confirm", "Apply changes to this zone?")
+        != QMessageBox::Yes) {
+        return;
+    }
+
+    if (!QSqlDatabase::database().isOpen()) {
+        QMessageBox::critical(this, "Error", "Database connection is not open.");
+        return;
+    }
+
+    ZonePech z(nom, longitude, latitude, typeZone, risque, description);
+
+    if (z.modifier(selectedZoneId)) {
+        QMessageBox::information(this, "Edit", "Zone updated.");
+        loadZonesToTable();
+
+        selectedZoneId = -1;
+        ui->ZoneName->clear();
+        ui->Longitude->clear();
+        ui->Latitude->clear();
+        ui->DescriptionEdit->clear();
+        ui->zoneEdit->setCurrentIndex(0);
+        ui->RiskLevel->setCurrentIndex(0);
+    } else {
+        QMessageBox::critical(this, "Edit", "Update failed.");
+    }
+}
+void SignIn::on_DeleteZone_clicked()
+{
+    if (selectedZoneId == -1) {
+        QMessageBox::warning(this, "Delete", "Select a zone from the table first.");
+        return;
+    }
+
+    auto rep = QMessageBox::question(
+        this,
+        "Confirm delete",
+        "Delete the selected zone permanently?",
+        QMessageBox::Yes | QMessageBox::No
+        );
+
+    if (rep != QMessageBox::Yes)
+        return;
+
+    if (!QSqlDatabase::database().isOpen()) {
+        QMessageBox::critical(this, "Error", "Database connection is not open.");
+        return;
+    }
+
+    ZonePech z;
+    if (z.supprimer(selectedZoneId)) {
+        QMessageBox::information(this, "Delete", "Zone deleted.");
+
+        selectedZoneId = -1;
+        ui->ZoneName->clear();
+        ui->Longitude->clear();
+        ui->Latitude->clear();
+        ui->DescriptionEdit->clear();
+        ui->zoneEdit->setCurrentIndex(0);
+        ui->RiskLevel->setCurrentIndex(0);
+
+        loadZonesToTable();
+    } else {
+        QMessageBox::critical(this, "Delete", "Delete failed.");
+    }
+}
+
+void SignIn::loadZonesToTable()
+{
+    ui->ZoneTable->setColumnCount(8); // hidden ID + 7 visible columns
+    ui->ZoneTable->setRowCount(0);
+
+    if (!QSqlDatabase::database().isOpen()) {
+        qDebug() << "DB not open";
+        return;
+    }
+
+    QSqlQuery q;
+    if (!q.exec("SELECT IDZONE, NOM, LATITUDE, LONGITUDE, TYPEZONE, PERIODEAUTORISEE, NIVEAURISQUE, DESCRIPTION FROM ZONEPECHES")) {
+        qDebug() << "SELECT failed";
+        return;
+    }
+
+    int row = 0;
+    while (q.next()) {
+        ui->ZoneTable->insertRow(row);
+
+        ui->ZoneTable->setItem(row, 0, new QTableWidgetItem(q.value(0).toString())); // IDZONE
+        ui->ZoneTable->setItem(row, 1, new QTableWidgetItem(q.value(1).toString())); // NOM
+        ui->ZoneTable->setItem(row, 2, new QTableWidgetItem(q.value(2).toString())); // LATITUDE
+        ui->ZoneTable->setItem(row, 3, new QTableWidgetItem(q.value(3).toString())); // LONGITUDE
+        ui->ZoneTable->setItem(row, 4, new QTableWidgetItem(q.value(4).toString())); // TYPEZONE
+        ui->ZoneTable->setItem(row, 5, new QTableWidgetItem(q.value(5).toString())); // PERIODEAUTORISEE
+        ui->ZoneTable->setItem(row, 6, new QTableWidgetItem(q.value(6).toString())); // NIVEAURISQUE
+        ui->ZoneTable->setItem(row, 7, new QTableWidgetItem(q.value(7).toString())); // DESCRIPTION
+
+        row++;
+    }
+
+    ui->ZoneTable->setColumnHidden(0, true);
+    ui->ZoneTable->resizeColumnsToContents();
+}
+void SignIn::on_ZoneTable_cellClicked(int row, int)
+{
+    auto idItem = ui->ZoneTable->item(row, 0);
+    if (!idItem) return;
+
+    selectedZoneId = idItem->text().toInt();
+
+    auto nameItem = ui->ZoneTable->item(row, 1);
+    auto latItem  = ui->ZoneTable->item(row, 2);
+    auto lonItem  = ui->ZoneTable->item(row, 3);
+    auto typeItem = ui->ZoneTable->item(row, 4);
+    auto riskItem = ui->ZoneTable->item(row, 6);
+    auto descItem = ui->ZoneTable->item(row, 7);
+
+    if (nameItem) ui->ZoneName->setText(nameItem->text());
+    if (lonItem)  ui->Longitude->setText(lonItem->text());
+    if (latItem)  ui->Latitude->setText(latItem->text());
+    if (typeItem) ui->zoneEdit->setCurrentText(typeItem->text());
+    if (riskItem) ui->RiskLevel->setCurrentText(riskItem->text());
+    if (descItem) ui->DescriptionEdit->setPlainText(descItem->text());
+}
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b

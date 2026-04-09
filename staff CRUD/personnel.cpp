@@ -1106,6 +1106,7 @@ bool Personnel::getEmployeeOfMonth(EmployeeOfMonth* out)
     return true;
 }
 
+<<<<<<< HEAD
 bool Personnel::saveVoiceIdByMail(const QString& mail,
                                   const QByteArray& voiceData,
                                   const QString& voiceFeatures,
@@ -1281,4 +1282,7 @@ Personnel::FaceLoginResult Personnel::authenticateByVoiceIdMail(const QString& m
     resetAuthRiskByMail(dbMail, "VOICE_ID");
     return FaceLoginResult::Ok;
 }
+=======
+
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 

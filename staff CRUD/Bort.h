@@ -8,6 +8,7 @@
 #include <QPdfWriter>
 #include <QPainter>
 #include <opencv2/opencv.hpp>
+<<<<<<< HEAD
 //APRESINTEGRATION
 #include <QColor>
 #include <QPixmap>
@@ -21,6 +22,9 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QtMath>
+=======
+
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class SignIn;
@@ -36,6 +40,10 @@ public:
     ~SignIn();
 
 private slots:
+<<<<<<< HEAD
+=======
+    //fatma
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
     void on_btnForgetmdp_clicked();
 
     void on_backsigninBTN_clicked();
@@ -251,12 +259,24 @@ private slots:
 
 
     void on_staffmanagementBTNZ_clicked();
+<<<<<<< HEAD
 
     void on_Voicebtn_clicked();
 
     void on_withvoicebtn_clicked();
 
 private:
+=======
+    //dhia
+    void on_addZonebtn_clicked();
+    void loadZonesToTable();
+    void on_ZoneTable_cellClicked(int row, int column);
+    void on_EditZonebtn_clicked();
+    void on_DeleteZone_clicked();
+
+private:
+    //fatma
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
     struct CvAnalysisResult
     {
         int score = 0;
@@ -283,6 +303,7 @@ private:
     QByteArray m_currentAccountAvatar;
     int m_faceAuthFailureCount = 0;
     const int m_faceFraudThreshold = 3;
+<<<<<<< HEAD
     QAudioFormat m_lastVoiceFormat;
     int m_voiceAuthFailureCount = 0;
     const int m_voiceFraudThreshold = 3;
@@ -290,6 +311,12 @@ private:
     void resetFaceAuthFailureCounter();
     void showFaceFraudAlert(const QString& reason);
     void updateUserProfileUI(const QString& fullName, const QString& role, const QByteArray& avatarBytes);
+=======
+    void registerFaceAuthFailure(const QString& reason);
+    void resetFaceAuthFailureCounter();
+    void showFaceFraudAlert(const QString& reason);
+    void updateUserProfileUI(const QString& fullName, const QByteArray& avatarBytes);
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
     void applyRolePermissions(const QString& role);
     void setModuleAccess(const QString& prefix, bool allowed, bool hide = true);
     bool showCaptchaPuzzle();
@@ -320,6 +347,7 @@ private:
     void saveRememberedUser();
     void loadRememberedUser();
     void loadEmployeeOfMonth();
+<<<<<<< HEAD
     QString extractAvatarInitials(const QString& fullName) const;
     QColor avatarColorFromName(const QString& fullName) const;
     QByteArray generateInitialsAvatar(const QString& fullName, int size = 160) const;
@@ -334,6 +362,10 @@ private:
     bool authenticateWithVoiceId();
     void updateVoiceIdStatusLabel();
 
+=======
+    //dhia
+    int selectedZoneId = -1;
+>>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
 };
 
 #endif // BORT_H
