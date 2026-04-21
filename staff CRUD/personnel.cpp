@@ -1062,51 +1062,40 @@ bool Personnel::getEmployeeOfMonth(EmployeeOfMonth* out)
 {
     if (!out) return false;
 
+    const QString currentMonthKey = QDate::currentDate().toString("yyyyMM");
+
     QSqlQuery q;
     q.prepare(R"(
         SELECT
             IDPERS,
             TRIM(PRENOM || ' ' || NOM) AS FULLNAME,
-            ROLE,
-            AVATAR
+            NVL(TRIM(ROLE), '-') AS ROLE,
+            AVATAR,
+            NVL(MONTHLY_WORK_SECONDS, 0) AS MONTHLY_SECONDS
         FROM FATMA.PERSONNEL
         WHERE UPPER(TRIM(CVSTATUS)) = 'ACCEPTED'
-        ORDER BY IDPERS
+          AND NVL(WORK_MONTH_KEY, :monthKey) = :monthKey
+        ORDER BY NVL(MONTHLY_WORK_SECONDS, 0) DESC, IDPERS ASC
     )");
+    q.bindValue(":monthKey", currentMonthKey);
 
     if (!q.exec()) {
         qDebug() << "getEmployeeOfMonth error:" << q.lastError().text();
         return false;
     }
 
-    QVector<EmployeeOfMonth> acceptedEmployees;
-
-    while (q.next()) {
-        EmployeeOfMonth emp;
-        emp.idPers = q.value(0).toInt();
-        emp.fullName = q.value(1).toString().trimmed();
-        emp.role = q.value(2).toString().trimmed();
-        emp.avatar = q.value(3).toByteArray();
-        acceptedEmployees.push_back(emp);
-    }
-
-    if (acceptedEmployees.isEmpty()) {
+    if (!q.next()) {
         return false;
     }
 
-    const QDate currentDate = QDate::currentDate();
-
-
-    const int monthKey = currentDate.year() * 100 + currentDate.month();
-
-
-    const int index = monthKey % acceptedEmployees.size();
-
-    *out = acceptedEmployees[index];
+    out->idPers = q.value(0).toInt();
+    out->fullName = q.value(1).toString().trimmed();
+    out->role = q.value(2).toString().trimmed();
+    out->avatar = q.value(3).toByteArray();
+    out->monthlyWorkSeconds = q.value(4).toLongLong();
     return true;
 }
 
-<<<<<<< HEAD
 bool Personnel::saveVoiceIdByMail(const QString& mail,
                                   const QByteArray& voiceData,
                                   const QString& voiceFeatures,
@@ -1282,7 +1271,138 @@ Personnel::FaceLoginResult Personnel::authenticateByVoiceIdMail(const QString& m
     resetAuthRiskByMail(dbMail, "VOICE_ID");
     return FaceLoginResult::Ok;
 }
-=======
 
->>>>>>> befb43f2ea9a0e885e1306a35140667554d1a96b
+bool Personnel::startUserSessionByMail(const QString& mail)
+{
+    const QString cleanMail = mail.trimmed();
+    if (cleanMail.isEmpty()) {
+        return false;
+    }
 
+    const QString currentMonthKey = QDate::currentDate().toString("yyyyMM");
+
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET
+            MONTHLY_WORK_SECONDS = CASE
+                WHEN NVL(WORK_MONTH_KEY, '0') <> :monthKey THEN 0
+                ELSE NVL(MONTHLY_WORK_SECONDS, 0)
+            END,
+            WORK_MONTH_KEY = :monthKey,
+            SESSION_START_AT = SYSDATE
+        WHERE UPPER(TRIM(MAIL)) = UPPER(TRIM(:mail))
+    )");
+    q.bindValue(":monthKey", currentMonthKey);
+    q.bindValue(":mail", cleanMail);
+
+    if (!q.exec()) {
+        qDebug() << "startUserSessionByMail error:" << q.lastError().text();
+        return false;
+    }
+
+    qDebug() << "startUserSessionByMail mail =" << cleanMail;
+    qDebug() << "startUserSessionByMail rows =" << q.numRowsAffected();
+
+    return q.numRowsAffected() > 0;
+}
+
+bool Personnel::closeUserSessionByMail(const QString& mail,
+                                       qint64* outSessionSeconds,
+                                       qint64* outMonthlyTotalSeconds)
+{
+    const QString cleanMail = mail.trimmed();
+    qDebug() << "closeUserSessionByMail cleanMail =" << cleanMail;
+
+    if (cleanMail.isEmpty()) {
+        qDebug() << "closeUserSessionByMail: empty mail";
+        return false;
+    }
+
+    if (outSessionSeconds) *outSessionSeconds = 0;
+    if (outMonthlyTotalSeconds) *outMonthlyTotalSeconds = 0;
+
+    const QString currentMonthKey = QDate::currentDate().toString("yyyyMM");
+
+    QSqlQuery readQ;
+    readQ.prepare(R"(
+        SELECT
+            ROUND((SYSDATE - SESSION_START_AT) * 86400),
+            NVL(MONTHLY_WORK_SECONDS, 0),
+            NVL(WORK_MONTH_KEY, ?),
+            TO_CHAR(SESSION_START_AT, 'DD-MON-YYYY HH24:MI:SS')
+        FROM FATMA.PERSONNEL
+        WHERE UPPER(TRIM(MAIL)) = UPPER(TRIM(?))
+          AND SESSION_START_AT IS NOT NULL
+    )");
+    readQ.addBindValue(currentMonthKey);
+    readQ.addBindValue(cleanMail);
+
+    qDebug() << "about to exec readQ";
+
+    if (!readQ.exec()) {
+        qDebug() << "closeUserSessionByMail read error =" << readQ.lastError().text();
+        qDebug() << "closeUserSessionByMail read lastQuery =" << readQ.lastQuery();
+        return false;
+    }
+
+    qDebug() << "readQ executed";
+
+    if (!readQ.next()) {
+        qDebug() << "closeUserSessionByMail no row found for mail =" << cleanMail;
+        return false;
+    }
+
+    qint64 sessionSeconds = readQ.value(0).toLongLong();
+    qint64 monthlyTotal = readQ.value(1).toLongLong();
+    const QString storedMonthKey = readQ.value(2).toString().trimmed();
+    const QString startAtText = readQ.value(3).toString().trimmed();
+
+    qDebug() << "startAtText =" << startAtText;
+    qDebug() << "sessionSeconds =" << sessionSeconds;
+    qDebug() << "monthlyTotal before =" << monthlyTotal;
+    qDebug() << "storedMonthKey =" << storedMonthKey;
+
+    if (storedMonthKey != currentMonthKey) {
+        monthlyTotal = 0;
+    }
+
+    if (sessionSeconds < 0) {
+        sessionSeconds = 0;
+    }
+
+    monthlyTotal += sessionSeconds;
+
+    const int sessionSecondsInt = static_cast<int>(sessionSeconds);
+    const int monthlyTotalInt = static_cast<int>(monthlyTotal);
+
+    QSqlQuery updateQ;
+    updateQ.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET
+            LAST_SESSION_SECONDS = ?,
+            MONTHLY_WORK_SECONDS = ?,
+            WORK_MONTH_KEY = ?,
+            SESSION_START_AT = NULL
+        WHERE UPPER(TRIM(MAIL)) = UPPER(TRIM(?))
+    )");
+    updateQ.addBindValue(sessionSecondsInt);
+    updateQ.addBindValue(monthlyTotalInt);
+    updateQ.addBindValue(currentMonthKey);
+    updateQ.addBindValue(cleanMail);
+
+    qDebug() << "about to exec updateQ";
+
+    if (!updateQ.exec()) {
+        qDebug() << "closeUserSessionByMail update error =" << updateQ.lastError().text();
+        qDebug() << "closeUserSessionByMail update lastQuery =" << updateQ.lastQuery();
+        return false;
+    }
+
+    qDebug() << "updateQ executed, rows =" << updateQ.numRowsAffected();
+
+    if (outSessionSeconds) *outSessionSeconds = sessionSeconds;
+    if (outMonthlyTotalSeconds) *outMonthlyTotalSeconds = monthlyTotal;
+
+    return updateQ.numRowsAffected() > 0;
+}
