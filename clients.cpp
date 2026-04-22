@@ -3,6 +3,7 @@
 #include <QSqlError>
 #include <QDebug>
 
+
 Client::Client(){}
 
 Client::Client(QString type, QString datecl, float montant,
@@ -118,4 +119,82 @@ QVector<QStringList> Client::afficherClients(QString search, QString sort)
     }
 
     return rows;
+}
+
+int levenshteinDistance(const QString &s1, const QString &s2)
+{
+    int len1 = s1.size(), len2 = s2.size();
+    QVector<QVector<int>> dp(len1 + 1, QVector<int>(len2 + 1));
+
+    for(int i = 0; i <= len1; i++) dp[i][0] = i;
+    for(int j = 0; j <= len2; j++) dp[0][j] = j;
+
+    for(int i = 1; i <= len1; i++)
+    {
+        for(int j = 1; j <= len2; j++)
+        {
+            int cost = (s1[i-1] == s2[j-1]) ? 0 : 1;
+
+            dp[i][j] = std::min({
+                dp[i-1][j] + 1,
+                dp[i][j-1] + 1,
+                dp[i-1][j-1] + cost
+            });
+        }
+    }
+
+    return dp[len1][len2];
+}
+
+
+QList<QPair<QString, double>> Client::predictTop3(int clientId)
+{
+    QSqlQuery query;
+
+    QList<QPair<QString, double>> results;
+
+    QString clientArticle = "";
+
+    query.prepare("SELECT ARTICLE FROM CLIENTS WHERE IDCLIENTS = :id");
+    query.bindValue(":id", clientId);
+
+    if(query.exec() && query.next())
+        clientArticle = query.value(0).toString().toLower().trimmed();
+
+    if(clientArticle.isEmpty())
+        return results;
+
+    query.exec(
+        "SELECT ARTICLE, COUNT(*) as freq "
+        "FROM CLIENTS "
+        "GROUP BY ARTICLE"
+        );
+
+    QList<QPair<QString, double>> scored;
+
+    while(query.next())
+    {
+        QString art = query.value(0).toString().toLower().trimmed();
+        int freq = query.value(1).toInt();
+
+        if(art == clientArticle)
+            continue;
+
+        int dist = levenshteinDistance(clientArticle, art);
+        int maxLen = std::max(clientArticle.length(), art.length());
+
+        double similarity = 1.0 - ((double)dist / maxLen);
+
+        double score = similarity * 70 + freq * 0.3;
+
+        scored.append(qMakePair(art, score));
+    }
+
+    std::sort(scored.begin(), scored.end(),
+              [](auto &a, auto &b){ return a.second > b.second; });
+
+    for(int i = 0; i < scored.size() && i < 3; i++)
+        results.append(scored[i]);
+
+    return results;
 }

@@ -2,6 +2,11 @@
 #define BORT_H
 
 #include <QMainWindow>
+#include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
+#include <QList>
+#include <QPair>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -35,7 +40,10 @@ private slots:
     void loadItems();
     int getMaxQuantity(QString item);
     void on_itemsinput_currentTextChanged(const QString &text);
-
+    void on_aiclientbtn_clicked();
+    void loadClientsFromDB();
+    void showAnimatedPopup(QString prediction, double confidence);
+    void runAIPrediction(int clientId);
 private:
     Ui::SignIn *ui;
 

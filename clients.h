@@ -4,6 +4,8 @@
 #include <QString>
 #include <QVector>
 #include <QStringList>
+#include <QList>
+#include <QPair>
 
 class Client
 {
@@ -25,6 +27,7 @@ public:
     bool supprimerClient(int id);
     bool modifierClient(int id);
     QVector<QStringList> afficherClients(QString search = "", QString sort = "");
+    QList<QPair<QString, double>> predictTop3(int clientId);
 };
 
 #endif

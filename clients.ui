@@ -3306,7 +3306,7 @@ QPushButton:pressed {
              </column>
              <column>
               <property name="text">
-               <string/>
+               <string>Price</string>
               </property>
              </column>
              <column>
@@ -3763,7 +3763,7 @@ QLineEdit:focus {
           <x>200</x>
           <y>-20</y>
           <width>1282</width>
-          <height>759</height>
+          <height>801</height>
          </rect>
         </property>
         <property name="frameShape">
@@ -4157,6 +4157,41 @@ font: 700 11pt &quot;Segoe UI&quot;;</string>
            <string>+150% compared to last month</string>
           </property>
          </widget>
+        </widget>
+        <widget class="QPushButton" name="aipredictionbtndashboard">
+         <property name="geometry">
+          <rect>
+           <x>350</x>
+           <y>710</y>
+           <width>261</width>
+           <height>61</height>
+          </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">
+QPushButton {
+    background-color: #0f2d4d;
+    border: 1.5px solid #2c6fa3;
+    border-radius: 12px;
+    padding: 8px 16px;
+    color: #cfe9ff;
+    font-weight: 500;
+font: 700 11pt &quot;Segoe UI&quot;;
+}
+
+QPushButton:hover {
+    background-color: #123a5c;
+    border: 1.5px solid #3aa0ff;
+}
+
+QPushButton:pressed {
+    background-color: #0b223a;
+}
+</string>
+         </property>
+         <property name="text">
+          <string>🤖AI Prediction</string>
+         </property>
         </widget>
        </widget>
        <widget class="QFrame" name="sidebarMenu_D">

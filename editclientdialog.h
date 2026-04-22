@@ -33,12 +33,13 @@ private:
     QLineEdit *nameInput;
     QDateEdit *dateInput;
     QLineEdit *phoneInput;
-    QLineEdit *articleInput;
+    QComboBox *articleInput;
     QSpinBox *quantityInput;
     QComboBox *paymentInput;
-
     QPushButton *saveBtn;
     QPushButton *cancelBtn;
+    void loadItems();
+    int getMaxQuantity(QString item);
 };
 
 #endif
