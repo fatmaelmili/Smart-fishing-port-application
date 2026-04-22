@@ -2,7 +2,9 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include <QCoreApplication>
 
+QMap<QString, QMap<QString, double>> Client::learningData;
 
 Client::Client(){}
 
@@ -19,6 +21,67 @@ Client::Client(QString type, QString datecl, float montant,
     this->article = article;
     this->qte = qte;
 }
+//====learning lel local ai=======
+// 🔹 LOAD JSON
+void Client::loadLearning()
+{
+    QFile file(QCoreApplication::applicationDirPath() + "/learning.json");
+
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "No learning file yet";
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+    QJsonObject root = doc.object();
+
+    for(auto key : root.keys())
+    {
+        QJsonObject inner = root[key].toObject();
+
+        for(auto subKey : inner.keys())
+        {
+            learningData[key][subKey] = inner[subKey].toDouble();
+        }
+    }
+
+    file.close();
+    qDebug() << "Learning loaded";
+}
+
+//======save the learning======
+void Client::saveLearning()
+{
+    QFile file(QCoreApplication::applicationDirPath() + "/learning.json");
+
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        qDebug() << "❌ Cannot create learning.json";
+        return;
+    }
+
+    QJsonObject root;
+
+    for(auto key : learningData.keys())
+    {
+        QJsonObject inner;
+
+        for(auto subKey : learningData[key].keys())
+        {
+            inner[subKey] = learningData[key][subKey];
+        }
+
+        root[key] = inner;
+    }
+
+    QJsonDocument doc(root);
+    file.write(doc.toJson());
+    file.close();
+
+    qDebug() << "✅ learning.json saved!";
+}
+
 
 //add 3ammi mo7sen
 bool Client::ajouterClient()
@@ -145,12 +208,11 @@ int levenshteinDistance(const QString &s1, const QString &s2)
 
     return dp[len1][len2];
 }
-
+//===========jannet l3arrafa====================
 
 QList<QPair<QString, double>> Client::predictTop3(int clientId)
 {
     QSqlQuery query;
-
     QList<QPair<QString, double>> results;
 
     QString clientArticle = "";
@@ -164,11 +226,7 @@ QList<QPair<QString, double>> Client::predictTop3(int clientId)
     if(clientArticle.isEmpty())
         return results;
 
-    query.exec(
-        "SELECT ARTICLE, COUNT(*) as freq "
-        "FROM CLIENTS "
-        "GROUP BY ARTICLE"
-        );
+    query.exec("SELECT ARTICLE, COUNT(*) as freq FROM CLIENTS GROUP BY ARTICLE");
 
     QList<QPair<QString, double>> scored;
 
@@ -185,7 +243,9 @@ QList<QPair<QString, double>> Client::predictTop3(int clientId)
 
         double similarity = 1.0 - ((double)dist / maxLen);
 
-        double score = similarity * 70 + freq * 0.3;
+        double learnedBoost = learningData[clientArticle][art];
+
+        double score = similarity * 70 + freq * 0.3 + learnedBoost;
 
         scored.append(qMakePair(art, score));
     }
@@ -196,5 +256,14 @@ QList<QPair<QString, double>> Client::predictTop3(int clientId)
     for(int i = 0; i < scored.size() && i < 3; i++)
         results.append(scored[i]);
 
+    // 🔥 LEARNING UPDATE
+    for(auto &res : results)
+    {
+        learningData[clientArticle][res.first] += 1.0;
+    }
+
+    saveLearning();
+
     return results;
 }
+

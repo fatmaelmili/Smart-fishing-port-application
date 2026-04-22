@@ -1,5 +1,6 @@
 #include "bort.h"
 #include "connection.h"
+#include "clients.h"   // 🔥 ADD THIS
 
 #include <QApplication>
 #include <QSqlDatabase>
@@ -10,19 +11,17 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    qDebug() << QSqlDatabase::drivers();
-
     connection& c = connection::createInsatance();
     bool test = c.createconnect();
 
-    qDebug() << QSqlDatabase::database().isOpen();
-
     if(!test)
         qDebug() << "Database connection failed";
+
+    // 🔥 LOAD AI MEMORY
+    Client::loadLearning();
 
     SignIn w;
     w.show();
 
     return a.exec();
 }
-

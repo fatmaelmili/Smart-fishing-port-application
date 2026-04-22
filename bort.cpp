@@ -477,33 +477,38 @@ void SignIn::on_aiclientbtn_clicked()
 
     int clientId = ui->clienttable->item(row, 0)->text().toInt();
 
-    // 🔥 Loading popup
-    QMessageBox *loading = new QMessageBox(this);
+    // 🔥 LOADING POPUP
+    loadingMsg = new QMessageBox(this);
 
-    loading->setWindowTitle("AI System");
-    loading->setText("<div style='color:white;'><h3>🤖 AI is analyzing...</h3><p>Please wait...</p></div>");
-    loading->setTextFormat(Qt::RichText);
+    loadingMsg->setWindowTitle("AI System");
+    loadingMsg->setText("<div style='color:white;'><h3>🤖 AI is analyzing...</h3><p>Please wait...</p></div>");
+    loadingMsg->setTextFormat(Qt::RichText);
 
-    loading->setStyleSheet(
+    loadingMsg->setStyleSheet(
         "QMessageBox { background-color:#0b1e2d; }"
         "QLabel { color:white; font-size:14px; }"
         );
 
-    loading->setStandardButtons(QMessageBox::NoButton);
-    loading->show();
+    loadingMsg->setStandardButtons(QMessageBox::NoButton);
+    loadingMsg->show();
 
-    // ⏳ delay then run AI
     QTimer::singleShot(1200, this, [=]()
                        {
-                           loading->close();
                            runAIPrediction(clientId);
                        });
 }
 //====================loading animation==========================
 void SignIn::runAIPrediction(int clientId)
 {
-    Client c;
+    // 🔥 CLOSE LOADING
+    if(loadingMsg)
+    {
+        loadingMsg->close();
+        delete loadingMsg;
+        loadingMsg = nullptr;
+    }
 
+    Client c;
     QList<QPair<QString, double>> predictions = c.predictTop3(clientId);
 
     QString text = "<div style='color:white;'><h3>🤖 AI Recommendations</h3>";
@@ -536,15 +541,5 @@ void SignIn::runAIPrediction(int clientId)
         "QPushButton { background:#1f6aa5; color:white; border-radius:6px; padding:5px; }"
         );
 
-    // 🎬 fade animation
-    QGraphicsOpacityEffect *effect = new QGraphicsOpacityEffect(msg);
-    msg->setGraphicsEffect(effect);
-
-    QPropertyAnimation *anim = new QPropertyAnimation(effect, "opacity");
-    anim->setDuration(400);
-    anim->setStartValue(0);
-    anim->setEndValue(1);
-
     msg->show();
-    anim->start();
 }

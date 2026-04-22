@@ -1,6 +1,7 @@
 #ifndef BORT_H
 #define BORT_H
 
+#include "qmessagebox.h"
 #include <QMainWindow>
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
@@ -47,6 +48,7 @@ private slots:
 private:
     Ui::SignIn *ui;
 
+    QMessageBox *loadingMsg = nullptr;
     void loadClients(QString search = "", QString sort = "");
 };
 

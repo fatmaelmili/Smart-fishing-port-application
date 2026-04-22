@@ -6,6 +6,11 @@
 #include <QStringList>
 #include <QList>
 #include <QPair>
+#include <QMap>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 
 class Client
 {
@@ -18,6 +23,7 @@ private:
     QString description;
     QString article;
     int qte;
+    static QMap<QString, QMap<QString, double>> learningData;
 public:
     Client();
     Client(QString type, QString datecl, float montant,
@@ -28,6 +34,8 @@ public:
     bool modifierClient(int id);
     QVector<QStringList> afficherClients(QString search = "", QString sort = "");
     QList<QPair<QString, double>> predictTop3(int clientId);
+    static void loadLearning();
+    static void saveLearning();
 };
 
 #endif
