@@ -15,6 +15,9 @@
 #include <QtCharts/QValueAxis>
 #include <QtCharts/QPieSeries>
 #include <QtCharts/QChart>//added this
+#include <QPdfWriter>
+#include <QPainter>
+#include <QFileDialog>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -52,6 +55,10 @@ private slots:
     void loadClientsFromDB();//added this
     void showAnimatedPopup(QString prediction, double confidence);//added this
     void runAIPrediction(int clientId);//added this
+    void on_aipredictionbtndashboard_clicked();
+    void showAIPopup();
+    void predictGains();
+    void predictBestFish();//added all of these
 private:
     Ui::SignIn *ui;
     //added all of this
@@ -65,6 +72,8 @@ private:
     void handlePieClicked(QPieSlice *slice);
     QMessageBox *loadingMsg = nullptr;//added this
     void loadClients(QString search = "", QString sort = "");
+    void on_pdfitembtn_clicked();
+    void showStyledPopup(QString text);
 };
 
 #endif // BORT_H

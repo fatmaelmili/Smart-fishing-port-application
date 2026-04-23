@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
 
     //added this
     Client::loadLearning();
+    Client::loadAI();
 
     SignIn w;
     w.show();

@@ -12,6 +12,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 
+
 class Client
 {
 private:
@@ -36,6 +37,11 @@ public:
     QList<QPair<QString, double>> predictTop3(int clientId);//added this
     static void loadLearning();//added this
     static void saveLearning();//added this
+    static QMap<QString, double> fishScores;
+
+    static void loadAI();
+    static void saveAI();
+    static void updateFishScore(QString fish, double value);
 };
 
 #endif

@@ -19,16 +19,18 @@ SignIn::SignIn(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::SignIn)
 {
+    //added this
     qDebug() << "Constructor START";
     ui->setupUi(this);
+    connect(ui->pdfitembtn, &QPushButton::clicked,
+            this, &SignIn::on_pdfitembtn_clicked);
     loadClients("", "");
     loadItems();
-    //added this
+    //added this(elli louta lkoll)
     loadClientsFromDB();
     setupBarChart();
     setupPieChart();
     updateDashboard();
-    // timer->start(5000);
     qDebug() << "Constructor END";
 }
 
@@ -92,23 +94,60 @@ void SignIn::on_clientsmanagementBTN_W_clicked()
 // ==================all mo7sen jaballah loads==================
 void SignIn::loadClients(QString search, QString sort)
 {
-    Client C;
-    QVector<QStringList> rows = C.afficherClients(search, sort);
+    ui->clienttable->setRowCount(0); // clear table
 
-    ui->clienttable->setRowCount(0);
+    QSqlQuery query;
 
-    for(int i = 0; i < rows.size(); i++)
+    QString orderBy = "";
+
+    if(sort == "client's name ↑")
+        orderBy = "ORDER BY TYPE ASC";
+    else if(sort == "client's name ↓")
+        orderBy = "ORDER BY TYPE DESC";
+
+    else if(sort == "article ↑")
+        orderBy = "ORDER BY ARTICLE ASC";
+    else if(sort == "article ↓")
+        orderBy = "ORDER BY ARTICLE DESC";
+
+    else if(sort == "quantity ↑")
+        orderBy = "ORDER BY QTE ASC";
+    else if(sort == "quantity ↓")
+        orderBy = "ORDER BY QTE DESC";
+    QString queryStr =
+        "SELECT IDCLIENTS, TYPE, DATECL, MONTANT, MODEPAY, ETAT, DESCRIPTION, ARTICLE, QTE "
+        "FROM CLIENTS ";
+
+    if(!search.isEmpty())
     {
-        ui->clienttable->insertRow(i);
-
-        for(int j = 0; j < rows[i].size(); j++)
-        {
-            ui->clienttable->setItem(i, j, new QTableWidgetItem(rows[i][j]));
-        }
+        queryStr += "WHERE LOWER(TYPE) LIKE LOWER('%" + search + "%') ";
     }
-    loadClientsFromDB();
-}
+    if(!orderBy.isEmpty())
+        queryStr += orderBy;
+    else
+        queryStr += "ORDER BY IDCLIENTS DESC";
 
+    // 🔹 Execute
+    if(!query.exec(queryStr))
+    {
+        qDebug() << "Query error:" << query.lastError();
+        return;
+    }
+
+    int row = 0;
+    while(query.next())
+    {
+        ui->clienttable->insertRow(row);
+
+        for(int col = 0; col < 9; col++)
+        {
+            ui->clienttable->setItem(row, col,
+                                     new QTableWidgetItem(query.value(col).toString()));
+        }
+
+        row++;
+    }
+}
 // =================add a mos7sinon==================
 
 void SignIn::on_clientaddbtn_clicked()
@@ -552,6 +591,9 @@ void SignIn::runAIPrediction(int clientId)
 
     msg->show();
 }
+
+
+//==========flouuuuuuuuuuuuuuuuuus---------
 double SignIn::getMonthlyGains()
 {
     QSqlQuery query;
@@ -568,6 +610,8 @@ double SignIn::getMonthlyGains()
     return 0;
 }
 
+
+//====akther 7aja tb3et========
 QString SignIn::getMostSoldItem(int &quantity)
 {
     QSqlQuery query;
@@ -588,7 +632,7 @@ QString SignIn::getMostSoldItem(int &quantity)
     quantity = 0;
     return "None";
 }
-
+//---------moneeeeeeeeeeeeeeeeeeeeeeeeeeyyyyyyyyyyy===
 int SignIn::getTotalPurchases()
 {
     QSqlQuery query;
@@ -601,6 +645,7 @@ int SignIn::getTotalPurchases()
     return 0;
 }
 
+//===========================dashboard stuff==========================
 void SignIn::updateDashboard()
 {
     double gains = getMonthlyGains();
@@ -612,6 +657,9 @@ void SignIn::updateDashboard()
         item + "\nQuantity: " + QString::number(qty)
         );
 }
+
+
+//=======================================classic stats========================
 void SignIn::setupBarChart()
 {
     if(ui->chart1->layout())
@@ -683,6 +731,9 @@ void SignIn::setupBarChart()
     QVBoxLayout *layout = new QVBoxLayout(ui->chart1);
     layout->addWidget(chartView);
 }
+
+
+//==============================stats the round type=======================================
 void SignIn::setupPieChart()
 {
     if(ui->chart2->layout())
@@ -747,5 +798,307 @@ void SignIn::setupPieChart()
 
     QVBoxLayout *layout = new QVBoxLayout(ui->chart2);
     layout->addWidget(chartView);
+}
+
+
+//=======================dashboard pdf file good kind version============================================
+void SignIn::on_pdfitembtn_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    "Save PDF", "dashboard.pdf", "*.pdf");
+
+    if(fileName.isEmpty())
+        return;
+
+    QPdfWriter pdf(fileName);
+
+    // 🔥 LANDSCAPE MODE
+    pdf.setPageOrientation(QPageLayout::Landscape);
+    pdf.setPageSize(QPageSize(QPageSize::A4));
+    pdf.setResolution(300);
+
+    QPainter painter(&pdf);
+
+    int width = pdf.width();
+    int height = pdf.height();
+    int margin = 60;
+
+    // ===================== PAGE 1 =====================
+
+    // 🎨 Background
+    painter.fillRect(0, 0, width, height, QColor("#0b1e2d"));
+
+    int y = margin;
+
+    // 🏷️ Title
+    painter.setPen(Qt::white);
+    painter.setFont(QFont("Segoe UI", 24, QFont::Bold));
+    painter.drawText(QRect(0, y, width, 100),
+                     Qt::AlignCenter,
+                     "Client Dashboard Report");
+
+    y += 200;
+
+    // 📅 Date
+    painter.setPen(QColor("#aaaaaa"));
+    painter.setFont(QFont("Segoe UI", 11));
+    painter.drawText(QRect(0, y, width, 40),
+                     Qt::AlignCenter,
+                     QDateTime::currentDateTime().toString("dd MMM yyyy - hh:mm"));
+
+    y += 250;
+
+    // 🔷 CARD WIDTHS
+    int cardWidth = (width - 3 * margin) / 2;
+    int cardHeight = 500;
+
+    // 💰 GAINS CARD
+    QRect gainsCard(margin, y, cardWidth, cardHeight);
+
+    painter.setBrush(QColor("#132f4c"));
+    painter.setPen(Qt::NoPen);
+    painter.drawRoundedRect(gainsCard, 15, 15);
+
+    // Title
+    painter.setPen(QColor("#00c6ff"));
+    painter.setFont(QFont("Segoe UI", 12, QFont::Bold));
+    painter.drawText(gainsCard.adjusted(20, 15, -20, -60),
+                     Qt::TextWordWrap,
+                     "This Month's Gains");
+
+    // Value
+    painter.setPen(Qt::white);
+    painter.setFont(QFont("Segoe UI", 20, QFont::Bold));
+    painter.drawText(gainsCard.adjusted(20, 45, -20, -10),
+                     Qt::TextWordWrap,
+                     ui->monthsgainslabel->text());
+
+    // 🏆 MOST SOLD CARD
+    QRect soldCard(2 * margin + cardWidth, y, cardWidth, cardHeight);
+
+    painter.setBrush(QColor("#132f4c"));
+    painter.drawRoundedRect(soldCard, 15, 15);
+
+    // Title
+    painter.setPen(QColor("#00c6ff"));
+    painter.setFont(QFont("Segoe UI", 12, QFont::Bold));
+    painter.drawText(soldCard.adjusted(20, 15, -20, -60),
+                     Qt::TextWordWrap,
+                     "Most Sold Item");
+
+    // Value
+    painter.setPen(Qt::white);
+    painter.setFont(QFont("Segoe UI", 18, QFont::Bold));
+    painter.drawText(soldCard.adjusted(20, 45, -20, -10),
+                     Qt::TextWordWrap,
+                     ui->mostsolditemlabel->text());
+    // 📝 Footer
+    painter.setPen(QColor("#888888"));
+    painter.setFont(QFont("Segoe UI", 9));
+    painter.drawText(QRect(0, height - 50, width, 30),
+                     Qt::AlignCenter,
+                     "Generated by BORT System");
+
+    // ===================== PAGE 2 =====================
+    pdf.newPage();
+
+    painter.fillRect(0, 0, width, height, QColor("#0b1e2d"));
+
+    y = margin;
+
+    // 🏷️ Title
+    painter.setPen(Qt::white);
+    painter.setFont(QFont("Segoe UI", 20, QFont::Bold));
+    painter.drawText(QRect(0, y, width, 100),
+                     Qt::AlignCenter,
+                     "Charts Overview");
+
+    y += 60;
+
+    // 📊 GET CHART IMAGES (HIGH RES)
+    QPixmap chart1 = ui->chart1->grab();
+    QPixmap chart2 = ui->chart2->grab();
+
+    // 🔥 BIGGER AREA FOR CHARTS
+    int chartWidth = (width - 3 * margin) / 2;
+    int chartHeight = height - y - 60; // less bottom spacing → bigger charts
+
+    // 🔹 SCALE (keep ratio but maximize size)
+    QPixmap scaled1 = chart1.scaled(chartWidth, chartHeight,
+                                    Qt::KeepAspectRatio,
+                                    Qt::SmoothTransformation);
+
+    QPixmap scaled2 = chart2.scaled(chartWidth, chartHeight,
+                                    Qt::KeepAspectRatio,
+                                    Qt::SmoothTransformation);
+
+    // 🔹 POSITIONS
+    int x1 = margin;
+    int x2 = 2 * margin + chartWidth;
+
+    // 🔥 CENTER VERTICALLY
+    int yCentered1 = y + (chartHeight - scaled1.height()) / 2;
+    int yCentered2 = y + (chartHeight - scaled2.height()) / 2;
+
+    // 🔹 BACKGROUND CARDS (FIT TO IMAGE SIZE, NOT FULL AREA)
+    QRect bg1(x1 - 10, yCentered1 - 10,
+              scaled1.width() + 20, scaled1.height() + 20);
+
+    QRect bg2(x2 - 10, yCentered2 - 10,
+              scaled2.width() + 20, scaled2.height() + 20);
+
+    painter.setBrush(QColor("#132f4c"));
+    painter.setPen(Qt::NoPen);
+    painter.drawRoundedRect(bg1, 15, 15);
+    painter.drawRoundedRect(bg2, 15, 15);
+
+    // 🔹 DRAW CHARTS (centered inside cards)
+    painter.drawPixmap(
+        x1 + (chartWidth - scaled1.width()) / 2,
+        yCentered1,
+        scaled1
+        );
+
+    painter.drawPixmap(
+        x2 + (chartWidth - scaled2.width()) / 2,
+        yCentered2,
+        scaled2
+        );
+
+    // 📝 Footer
+    painter.setPen(QColor("#888888"));
+    painter.setFont(QFont("Segoe UI", 9));
+    painter.drawText(QRect(0, height - 40, width, 30),
+                     Qt::AlignCenter,
+                     "Charts generated dynamically from database");
+
+    painter.end();
+    QMessageBox::information(this, "Success",
+                             "✨ Beautiful 2-page PDF exported!");
+}
+
+
+//===================styyle
+void SignIn::showStyledPopup(QString text)
+{
+    QMessageBox *msg = new QMessageBox(this);
+
+    msg->setWindowTitle("AI Prediction");
+    msg->setText(text);
+
+    msg->setStyleSheet(
+        "QMessageBox {"
+        " background-color:#0b1e2d;"
+        " color:white;"
+        " font-size:14px;"
+        "}"
+        "QLabel { color:white; }"
+        "QPushButton {"
+        " background-color:#1f6aa5;"
+        " color:white;"
+        " padding:8px 16px;"
+        " border-radius:6px;"
+        "}"
+        "QPushButton:hover { background-color:#00c6ff; }"
+        );
+
+    msg->exec();
+}
+
+//==========================dashboard jannet l3arrafa 7out w flous ya baba==============================================
+void SignIn::on_aipredictionbtndashboard_clicked()
+{
+    showAIPopup();
+}
+//======kaboom kablaw kaboom===============
+void SignIn::showAIPopup()
+{
+    QMessageBox msg(this);
+    msg.setWindowTitle("AI System");
+    msg.setText("Choose prediction type:");
+
+    QPushButton *gainsBtn = msg.addButton("📊 Gains / Losses", QMessageBox::ActionRole);
+    QPushButton *fishBtn = msg.addButton("🐟 Best Fish", QMessageBox::ActionRole);
+
+    msg.setStyleSheet(
+        "QMessageBox { background-color:#0b1e2d; }"
+        "QPushButton { background:#1f6aa5; color:white; padding:8px; border-radius:6px; }"
+        "QLabel { color:white; font-size:14px; }"
+        );
+
+    msg.exec();
+
+    if(msg.clickedButton() == gainsBtn)
+        predictGains();
+    else if(msg.clickedButton() == fishBtn)
+        predictBestFish();
+}
+
+//==================ai like system ljannet l3arrafa lel money
+void SignIn::predictGains()
+{
+    QSqlQuery query;
+
+    query.exec(
+        "SELECT SUM(MONTANT) FROM CLIENTS"
+        );
+
+    double total = 0;
+
+    if(query.next())
+        total = query.value(0).toDouble();
+
+    double learned = Client::fishScores["global_gain"];
+
+    double prediction = total * 1.1 + learned;
+
+    Client::updateFishScore("global_gain", total * 0.05);
+    Client::saveAI();
+
+    QString result =
+        "📊 AI Financial Prediction\n\n"
+        "Estimated Gains: " + QString::number(prediction, 'f', 2) + " DT\n"
+                                                "Trend: " + (prediction > total ? "📈 Growing" : "📉 Declining");
+
+    showStyledPopup(result);
+}
+//===============bel 7out 3lik yazzayn=======================
+void SignIn::predictBestFish()
+{
+    QSqlQuery query;
+
+    query.exec(
+        "SELECT ARTICLE, SUM(QTE) as total "
+        "FROM CLIENTS "
+        "WHERE LOWER(ARTICLE) LIKE '%fish%' "
+        "   OR LOWER(ARTICLE) LIKE '%tuna%' "
+        "   OR LOWER(ARTICLE) LIKE '%sardine%' "
+        "GROUP BY ARTICLE "
+        "ORDER BY total DESC"
+        );
+
+    if(query.next())
+    {
+        QString fish = query.value(0).toString();
+        int qty = query.value(1).toInt();
+
+        // 🔥 AI LEARNING BOOST
+        double score = qty + Client::fishScores[fish];
+
+        Client::updateFishScore(fish, qty * 0.2);
+        Client::saveAI();
+
+        QString result =
+            "🐟 AI Fish Prediction\n\n"
+            "Best Fish: " + fish +
+            "\nDemand: " + QString::number(qty) +
+            "\nAI Score: " + QString::number(score, 'f', 1);
+
+        showStyledPopup(result);
+    }
+    else
+    {
+        showStyledPopup("❌ No fish data available");
+    }
 }
 

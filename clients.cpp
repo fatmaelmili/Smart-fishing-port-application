@@ -3,8 +3,13 @@
 #include <QSqlError>
 #include <QDebug>
 #include <QCoreApplication>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QFile>
+#include <QCoreApplication>
 
 QMap<QString, QMap<QString, double>> Client::learningData;
+QMap<QString, double> Client::fishScores;   // ✅ ADD THIS LINE
 
 Client::Client(){}
 
@@ -134,7 +139,7 @@ bool Client::modifierClient(int id)
     return q.exec();
 }
 
-// fetch search a sort the big three
+// fetch search w sort the big three
 QVector<QStringList> Client::afficherClients(QString search, QString sort)
 {
     QVector<QStringList> rows;
@@ -266,3 +271,46 @@ QList<QPair<QString, double>> Client::predictTop3(int clientId)
 
     return results;
 }
+
+void Client::loadAI()
+{
+    QFile file(QCoreApplication::applicationDirPath() + "/ai_learning.json");
+
+    if(!file.open(QIODevice::ReadOnly))
+        return;
+
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+    QJsonObject obj = doc.object();
+
+    for(auto key : obj.keys())
+        fishScores[key] = obj[key].toDouble();
+
+    file.close();
+}
+
+
+void Client::saveAI()
+{
+    QFile file(QCoreApplication::applicationDirPath() + "/ai_learning.json");
+
+    if(!file.open(QIODevice::WriteOnly))
+        return;
+
+    QJsonObject obj;
+
+    for(auto key : fishScores.keys())
+        obj[key] = fishScores[key];
+
+    file.write(QJsonDocument(obj).toJson());
+    file.close();
+}
+
+
+void Client::updateFishScore(QString fish, double value)
+{
+    fishScores[fish] += value;
+}
+
+
+
+

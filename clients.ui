@@ -3043,9 +3043,9 @@ QPushButton:pressed {
             <widget class="QPushButton" name="aiclientbtn">
              <property name="geometry">
               <rect>
-               <x>210</x>
+               <x>200</x>
                <y>460</y>
-               <width>261</width>
+               <width>281</width>
                <height>41</height>
               </rect>
              </property>
@@ -3072,7 +3072,7 @@ QPushButton:pressed {
 </string>
              </property>
              <property name="text">
-              <string>🤖AI Purchase Prediction</string>
+              <string>🤖AI Purchase Recommendation</string>
              </property>
             </widget>
             <widget class="QPushButton" name="updateclientbtn">
@@ -3189,22 +3189,32 @@ QPushButton:pressed {
              </item>
              <item>
               <property name="text">
-               <string>client's name</string>
+               <string>client's name ↑</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>date of birth</string>
+               <string>client's name ↓</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>payment type</string>
+               <string>article ↑</string>
               </property>
              </item>
              <item>
               <property name="text">
-               <string>article</string>
+               <string>article ↓</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>quantity ↑</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>quantity ↓</string>
               </property>
              </item>
             </widget>
@@ -3218,7 +3228,7 @@ QPushButton:pressed {
               </rect>
              </property>
              <property name="text">
-              <string>🔍Search</string>
+              <string/>
              </property>
             </widget>
             <widget class="QTableWidget" name="clienttable">
@@ -3887,9 +3897,9 @@ QLineEdit:focus {
           <property name="geometry">
            <rect>
             <x>-10</x>
-            <y>-10</y>
-            <width>451</width>
-            <height>311</height>
+            <y>-30</y>
+            <width>461</width>
+            <height>331</height>
            </rect>
           </property>
           <property name="title">
@@ -4091,7 +4101,7 @@ font: 700 11pt &quot;Segoe UI&quot;;</string>
            <rect>
             <x>160</x>
             <y>40</y>
-            <width>381</width>
+            <width>271</width>
             <height>81</height>
            </rect>
           </property>
