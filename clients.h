@@ -1,6 +1,6 @@
 #ifndef CLIENTS_H
 #define CLIENTS_H
-
+//nsit which one zedt mel includes donc let's add them all
 #include <QString>
 #include <QVector>
 #include <QStringList>
@@ -23,7 +23,7 @@ private:
     QString description;
     QString article;
     int qte;
-    static QMap<QString, QMap<QString, double>> learningData;
+    static QMap<QString, QMap<QString, double>> learningData;//added this
 public:
     Client();
     Client(QString type, QString datecl, float montant,
@@ -33,9 +33,9 @@ public:
     bool supprimerClient(int id);
     bool modifierClient(int id);
     QVector<QStringList> afficherClients(QString search = "", QString sort = "");
-    QList<QPair<QString, double>> predictTop3(int clientId);
-    static void loadLearning();
-    static void saveLearning();
+    QList<QPair<QString, double>> predictTop3(int clientId);//added this
+    static void loadLearning();//added this
+    static void saveLearning();//added this
 };
 
 #endif

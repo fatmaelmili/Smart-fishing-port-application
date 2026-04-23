@@ -13,15 +13,23 @@
 #include <QRegularExpression>
 #include <QDate>
 
+
 // ==================constructor goes weeeeee==================
 SignIn::SignIn(QWidget *parent)
     : QMainWindow(parent),
     ui(new Ui::SignIn)
 {
+    qDebug() << "Constructor START";
     ui->setupUi(this);
     loadClients("", "");
     loadItems();
+    //added this
     loadClientsFromDB();
+    setupBarChart();
+    setupPieChart();
+    updateDashboard();
+    // timer->start(5000);
+    qDebug() << "Constructor END";
 }
 
 // ==================destructor goes wooo==================
@@ -66,19 +74,19 @@ void SignIn::on_mainpagebtn_clicked()
 
 void SignIn::on_clientdashboardbtn_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->staffdash);
+    ui->stackedWidget->setCurrentWidget(ui->clientdash);
 }
 
 
 void SignIn::on_backtoclientbtn_clicked()
     {
-        ui->stackedWidget->setCurrentWidget(ui->pageStaffManagement);
+        ui->stackedWidget->setCurrentWidget(ui->pageClientManagement);
     }
 
 
 void SignIn::on_clientsmanagementBTN_W_clicked()
 {
-     ui->stackedWidget->setCurrentWidget(ui->pageStaffManagement);
+     ui->stackedWidget->setCurrentWidget(ui->pageClientManagement);
 }
 
 // ==================all mo7sen jaballah loads==================
@@ -395,6 +403,8 @@ void SignIn::on_itemsinput_currentTextChanged(const QString &text)
     if(ui->quantityinput->value() > max)
         ui->quantityinput->setValue(max);
 }
+
+//added this elli louta lkoll
 //==========================showing all the mo7sens and jaballahs mel DB=============================
 void SignIn::loadClientsFromDB()
 {
@@ -423,7 +433,7 @@ void SignIn::loadClientsFromDB()
         row++;
     }
 
-    qDebug() << "✅ Loaded rows:" << row;
+    qDebug() << "Loaded rows:" << row;
 }
 //==========================popup animation==========================
 void SignIn::showAnimatedPopup(QString prediction, double confidence)
@@ -477,7 +487,6 @@ void SignIn::on_aiclientbtn_clicked()
 
     int clientId = ui->clienttable->item(row, 0)->text().toInt();
 
-    // 🔥 LOADING POPUP
     loadingMsg = new QMessageBox(this);
 
     loadingMsg->setWindowTitle("AI System");
@@ -500,7 +509,7 @@ void SignIn::on_aiclientbtn_clicked()
 //====================loading animation==========================
 void SignIn::runAIPrediction(int clientId)
 {
-    // 🔥 CLOSE LOADING
+    // 🔥 Close loading popup
     if(loadingMsg)
     {
         loadingMsg->close();
@@ -524,7 +533,7 @@ void SignIn::runAIPrediction(int clientId)
             text += QString("<p>%1. <b>%2</b> (%3%)</p>")
             .arg(i + 1)
                 .arg(predictions[i].first)
-                .arg(QString::number(predictions[i].second, 'f', 2));
+                .arg(QString::number(predictions[i].second, 'f', 1)); // 🔥 FIXED %
         }
     }
 
@@ -543,3 +552,200 @@ void SignIn::runAIPrediction(int clientId)
 
     msg->show();
 }
+double SignIn::getMonthlyGains()
+{
+    QSqlQuery query;
+
+    query.exec(
+        "SELECT SUM(MONTANT) "
+        "FROM CLIENTS "
+        "WHERE TO_CHAR(DATECL, 'MM-YYYY') = TO_CHAR(SYSDATE, 'MM-YYYY')"
+        );
+
+    if(query.next())
+        return query.value(0).toDouble();
+
+    return 0;
+}
+
+QString SignIn::getMostSoldItem(int &quantity)
+{
+    QSqlQuery query;
+
+    query.exec(
+        "SELECT ARTICLE, SUM(QTE) as total "
+        "FROM CLIENTS "
+        "GROUP BY ARTICLE "
+        "ORDER BY total DESC"
+        );
+
+    if(query.next())
+    {
+        quantity = query.value(1).toInt();
+        return query.value(0).toString();
+    }
+
+    quantity = 0;
+    return "None";
+}
+
+int SignIn::getTotalPurchases()
+{
+    QSqlQuery query;
+
+    query.exec("SELECT COUNT(*) FROM CLIENTS");
+
+    if(query.next())
+        return query.value(0).toInt();
+
+    return 0;
+}
+
+void SignIn::updateDashboard()
+{
+    double gains = getMonthlyGains();
+    ui->monthsgainslabel->setText(QString::number(gains, 'f', 2) + " DT");
+    int qty;
+    QString item = getMostSoldItem(qty);
+
+    ui->mostsolditemlabel->setText(
+        item + "\nQuantity: " + QString::number(qty)
+        );
+}
+void SignIn::setupBarChart()
+{
+    if(ui->chart1->layout())
+    {
+        QLayout *layout = ui->chart1->layout();
+        while(layout->count())
+        {
+            QWidget *w = layout->itemAt(0)->widget();
+            layout->removeWidget(w);
+            delete w;
+        }
+    }
+
+    QSqlQuery query;
+    query.exec("SELECT ARTICLE, SUM(QTE) FROM CLIENTS GROUP BY ARTICLE");
+
+    QBarSeries *series = new QBarSeries();
+    QBarSet *set = new QBarSet("Sales");
+
+    QStringList categories;
+
+    while(query.next())
+    {
+        QString article = query.value(0).toString();
+        int quantity = query.value(1).toInt();
+
+        *set << quantity;
+        categories << article;
+    }
+    QLinearGradient gradient(0, 0, 0, 1);
+    gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
+    gradient.setColorAt(0.0, QColor("#00c6ff"));
+    gradient.setColorAt(1.0, QColor("#0072ff"));
+    set->setBrush(gradient);
+
+    series->append(set);
+    connect(series, &QBarSeries::clicked, this, [=](int index, QBarSet *set)
+            {
+                QString item = categories[index];
+                int value = set->at(index);
+
+                QMessageBox::information(this, "Details",
+                                         "Item: " + item + "\nQuantity: " + QString::number(value));
+            });
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Sales by Item");
+    chart->setAnimationOptions(QChart::AllAnimations);
+
+    chart->setBackgroundBrush(QBrush(QColor("#0b1e2d")));
+    chart->setTitleBrush(QBrush(Qt::white));
+    chart->legend()->hide();
+
+    QBarCategoryAxis *axisX = new QBarCategoryAxis();
+    axisX->append(categories);
+    axisX->setLabelsColor(Qt::white);
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
+
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setLabelsColor(Qt::white);
+    chart->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
+
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    QVBoxLayout *layout = new QVBoxLayout(ui->chart1);
+    layout->addWidget(chartView);
+}
+void SignIn::setupPieChart()
+{
+    if(ui->chart2->layout())
+    {
+        QLayout *layout = ui->chart1->layout();
+        while(layout->count())
+        {
+            QWidget *w = layout->itemAt(0)->widget();
+            layout->removeWidget(w);
+            delete w;
+        }
+    }
+
+    QSqlQuery query;
+    query.exec("SELECT ARTICLE, SUM(QTE) FROM CLIENTS GROUP BY ARTICLE");
+
+    QPieSeries *series = new QPieSeries();
+
+    while(query.next())
+    {
+        QString article = query.value(0).toString();
+        int quantity = query.value(1).toInt();
+
+        series->append(article, quantity);
+    }
+
+    for(auto slice : series->slices())
+    {
+        slice->setLabelVisible();
+        slice->setLabelColor(Qt::white);
+
+        connect(slice, &QPieSlice::clicked, this, [=]()
+                {
+                    QString name = slice->label();
+                    double percent = slice->percentage() * 100;
+
+                    QMessageBox::information(this, "Details",
+                                             "Item: " + name +
+                                                 "\nPercentage: " + QString::number(percent, 'f', 1) + "%");
+                });
+
+        // Highlight big slices
+        if(slice->percentage() > 0.3)
+            slice->setExploded(true);
+        connect(slice, &QPieSlice::hovered, this, [=](bool state)
+                {
+                    slice->setExploded(state);
+                });
+    }
+
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Sales Distribution");
+    chart->setBackgroundBrush(QBrush(QColor("#0b1e2d")));
+    chart->setTitleBrush(QBrush(Qt::white));
+    chart->legend()->setLabelColor(Qt::white);
+
+    chart->setAnimationOptions(QChart::AllAnimations);
+
+    QChartView *chartView = new QChartView(chart);
+    chartView->setRenderHint(QPainter::Antialiasing);
+
+    QVBoxLayout *layout = new QVBoxLayout(ui->chart2);
+    layout->addWidget(chartView);
+}
+

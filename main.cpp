@@ -1,6 +1,6 @@
 #include "bort.h"
 #include "connection.h"
-#include "clients.h"   // 🔥 ADD THIS
+#include "clients.h"   //added this
 
 #include <QApplication>
 #include <QSqlDatabase>
@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     if(!test)
         qDebug() << "Database connection failed";
 
-    // 🔥 LOAD AI MEMORY
+    //added this
     Client::loadLearning();
 
     SignIn w;

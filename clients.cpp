@@ -21,8 +21,8 @@ Client::Client(QString type, QString datecl, float montant,
     this->article = article;
     this->qte = qte;
 }
+//added this
 //====learning lel local ai=======
-// 🔹 LOAD JSON
 void Client::loadLearning()
 {
     QFile file(QCoreApplication::applicationDirPath() + "/learning.json");
@@ -49,7 +49,7 @@ void Client::loadLearning()
     file.close();
     qDebug() << "Learning loaded";
 }
-
+//added this
 //======save the learning======
 void Client::saveLearning()
 {
@@ -57,7 +57,7 @@ void Client::saveLearning()
 
     if(!file.open(QIODevice::WriteOnly))
     {
-        qDebug() << "❌ Cannot create learning.json";
+        qDebug() << "Cannot create learning.json";
         return;
     }
 
@@ -79,7 +79,7 @@ void Client::saveLearning()
     file.write(doc.toJson());
     file.close();
 
-    qDebug() << "✅ learning.json saved!";
+    qDebug() << "learning.json saved!";
 }
 
 
@@ -183,7 +183,7 @@ QVector<QStringList> Client::afficherClients(QString search, QString sort)
 
     return rows;
 }
-
+//added this
 int levenshteinDistance(const QString &s1, const QString &s2)
 {
     int len1 = s1.size(), len2 = s2.size();
@@ -208,6 +208,7 @@ int levenshteinDistance(const QString &s1, const QString &s2)
 
     return dp[len1][len2];
 }
+//added this
 //===========jannet l3arrafa====================
 
 QList<QPair<QString, double>> Client::predictTop3(int clientId)
@@ -216,7 +217,6 @@ QList<QPair<QString, double>> Client::predictTop3(int clientId)
     QList<QPair<QString, double>> results;
 
     QString clientArticle = "";
-
     query.prepare("SELECT ARTICLE FROM CLIENTS WHERE IDCLIENTS = :id");
     query.bindValue(":id", clientId);
 
@@ -225,7 +225,6 @@ QList<QPair<QString, double>> Client::predictTop3(int clientId)
 
     if(clientArticle.isEmpty())
         return results;
-
     query.exec("SELECT ARTICLE, COUNT(*) as freq FROM CLIENTS GROUP BY ARTICLE");
 
     QList<QPair<QString, double>> scored;
@@ -240,23 +239,24 @@ QList<QPair<QString, double>> Client::predictTop3(int clientId)
 
         int dist = levenshteinDistance(clientArticle, art);
         int maxLen = std::max(clientArticle.length(), art.length());
-
         double similarity = 1.0 - ((double)dist / maxLen);
-
         double learnedBoost = learningData[clientArticle][art];
-
-        double score = similarity * 70 + freq * 0.3 + learnedBoost;
+        double score = learnedBoost * 20 + similarity * 5 + freq;
 
         scored.append(qMakePair(art, score));
     }
-
     std::sort(scored.begin(), scored.end(),
               [](auto &a, auto &b){ return a.second > b.second; });
 
+    double total = 0;
+    for(auto &p : scored)
+        total += p.second;
     for(int i = 0; i < scored.size() && i < 3; i++)
-        results.append(scored[i]);
+    {
+        double percent = (scored[i].second / total) * 100;
 
-    // 🔥 LEARNING UPDATE
+        results.append(qMakePair(scored[i].first, percent));
+    }
     for(auto &res : results)
     {
         learningData[clientArticle][res.first] += 1.0;
@@ -266,4 +266,3 @@ QList<QPair<QString, double>> Client::predictTop3(int clientId)
 
     return results;
 }
-
