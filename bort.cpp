@@ -12,7 +12,11 @@
 #include <QSqlError>
 #include <QRegularExpression>
 #include <QDate>
-
+#include <QInputDialog>
+#include <QVector>
+#include <algorithm>
+#include <QToolTip>
+#include <QtCharts/QLineSeries>
 
 // ==================constructor goes weeeeee==================
 SignIn::SignIn(QWidget *parent)
@@ -24,6 +28,8 @@ SignIn::SignIn(QWidget *parent)
     ui->setupUi(this);
     connect(ui->pdfitembtn, &QPushButton::clicked,
             this, &SignIn::on_pdfitembtn_clicked);
+    connect(ui->vocalstuffbtn, &QPushButton::clicked,
+            this, &SignIn::on_vocalstuffbtn_clicked);
     loadClients("", "");
     loadItems();
     //added this(elli louta lkoll)
@@ -662,6 +668,99 @@ void SignIn::updateDashboard()
 //=======================================classic stats========================
 void SignIn::setupBarChart()
 {
+    QSqlQuery query;
+
+    query.exec(
+        "SELECT TO_CHAR(DATECL,'MM'), SUM(MONTANT) "
+        "FROM CLIENTS "
+        "GROUP BY TO_CHAR(DATECL,'MM') "
+        "ORDER BY TO_CHAR(DATECL,'MM')"
+        );
+
+    QBarSet *set = new QBarSet("Gains");
+    QLineSeries *predictionLine = new QLineSeries();
+
+    QStringList categories;
+    QList<double> values;
+
+    int index = 0;
+
+    while(query.next())
+    {
+        double val = query.value(1).toDouble();
+        *set << val;
+        values.append(val);
+
+        categories << query.value(0).toString();
+
+        predictionLine->append(index, val); // connect real data
+        index++;
+    }
+
+    // 🔮 PREDICTION (same logic as before)
+    double predicted = 0;
+
+    if(values.size() >= 4)
+    {
+        double avg = (values.last()
+                      + values[values.size()-2]
+                      + values[values.size()-3]
+                      + values[values.size()-4]) / 4.0;
+
+        double trend = (values.last() - values[values.size()-2]) * 0.5;
+
+        predicted = avg + trend;
+    }
+
+    // ➕ ADD prediction point
+    *set << predicted;
+    categories << "Pred";
+
+    predictionLine->append(index, predicted);
+
+    // 🎨 STYLE
+    set->setColor(QColor("#00c6ff"));
+
+    QPen pen = predictionLine->pen();
+    pen.setWidth(3);               // ✅ correct way
+    pen.setColor(QColor("#00ffb3"));
+    pen.setStyle(Qt::DashLine);
+
+    predictionLine->setPen(pen);
+
+    // 📊 SERIES
+    QBarSeries *barSeries = new QBarSeries();
+    barSeries->append(set);
+
+    QChart *chart = new QChart();
+    chart->addSeries(barSeries);
+    chart->addSeries(predictionLine);
+
+    chart->setTitle("Monthly Gains + Prediction");
+    chart->setBackgroundBrush(QColor("#0b1e2d"));
+    chart->setTitleBrush(QBrush(Qt::white));
+
+    // 📊 AXES
+    QBarCategoryAxis *axisX = new QBarCategoryAxis();
+    axisX->append(categories);
+    axisX->setLabelsColor(Qt::white);
+
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setLabelsColor(Qt::white);
+
+    chart->addAxis(axisX, Qt::AlignBottom);
+    chart->addAxis(axisY, Qt::AlignLeft);
+
+    barSeries->attachAxis(axisX);
+    barSeries->attachAxis(axisY);
+
+    predictionLine->attachAxis(axisX);
+    predictionLine->attachAxis(axisY);
+
+    // ✨ ANIMATION
+    chart->setAnimationOptions(QChart::SeriesAnimations);
+
+    // 🧼 CLEAN
     if(ui->chart1->layout())
     {
         QLayout *layout = ui->chart1->layout();
@@ -672,73 +771,108 @@ void SignIn::setupBarChart()
             delete w;
         }
     }
+    else
+        ui->chart1->setLayout(new QVBoxLayout());
 
-    QSqlQuery query;
-    query.exec("SELECT ARTICLE, SUM(QTE) FROM CLIENTS GROUP BY ARTICLE");
+    QChartView *view = new QChartView(chart);
+    view->setRenderHint(QPainter::Antialiasing);
 
-    QBarSeries *series = new QBarSeries();
-    QBarSet *set = new QBarSet("Sales");
-
-    QStringList categories;
-
-    while(query.next())
-    {
-        QString article = query.value(0).toString();
-        int quantity = query.value(1).toInt();
-
-        *set << quantity;
-        categories << article;
-    }
-    QLinearGradient gradient(0, 0, 0, 1);
-    gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
-    gradient.setColorAt(0.0, QColor("#00c6ff"));
-    gradient.setColorAt(1.0, QColor("#0072ff"));
-    set->setBrush(gradient);
-
-    series->append(set);
-    connect(series, &QBarSeries::clicked, this, [=](int index, QBarSet *set)
-            {
-                QString item = categories[index];
-                int value = set->at(index);
-
-                QMessageBox::information(this, "Details",
-                                         "Item: " + item + "\nQuantity: " + QString::number(value));
-            });
-
-    QChart *chart = new QChart();
-    chart->addSeries(series);
-    chart->setTitle("Sales by Item");
-    chart->setAnimationOptions(QChart::AllAnimations);
-
-    chart->setBackgroundBrush(QBrush(QColor("#0b1e2d")));
-    chart->setTitleBrush(QBrush(Qt::white));
-    chart->legend()->hide();
-
-    QBarCategoryAxis *axisX = new QBarCategoryAxis();
-    axisX->append(categories);
-    axisX->setLabelsColor(Qt::white);
-    chart->addAxis(axisX, Qt::AlignBottom);
-    series->attachAxis(axisX);
-
-    QValueAxis *axisY = new QValueAxis();
-    axisY->setLabelsColor(Qt::white);
-    chart->addAxis(axisY, Qt::AlignLeft);
-    series->attachAxis(axisY);
-
-    QChartView *chartView = new QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
-
-    QVBoxLayout *layout = new QVBoxLayout(ui->chart1);
-    layout->addWidget(chartView);
+    ui->chart1->layout()->addWidget(view);
 }
-
 
 //==============================stats the round type=======================================
 void SignIn::setupPieChart()
 {
+    QSqlQuery query;
+
+    query.exec(
+        "SELECT ARTICLE, COUNT(*) "
+        "FROM CLIENTS "
+        "GROUP BY ARTICLE"
+        );
+
+    QPieSeries *series = new QPieSeries();
+
+    // 🎨 Modern color palette
+    QList<QColor> colors = {
+        QColor("#00c6ff"),
+        QColor("#0072ff"),
+        QColor("#00ffb3"),
+        QColor("#ff7b00"),
+        QColor("#ff3c3c"),
+        QColor("#a855f7")
+    };
+
+    int colorIndex = 0;
+
+    while(query.next())
+    {
+        QString item = query.value(0).toString();
+        int count = query.value(1).toInt();
+
+        QPieSlice *slice = series->append(item, count);
+
+        // 🎨 Color styling
+        slice->setBrush(colors[colorIndex % colors.size()]);
+        colorIndex++;
+
+        // ✨ Label styling
+        slice->setLabelVisible(true);
+        slice->setLabelColor(Qt::white);
+        slice->setLabelFont(QFont("Segoe UI", 10, QFont::Bold));
+
+        // 💥 Hover animation
+        connect(slice, &QPieSlice::hovered, this, [=](bool state)
+                {
+                    slice->setExploded(state);
+                    slice->setExplodeDistanceFactor(0.1);
+                });
+
+        // 🖱️ CLICK → SHOW DETAILS
+        connect(slice, &QPieSlice::clicked, this, [=]()
+                {
+                    int total = 0;
+
+                    for(QPieSlice *s : series->slices())
+                        total += s->value();
+
+                    double percent = (slice->value() / total) * 100;
+
+                    // 💥 Highlight selected slice
+                    slice->setExploded(true);
+                    slice->setExplodeDistanceFactor(0.15);
+
+                    QString details =
+                        "📊 Item Details\n\n"
+                        "Item: " + slice->label() +
+                        "\nSold: " + QString::number(slice->value()) +
+                        "\nPercentage: " + QString::number(percent, 'f', 1) + "%";
+
+                    showStyledPopup(details);
+                });
+    }
+
+    // 📊 Chart setup
+    QChart *chart = new QChart();
+    chart->addSeries(series);
+    chart->setTitle("Demand Distribution");
+
+    // 🎨 Dark theme
+    chart->setBackgroundBrush(QColor("#0b1e2d"));
+    chart->setTitleBrush(QBrush(Qt::white));
+
+    chart->legend()->setVisible(true);
+    chart->legend()->setAlignment(Qt::AlignRight);
+    chart->legend()->setLabelColor(Qt::white);
+
+    // ✨ Animations
+    chart->setAnimationOptions(QChart::AllAnimations);
+
+    // 🧼 Clean old layout
     if(ui->chart2->layout())
     {
-        QLayout *layout = ui->chart1->layout();
+        QLayout *layout = ui->chart2->layout();
+
         while(layout->count())
         {
             QWidget *w = layout->itemAt(0)->widget();
@@ -746,61 +880,17 @@ void SignIn::setupPieChart()
             delete w;
         }
     }
-
-    QSqlQuery query;
-    query.exec("SELECT ARTICLE, SUM(QTE) FROM CLIENTS GROUP BY ARTICLE");
-
-    QPieSeries *series = new QPieSeries();
-
-    while(query.next())
+    else
     {
-        QString article = query.value(0).toString();
-        int quantity = query.value(1).toInt();
-
-        series->append(article, quantity);
+        ui->chart2->setLayout(new QVBoxLayout());
     }
 
-    for(auto slice : series->slices())
-    {
-        slice->setLabelVisible();
-        slice->setLabelColor(Qt::white);
+    QChartView *view = new QChartView(chart);
+    view->setRenderHint(QPainter::Antialiasing);
+    view->setStyleSheet("background: transparent");
 
-        connect(slice, &QPieSlice::clicked, this, [=]()
-                {
-                    QString name = slice->label();
-                    double percent = slice->percentage() * 100;
-
-                    QMessageBox::information(this, "Details",
-                                             "Item: " + name +
-                                                 "\nPercentage: " + QString::number(percent, 'f', 1) + "%");
-                });
-
-        // Highlight big slices
-        if(slice->percentage() > 0.3)
-            slice->setExploded(true);
-        connect(slice, &QPieSlice::hovered, this, [=](bool state)
-                {
-                    slice->setExploded(state);
-                });
-    }
-
-    QChart *chart = new QChart();
-    chart->addSeries(series);
-    chart->setTitle("Sales Distribution");
-    chart->setBackgroundBrush(QBrush(QColor("#0b1e2d")));
-    chart->setTitleBrush(QBrush(Qt::white));
-    chart->legend()->setLabelColor(Qt::white);
-
-    chart->setAnimationOptions(QChart::AllAnimations);
-
-    QChartView *chartView = new QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
-
-    QVBoxLayout *layout = new QVBoxLayout(ui->chart2);
-    layout->addWidget(chartView);
+    ui->chart2->layout()->addWidget(view);
 }
-
-
 //=======================dashboard pdf file good kind version============================================
 void SignIn::on_pdfitembtn_clicked()
 {
@@ -812,7 +902,6 @@ void SignIn::on_pdfitembtn_clicked()
 
     QPdfWriter pdf(fileName);
 
-    // 🔥 LANDSCAPE MODE
     pdf.setPageOrientation(QPageLayout::Landscape);
     pdf.setPageSize(QPageSize(QPageSize::A4));
     pdf.setResolution(300);
@@ -824,13 +913,9 @@ void SignIn::on_pdfitembtn_clicked()
     int margin = 60;
 
     // ===================== PAGE 1 =====================
-
-    // 🎨 Background
     painter.fillRect(0, 0, width, height, QColor("#0b1e2d"));
 
     int y = margin;
-
-    // 🏷️ Title
     painter.setPen(Qt::white);
     painter.setFont(QFont("Segoe UI", 24, QFont::Bold));
     painter.drawText(QRect(0, y, width, 100),
@@ -838,8 +923,6 @@ void SignIn::on_pdfitembtn_clicked()
                      "Client Dashboard Report");
 
     y += 200;
-
-    // 📅 Date
     painter.setPen(QColor("#aaaaaa"));
     painter.setFont(QFont("Segoe UI", 11));
     painter.drawText(QRect(0, y, width, 40),
@@ -848,51 +931,37 @@ void SignIn::on_pdfitembtn_clicked()
 
     y += 250;
 
-    // 🔷 CARD WIDTHS
     int cardWidth = (width - 3 * margin) / 2;
     int cardHeight = 500;
-
-    // 💰 GAINS CARD
     QRect gainsCard(margin, y, cardWidth, cardHeight);
 
     painter.setBrush(QColor("#132f4c"));
     painter.setPen(Qt::NoPen);
     painter.drawRoundedRect(gainsCard, 15, 15);
-
-    // Title
     painter.setPen(QColor("#00c6ff"));
     painter.setFont(QFont("Segoe UI", 12, QFont::Bold));
     painter.drawText(gainsCard.adjusted(20, 15, -20, -60),
                      Qt::TextWordWrap,
                      "This Month's Gains");
-
-    // Value
     painter.setPen(Qt::white);
     painter.setFont(QFont("Segoe UI", 20, QFont::Bold));
     painter.drawText(gainsCard.adjusted(20, 45, -20, -10),
                      Qt::TextWordWrap,
                      ui->monthsgainslabel->text());
-
-    // 🏆 MOST SOLD CARD
     QRect soldCard(2 * margin + cardWidth, y, cardWidth, cardHeight);
 
     painter.setBrush(QColor("#132f4c"));
     painter.drawRoundedRect(soldCard, 15, 15);
-
-    // Title
     painter.setPen(QColor("#00c6ff"));
     painter.setFont(QFont("Segoe UI", 12, QFont::Bold));
     painter.drawText(soldCard.adjusted(20, 15, -20, -60),
                      Qt::TextWordWrap,
                      "Most Sold Item");
-
-    // Value
     painter.setPen(Qt::white);
     painter.setFont(QFont("Segoe UI", 18, QFont::Bold));
     painter.drawText(soldCard.adjusted(20, 45, -20, -10),
                      Qt::TextWordWrap,
                      ui->mostsolditemlabel->text());
-    // 📝 Footer
     painter.setPen(QColor("#888888"));
     painter.setFont(QFont("Segoe UI", 9));
     painter.drawText(QRect(0, height - 50, width, 30),
@@ -905,8 +974,6 @@ void SignIn::on_pdfitembtn_clicked()
     painter.fillRect(0, 0, width, height, QColor("#0b1e2d"));
 
     y = margin;
-
-    // 🏷️ Title
     painter.setPen(Qt::white);
     painter.setFont(QFont("Segoe UI", 20, QFont::Bold));
     painter.drawText(QRect(0, y, width, 100),
@@ -914,16 +981,10 @@ void SignIn::on_pdfitembtn_clicked()
                      "Charts Overview");
 
     y += 60;
-
-    // 📊 GET CHART IMAGES (HIGH RES)
     QPixmap chart1 = ui->chart1->grab();
     QPixmap chart2 = ui->chart2->grab();
-
-    // 🔥 BIGGER AREA FOR CHARTS
     int chartWidth = (width - 3 * margin) / 2;
-    int chartHeight = height - y - 60; // less bottom spacing → bigger charts
-
-    // 🔹 SCALE (keep ratio but maximize size)
+    int chartHeight = height - y - 60;
     QPixmap scaled1 = chart1.scaled(chartWidth, chartHeight,
                                     Qt::KeepAspectRatio,
                                     Qt::SmoothTransformation);
@@ -931,16 +992,10 @@ void SignIn::on_pdfitembtn_clicked()
     QPixmap scaled2 = chart2.scaled(chartWidth, chartHeight,
                                     Qt::KeepAspectRatio,
                                     Qt::SmoothTransformation);
-
-    // 🔹 POSITIONS
     int x1 = margin;
     int x2 = 2 * margin + chartWidth;
-
-    // 🔥 CENTER VERTICALLY
     int yCentered1 = y + (chartHeight - scaled1.height()) / 2;
     int yCentered2 = y + (chartHeight - scaled2.height()) / 2;
-
-    // 🔹 BACKGROUND CARDS (FIT TO IMAGE SIZE, NOT FULL AREA)
     QRect bg1(x1 - 10, yCentered1 - 10,
               scaled1.width() + 20, scaled1.height() + 20);
 
@@ -951,8 +1006,6 @@ void SignIn::on_pdfitembtn_clicked()
     painter.setPen(Qt::NoPen);
     painter.drawRoundedRect(bg1, 15, 15);
     painter.drawRoundedRect(bg2, 15, 15);
-
-    // 🔹 DRAW CHARTS (centered inside cards)
     painter.drawPixmap(
         x1 + (chartWidth - scaled1.width()) / 2,
         yCentered1,
@@ -964,8 +1017,6 @@ void SignIn::on_pdfitembtn_clicked()
         yCentered2,
         scaled2
         );
-
-    // 📝 Footer
     painter.setPen(QColor("#888888"));
     painter.setFont(QFont("Segoe UI", 9));
     painter.drawText(QRect(0, height - 40, width, 30),
@@ -1040,25 +1091,57 @@ void SignIn::predictGains()
     QSqlQuery query;
 
     query.exec(
-        "SELECT SUM(MONTANT) FROM CLIENTS"
+        "SELECT TO_CHAR(DATECL,'MM'), SUM(MONTANT) "
+        "FROM CLIENTS "
+        "GROUP BY TO_CHAR(DATECL,'MM') "
+        "ORDER BY TO_CHAR(DATECL,'MM')"
         );
 
-    double total = 0;
+    QList<double> months;
 
-    if(query.next())
-        total = query.value(0).toDouble();
+    while(query.next())
+        months.append(query.value(1).toDouble());
 
+    if(months.size() < 4)
+    {
+        showStyledPopup("Not enough data for reliable prediction.");
+        return;
+    }
+    double avg = 0;
+    for(int i = months.size()-4; i < months.size(); i++)
+        avg += months[i];
+    avg /= 4.0;
+    double trend1 = months[months.size()-1] - months[months.size()-2];
+    double trend2 = months[months.size()-2] - months[months.size()-3];
+    double trend = (trend1 + trend2) / 2.0;
+    double predicted = avg + trend * 0.6;
     double learned = Client::fishScores["global_gain"];
-
-    double prediction = total * 1.1 + learned;
-
-    Client::updateFishScore("global_gain", total * 0.05);
+    predicted += learned * 0.1;
+    double minLimit = months.last() * 0.7;
+    double maxLimit = months.last() * 1.3;
+    predicted = qBound(minLimit, predicted, maxLimit);
+    Client::updateFishScore("global_gain", trend * 0.03);
     Client::saveAI();
+    double variation = abs(trend1 - trend2);
+    double confidence = qMax(60.0, 100 - variation * 5);
+    double rangeMin = predicted * 0.9;
+    double rangeMax = predicted * 1.1;
+    QString trendText;
+    if(trend > 0)
+        trendText = "Growth";
+    else if(trend < 0)
+        trendText = "Decline";
+    else
+        trendText = "Stable";
 
     QString result =
-        "📊 AI Financial Prediction\n\n"
-        "Estimated Gains: " + QString::number(prediction, 'f', 2) + " DT\n"
-                                                "Trend: " + (prediction > total ? "📈 Growing" : "📉 Declining");
+        "Advanced Financial Prediction\n\n"
+        "Average (4 months): " + QString::number(avg, 'f', 2) + " DT\n"
+                                         "Predicted: " + QString::number(predicted, 'f', 2) + " DT\n\n"
+                                               "Range: " + QString::number(rangeMin, 'f', 2) +
+        " → " + QString::number(rangeMax, 'f', 2) + " DT\n\n"
+                                                    "Trend: " + trendText +
+        "\nConfidence: " + QString::number(confidence, 'f', 1) + "%";
 
     showStyledPopup(result);
 }
@@ -1068,37 +1151,225 @@ void SignIn::predictBestFish()
     QSqlQuery query;
 
     query.exec(
-        "SELECT ARTICLE, SUM(QTE) as total "
+        "SELECT ARTICLE, COUNT(*) AS freq "
         "FROM CLIENTS "
-        "WHERE LOWER(ARTICLE) LIKE '%fish%' "
-        "   OR LOWER(ARTICLE) LIKE '%tuna%' "
-        "   OR LOWER(ARTICLE) LIKE '%sardine%' "
-        "GROUP BY ARTICLE "
-        "ORDER BY total DESC"
+        "GROUP BY ARTICLE"
         );
 
-    if(query.next())
+    QString bestFish;
+    double bestScore = -1;
+
+    while(query.next())
     {
-        QString fish = query.value(0).toString();
-        int qty = query.value(1).toInt();
+        QString fish = query.value(0).toString().toLower();
+        int freq = query.value(1).toInt();
 
-        // 🔥 AI LEARNING BOOST
-        double score = qty + Client::fishScores[fish];
+        double learned = Client::fishScores[fish];
+        double score = freq + learned;
 
-        Client::updateFishScore(fish, qty * 0.2);
+        if(score > bestScore)
+        {
+            bestScore = score;
+            bestFish = fish;
+        }
+    }
+
+    if(!bestFish.isEmpty())
+    {
+        Client::updateFishScore(bestFish, 0.5);
         Client::saveAI();
 
         QString result =
-            "🐟 AI Fish Prediction\n\n"
-            "Best Fish: " + fish +
-            "\nDemand: " + QString::number(qty) +
-            "\nAI Score: " + QString::number(score, 'f', 1);
+            "🐟 Smart Prediction\n\n"
+            "Best Fish: " + bestFish +
+            "\nScore: " + QString::number(bestScore, 'f', 2) +
+            "\n(Based on demand)";
 
         showStyledPopup(result);
     }
     else
     {
-        showStyledPopup("❌ No fish data available");
+        showStyledPopup("No data available.");
     }
 }
+void SignIn::on_vocalstuffbtn_clicked()
+{
+    QInputDialog dialog(this);
 
+    dialog.setWindowTitle("Quick Client Input");
+    dialog.setLabelText(
+        "Enter client information (flexible format):\n\n"
+        "Examples:\n"
+        "mary ann 16/07/1990 11223344 shrimp 2 cash\n"
+        "shrmp 3 card\n"
+        "john tuna 5"
+        );
+
+    dialog.setStyleSheet(
+        "QDialog { background-color:#0b1e2d; }"
+        "QLabel { color:white; font-size:13px; }"
+        "QPlainTextEdit {"
+        " background:#132f4c;"
+        " color:white;"
+        " border-radius:6px;"
+        " padding:6px;"
+        "}"
+        "QPushButton {"
+        " background:#1f6aa5;"
+        " color:white;"
+        " padding:6px 12px;"
+        " border-radius:6px;"
+        "}"
+        "QPushButton:hover { background:#00c6ff; }"
+        );
+
+    if(dialog.exec() == QDialog::Accepted)
+    {
+        QString text = dialog.textValue().trimmed();
+
+        if(!text.isEmpty())
+        {
+            processQuickInput(text);
+            showStyledPopup("✔ Information filled successfully.");
+        }
+    }
+}
+int SignIn::levenshteinDistance(const QString &s1, const QString &s2)
+{
+    int len1 = s1.size(), len2 = s2.size();
+    QVector<QVector<int>> dp(len1 + 1, QVector<int>(len2 + 1));
+
+    for(int i = 0; i <= len1; i++) dp[i][0] = i;
+    for(int j = 0; j <= len2; j++) dp[0][j] = j;
+
+    for(int i = 1; i <= len1; i++)
+    {
+        for(int j = 1; j <= len2; j++)
+        {
+            int cost = (s1[i-1] == s2[j-1]) ? 0 : 1;
+            dp[i][j] = std::min({
+                dp[i-1][j] + 1,
+                dp[i][j-1] + 1,
+                dp[i-1][j-1] + cost
+            });
+        }
+    }
+
+    return dp[len1][len2];
+}
+void SignIn::processQuickInput(QString text)
+{
+    text = text.toLower().trimmed();
+
+    QStringList words = text.split(QRegularExpression("\\s+"));
+
+    QString name;
+    QString phone;
+    QString item;
+    QString payment;
+    int quantity = -1;
+    QDate date;
+
+    QStringList nameParts;
+
+    for(const QString &word : words)
+    {
+        // 📅 DATE
+        QDate d = QDate::fromString(word, "dd/MM/yyyy");
+        if(d.isValid())
+        {
+            date = d;
+            continue;
+        }
+
+        // 🔢 PHONE (8 digits)
+        if(word.length() == 8 && word.toInt() > 0)
+        {
+            phone = word;
+            continue;
+        }
+
+        // 🔢 QUANTITY
+        bool ok;
+        int num = word.toInt(&ok);
+        if(ok)
+        {
+            quantity = num;
+            continue;
+        }
+
+        // 💳 PAYMENT (flexible)
+        if(word.contains("cash")) { payment = "cash"; continue; }
+        if(word.contains("card")) { payment = "card"; continue; }
+        if(word.contains("transfer")) { payment = "transfer"; continue; }
+
+        // 🐟 ITEM (fuzzy match)
+        bool isItem = false;
+
+        for(int j = 0; j < ui->itemsinput->count(); j++)
+        {
+            QString comboItem = ui->itemsinput->itemText(j).toLower();
+
+            int dist = levenshteinDistance(word, comboItem);
+
+            if(dist <= 2 || comboItem.contains(word))
+            {
+                item = comboItem;
+                isItem = true;
+                break;
+            }
+        }
+
+        // 👤 NAME (only if not recognized)
+        if(!isItem && !word.contains("/") && !word.toInt())
+        {
+            nameParts.append(word);
+        }
+    }
+
+    // 🔹 MERGE + CAPITALIZE NAME
+    if(!nameParts.isEmpty())
+    {
+        QStringList parts = nameParts;
+        for(QString &p : parts)
+        {
+            if(!p.isEmpty())
+                p[0] = p[0].toUpper();
+        }
+        name = parts.join(" ");
+    }
+
+    // 🔹 APPLY VALUES
+
+    if(!name.isEmpty())
+        ui->clientnameinput->setText(name);
+
+    if(date.isValid())
+        ui->clientdateinput->setDate(date);
+
+    if(!phone.isEmpty())
+        ui->phoneinput->setText(phone);
+
+    if(!item.isEmpty())
+        ui->itemsinput->setCurrentText(item);
+
+    if(quantity != -1)
+        ui->quantityinput->setValue(quantity);
+
+    if(!payment.isEmpty())
+        ui->choosepayment->setCurrentText(payment);
+
+    showStyledPopup("✔ Smart input processed.");
+}
+void SignIn::updateInsights()
+{
+    QString insight;
+
+    if(ui->monthsgainslabel->text().contains("pred"))
+        insight += "📊 Growth trend detected\n";
+
+    insight += "🐟 Demand driven by frequent purchases\n";
+    insight += "💡 Consider increasing stock for top items";
+
+    showStyledPopup(insight);
+}

@@ -309,7 +309,7 @@ QLabel[objectName*=&quot;error&quot;] {
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="pageSignIn">
        <property name="styleSheet">
@@ -2600,7 +2600,7 @@ QPushButton#backWbtn:disabled {
                    <x>10</x>
                    <y>10</y>
                    <width>401</width>
-                   <height>601</height>
+                   <height>631</height>
                   </rect>
                  </property>
                  <property name="title">
@@ -2748,8 +2748,8 @@ font: 700 9pt &quot;Segoe UI&quot;;</string>
                  <widget class="QPushButton" name="clientaddbtn">
                   <property name="geometry">
                    <rect>
-                    <x>90</x>
-                    <y>550</y>
+                    <x>70</x>
+                    <y>530</y>
                     <width>201</width>
                     <height>40</height>
                    </rect>
@@ -2966,6 +2966,39 @@ font-size: 11px;</string>
                     <width>211</width>
                     <height>52</height>
                    </rect>
+                  </property>
+                 </widget>
+                 <widget class="QPushButton" name="vocalstuffbtn">
+                  <property name="geometry">
+                   <rect>
+                    <x>120</x>
+                    <y>570</y>
+                    <width>101</width>
+                    <height>31</height>
+                   </rect>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QPushButton {
+    background-color: #1f8fd1;
+    border-radius: 25px;
+    padding: 14px;
+    color: white;
+    font-weight: bold;
+ border-radius: 12px;
+    padding: 8px 16px;
+}
+
+QPushButton:hover {
+    background-color: #28a3f0;
+}
+
+QPushButton:pressed {
+    background-color: #187bb3;
+}
+font: 6pt &quot;Segoe UI&quot;;</string>
+                  </property>
+                  <property name="text">
+                   <string>easy input</string>
                   </property>
                  </widget>
                 </widget>
@@ -3871,11 +3904,16 @@ QLineEdit:focus {
         <widget class="QGroupBox" name="chart1">
          <property name="geometry">
           <rect>
-           <x>480</x>
-           <y>290</y>
-           <width>531</width>
-           <height>351</height>
+           <x>520</x>
+           <y>320</y>
+           <width>491</width>
+           <height>331</height>
           </rect>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: #132f4c;
+border-radius: 15px;
+border: 1px solid #1f6aa5;</string>
          </property>
          <property name="title">
           <string/>
@@ -3884,10 +3922,10 @@ QLineEdit:focus {
         <widget class="QGroupBox" name="stat1">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>330</y>
-           <width>481</width>
-           <height>311</height>
+           <x>20</x>
+           <y>310</y>
+           <width>471</width>
+           <height>341</height>
           </rect>
          </property>
          <property name="title">
@@ -3896,11 +3934,16 @@ QLineEdit:focus {
          <widget class="QGroupBox" name="chart2">
           <property name="geometry">
            <rect>
-            <x>-10</x>
-            <y>-30</y>
+            <x>10</x>
+            <y>10</y>
             <width>461</width>
             <height>331</height>
            </rect>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: #132f4c;
+border-radius: 15px;
+border: 1px solid #1f6aa5;</string>
           </property>
           <property name="title">
            <string/>

@@ -74,6 +74,10 @@ private:
     void loadClients(QString search = "", QString sort = "");
     void on_pdfitembtn_clicked();
     void showStyledPopup(QString text);
+    void on_vocalstuffbtn_clicked();
+    void processQuickInput(QString text);
+    int levenshteinDistance(const QString &s1, const QString &s2);
+    void updateInsights();
 };
 
 #endif // BORT_H
