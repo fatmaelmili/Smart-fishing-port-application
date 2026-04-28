@@ -7,7 +7,9 @@
 #include <QTableWidget>
 #include <QPdfWriter>
 #include <QPainter>
+#ifdef USE_OPENCV
 #include <opencv2/opencv.hpp>
+#endif
 //APRESINTEGRATION
 #include <QColor>
 #include <QPixmap>
@@ -22,6 +24,7 @@
 #include <QJsonArray>
 #include <QtMath>
 #include <QLabel>
+#include "arduino.h"
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class SignIn;
@@ -256,6 +259,7 @@ private slots:
     void on_Voicebtn_clicked();
 
     void on_withvoicebtn_clicked();
+    void onArduinoReadyRead();
 
 private:
     struct CvAnalysisResult
@@ -270,7 +274,9 @@ private:
     Ui::SignIn *ui;
     QByteArray captureFaceFromCamera();
     QString ensureFaceCascadeFile();
+    #ifdef USE_OPENCV
     cv::Mat detectAndCropFace(const cv::Mat& frame);
+    #endif
     QByteArray m_cvBlob;
     QByteArray m_avatarBlob;
     QString m_currentRole;
@@ -307,7 +313,9 @@ private:
     bool loadCurrentUserAccountData();
     void loadEmployeeCount();
     void updateFaceIdStatusLabel();
+    #ifdef USE_OPENCV
     double compareFacesDistance(const cv::Mat& face1, const cv::Mat& face2);
+    #endif
     bool authenticateWithFaceId();
     void runCvAnalysisForSelectedRow(QTableWidget *table);
     QString extractTextFromPdfBlob(const QByteArray& pdfBlob) const;
@@ -339,6 +347,16 @@ private:
     void showStyledSessionLogoutMessage(const QString& fullName, qint64 sessionSeconds);
     QString formatDurationEnglish(qint64 totalSeconds) const;
     QLabel* ensureBestEmployeeHoursLabel();
+    Arduino A;
+    QByteArray m_arduinoBuffer;
+
+    void initArduinoConnection();
+    void processArduinoLine(const QByteArray& line);
+    void processRfidUid(const QString& uid);
+    QString formatMonthlyHoursForRfid(qint64 totalSeconds) const;
+    void setupAccessHistoryTable();
+    void addAccessHistoryEntry(const QString& user,const QString& status,const QString& method);
+    void logRfidAccess(const QString& user, const QString& status);
 
 
 };

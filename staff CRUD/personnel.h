@@ -93,6 +93,15 @@ public:
         QString voiceFeatures;
         QString voicePhrase;
     };
+    struct RfidUserInfo {
+        int idPers = -1;
+        QString nom;
+        QString prenom;
+        QString mail;
+        QString role;
+        QString accountStatus;
+        qint64 monthlyWorkSeconds = 0;
+    };
 
     static bool fetchProfileByMail(const QString& mail, UserProfile* out);
     static bool fetchAccountProfileByMail(const QString& mail, AccountProfile* out);
@@ -160,6 +169,7 @@ public:
     static FaceLoginResult authenticateByVoiceIdMail(const QString& mail,QString* outMail = nullptr,QString* outRole = nullptr,QString* outCvStatus = nullptr);
     static bool startUserSessionByMail(const QString& mail);
     static bool closeUserSessionByMail(const QString& mail,qint64* outSessionSeconds = nullptr,qint64* outMonthlyTotalSeconds = nullptr);
+    static bool fetchRfidUserByUid(const QString& uid, RfidUserInfo* out);
 
 
 };

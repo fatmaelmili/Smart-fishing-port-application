@@ -12,6 +12,7 @@
 #include <QSqlError>
 #include <QDebug>
 #include <QDateTime>
+#include <QRegularExpression>
 Personnel::Personnel() {
 }
 QString Personnel::hashPassword(const QString& plain)
@@ -1405,4 +1406,44 @@ bool Personnel::closeUserSessionByMail(const QString& mail,
     if (outMonthlyTotalSeconds) *outMonthlyTotalSeconds = monthlyTotal;
 
     return updateQ.numRowsAffected() > 0;
+}
+bool Personnel::fetchRfidUserByUid(const QString& uid, RfidUserInfo* out)
+{
+    if (!out) return false;
+
+    QString cleanUid = uid.trimmed().toUpper();
+    cleanUid.replace(QRegularExpression("\\s+"), " ");
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT IDPERS,
+               NOM,
+               PRENOM,
+               MAIL,
+               ROLE,
+               NVL(ACCOUNT_STATUS, 'ACTIVE'),
+               NVL(MONTHLY_WORK_SECONDS, 0)
+        FROM FATMA.PERSONNEL
+        WHERE UPPER(TRIM(RFID_UID)) = :uid
+    )");
+    q.bindValue(":uid", cleanUid);
+
+    if (!q.exec()) {
+        qDebug() << "fetchRfidUserByUid error:" << q.lastError().text();
+        return false;
+    }
+
+    if (!q.next()) {
+        return false;
+    }
+
+    out->idPers = q.value(0).toInt();
+    out->nom = q.value(1).toString();
+    out->prenom = q.value(2).toString();
+    out->mail = q.value(3).toString();
+    out->role = q.value(4).toString();
+    out->accountStatus = q.value(5).toString();
+    out->monthlyWorkSeconds = q.value(6).toLongLong();
+
+    return true;
 }

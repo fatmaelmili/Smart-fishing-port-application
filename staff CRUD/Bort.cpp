@@ -1,7 +1,13 @@
 #include "Bort.h"
 #include "ui_Bort.h"
 #include "personnel.h"
+#ifdef USE_OPENCV
 #include <opencv2/opencv.hpp>
+#endif
+#include <QSerialPort>
+#include <QRegularExpression>
+#include <cstring>
+#include <cmath>
 #include <QBuffer>
 #include<QStyle>
 #include <QFileDialog>
@@ -53,6 +59,8 @@ SignIn::SignIn(QWidget *parent)
     , ui(new Ui::SignIn)
 {
     ui->setupUi(this);
+    initArduinoConnection();
+    setupAccessHistoryTable();
     ui->statrole->hide();
     ui->statcv->hide();
     refreshStaffTable();
@@ -460,6 +468,7 @@ void SignIn::refreshStaffTable()
 
 SignIn::~SignIn()
 {
+    A.close_arduino();
     delete ui;
 }
 
@@ -2983,61 +2992,69 @@ void SignIn::on_facebtn_clicked()
 }
 QByteArray SignIn::captureFaceFromCamera()
 {
-    cv::VideoCapture cap(0);
+#ifndef USE_OPENCV
+    QMessageBox::warning(this, "Face ID", "OpenCV is not enabled in this build.");
+    return QByteArray();
+#else
+    try {
+        cv::VideoCapture cap(0, cv::CAP_DSHOW);
 
-    if (!cap.isOpened()) {
-        QMessageBox::warning(this, "Camera", "Unable to open the camera.");
-        return QByteArray();
-    }
-
-    cv::Mat frame;
-    cv::Mat capturedFrame;
-
-    while (true) {
-        cap >> frame;
-
-        if (frame.empty()) {
-            QMessageBox::warning(this, "Camera", "Failed to read frame from camera.");
-            cap.release();
-            cv::destroyAllWindows();
+        if (!cap.isOpened()) {
+            QMessageBox::warning(this, "Camera", "Unable to open the camera.");
             return QByteArray();
         }
 
-        cv::imshow("Face ID Camera - Press SPACE to capture / ESC to cancel", frame);
+        QMessageBox::information(this, "Face ID",
+                                 "Look at the camera. Capture will be automatic.");
 
-        int key = cv::waitKey(30);
+        cv::Mat frame;
+        cv::Mat capturedFrame;
 
-        if (key == 32) {
-            capturedFrame = frame.clone();
-            break;
-        } else if (key == 27) {
-            cap.release();
-            cv::destroyAllWindows();
+        for (int i = 0; i < 20; ++i) {
+            if (!cap.read(frame)) {
+                QMessageBox::warning(this, "Camera", "Failed to read frame from camera.");
+                cap.release();
+                return QByteArray();
+            }
+            cv::waitKey(30);
+        }
+
+        capturedFrame = frame.clone();
+        cap.release();
+
+        if (capturedFrame.empty()) {
+            QMessageBox::warning(this, "Camera", "Captured frame is empty.");
             return QByteArray();
         }
+
+        cv::Mat face = detectAndCropFace(capturedFrame);
+
+        if (face.empty()) {
+            QMessageBox::warning(this, "Face ID",
+                                 "No person or no clear face was detected. Please look directly at the camera.");
+            return QByteArray();
+        }
+
+        std::vector<uchar> buffer;
+        if (!cv::imencode(".jpg", face, buffer)) {
+            QMessageBox::warning(this, "Camera", "Failed to encode detected face.");
+            return QByteArray();
+        }
+
+        QByteArray result;
+        result.resize(static_cast<int>(buffer.size()));
+        memcpy(result.data(), buffer.data(), static_cast<size_t>(buffer.size()));
+        return result;
     }
-
-    cap.release();
-    cv::destroyAllWindows();
-
-    if (capturedFrame.empty()) {
-        QMessageBox::warning(this, "Camera", "No image was captured.");
+    catch (const cv::Exception& e) {
+        QMessageBox::critical(this, "OpenCV Exception", e.what());
         return QByteArray();
     }
-
-    cv::Mat face = detectAndCropFace(capturedFrame);
-    if (face.empty()) {
+    catch (...) {
+        QMessageBox::critical(this, "Camera", "Unexpected crash during camera capture.");
         return QByteArray();
     }
-
-    std::vector<uchar> buffer;
-    if (!cv::imencode(".jpg", face, buffer)) {
-        QMessageBox::warning(this, "Camera", "Failed to encode detected face.");
-        return QByteArray();
-    }
-
-    return QByteArray(reinterpret_cast<const char*>(buffer.data()),
-                      static_cast<int>(buffer.size()));
+#endif
 }
 QString SignIn::ensureFaceCascadeFile()
 {
@@ -3067,6 +3084,7 @@ QString SignIn::ensureFaceCascadeFile()
     return tempPath;
 }
 
+#ifdef USE_OPENCV
 cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
 {
     QString cascadePath = ensureFaceCascadeFile();
@@ -3100,7 +3118,6 @@ cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
         return cv::Mat();
     }
 
-
     cv::Rect bestFace = faces[0];
     for (const auto& r : faces) {
         if (r.area() > bestFace.area()) {
@@ -3113,6 +3130,53 @@ cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
 
     return face;
 }
+#endif
+#ifdef USE_OPENCV
+static cv::Mat makeGray200(const cv::Mat& src)
+{
+    if (src.empty())
+        return cv::Mat();
+
+    cv::Mat resized;
+    cv::resize(src, resized, cv::Size(200, 200));
+
+    cv::Mat gray;
+    if (resized.channels() == 3) {
+        cv::cvtColor(resized, gray, cv::COLOR_BGR2GRAY);
+    } else if (resized.channels() == 4) {
+        cv::cvtColor(resized, gray, cv::COLOR_BGRA2GRAY);
+    } else if (resized.channels() == 1) {
+        gray = resized.clone();
+    } else {
+        return cv::Mat();
+    }
+
+    return gray;
+}
+
+static double computeFaceDistanceSafe(const cv::Mat& a, const cv::Mat& b)
+{
+    cv::Mat g1 = makeGray200(a);
+    cv::Mat g2 = makeGray200(b);
+
+    if (g1.empty() || g2.empty())
+        return 1e12;
+
+    double sum = 0.0;
+
+    for (int y = 0; y < g1.rows; ++y) {
+        const uchar* p1 = g1.ptr<uchar>(y);
+        const uchar* p2 = g2.ptr<uchar>(y);
+
+        for (int x = 0; x < g1.cols; ++x) {
+            sum += std::abs(int(p1[x]) - int(p2[x]));
+        }
+    }
+
+    return sum / (g1.rows * g1.cols);
+}
+#endif
+#ifdef USE_OPENCV
 double SignIn::compareFacesDistance(const cv::Mat& face1, const cv::Mat& face2)
 {
     if (face1.empty() || face2.empty()) {
@@ -3132,10 +3196,17 @@ double SignIn::compareFacesDistance(const cv::Mat& face1, const cv::Mat& face2)
 
     return cv::norm(gray1, gray2, cv::NORM_L2);
 }
+#endif
 
 
 bool SignIn::authenticateWithFaceId()
 {
+#ifndef USE_OPENCV
+    QMessageBox::warning(this, "Face ID", "OpenCV is not enabled in this build.");
+    return false;
+#else
+    cv::setUseOptimized(false);
+
     QByteArray capturedData = captureFaceFromCamera();
     if (capturedData.isEmpty()) {
         registerFaceAuthFailure("No face captured");
@@ -3161,7 +3232,6 @@ bool SignIn::authenticateWithFaceId()
     double bestDistance = 1e12;
     Personnel::FaceRecord bestRecord;
     bool foundCandidate = false;
-
     for (const auto& rec : faces) {
         std::vector<uchar> dbBuffer(rec.faceData.begin(), rec.faceData.end());
         cv::Mat dbFace = cv::imdecode(dbBuffer, cv::IMREAD_COLOR);
@@ -3169,8 +3239,7 @@ bool SignIn::authenticateWithFaceId()
         if (dbFace.empty())
             continue;
 
-        double distance = compareFacesDistance(capturedFace, dbFace);
-
+        double distance = computeFaceDistanceSafe(capturedFace, dbFace);
         qDebug() << "Face ID compare with" << rec.mail << "distance =" << distance;
 
         if (distance < bestDistance) {
@@ -3259,6 +3328,7 @@ bool SignIn::authenticateWithFaceId()
     }
 
     return false;
+    #endif
 }
 
 void SignIn::on_withfacebtn_clicked()
@@ -4139,3 +4209,147 @@ void SignIn::on_withvoicebtn_clicked()
     authenticateWithVoiceId();
 }
 
+void SignIn::initArduinoConnection()
+{
+    const int result = A.connect_arduino();
+
+    if (result == 0) {
+        qDebug() << "Arduino connected on port:" << A.getarduino_port_name();
+
+        connect(A.getserial(), &QSerialPort::readyRead,
+                this, &SignIn::onArduinoReadyRead,
+                Qt::UniqueConnection);
+    } else {
+        qDebug() << "Arduino connection failed, code =" << result;
+    }
+}
+QString SignIn::formatMonthlyHoursForRfid(qint64 totalSeconds) const
+{
+    if (totalSeconds < 0) totalSeconds = 0;
+
+    const qint64 hours = totalSeconds / 3600;
+    const qint64 minutes = (totalSeconds % 3600) / 60;
+
+    return QString("%1h%2")
+        .arg(hours)
+        .arg(minutes, 2, 10, QChar('0'));
+}
+void SignIn::onArduinoReadyRead()
+{
+    m_arduinoBuffer += A.read_from_arduino();
+
+    int newlineIndex = -1;
+    while ((newlineIndex = m_arduinoBuffer.indexOf('\n')) != -1) {
+        QByteArray line = m_arduinoBuffer.left(newlineIndex);
+        m_arduinoBuffer.remove(0, newlineIndex + 1);
+        processArduinoLine(line);
+    }
+}
+void SignIn::processArduinoLine(const QByteArray& line)
+{
+    const QString msg = QString::fromUtf8(line).trimmed();
+
+    if (msg.isEmpty()) {
+        return;
+    }
+
+    qDebug() << "Arduino -> Qt:" << msg;
+
+    if (msg.startsWith("UID:", Qt::CaseInsensitive)) {
+        QString uid = msg.mid(4).trimmed();
+        processRfidUid(uid);
+    }
+}
+void SignIn::processRfidUid(const QString& uid)
+{
+    QString cleanUid = uid.trimmed().toUpper();
+    cleanUid.replace(QRegularExpression("\\s+"), " ");
+
+    qDebug() << "processRfidUid reached with:" << cleanUid;
+
+    Personnel::RfidUserInfo info;
+    if (!Personnel::fetchRfidUserByUid(cleanUid, &info)) {
+        qDebug() << "Unknown RFID detected:" << cleanUid;
+        logRfidAccess("Unknown card", "Access denied");
+        A.write_to_arduino("DENIED\n");
+        return;
+    }
+
+    QString accountStatus = info.accountStatus.trimmed();
+
+    QString fullName = (info.prenom.trimmed() + " " + info.nom.trimmed()).trimmed();
+    if (fullName.isEmpty())
+        fullName = info.mail.trimmed();
+
+    if (accountStatus.compare("BLOCKED", Qt::CaseInsensitive) == 0) {
+        const QString reply = QString("BLOCKED|%1\n").arg(fullName);
+        A.write_to_arduino(reply.toUtf8());
+        logRfidAccess(fullName, "Account blocked");
+        return;
+    }
+
+    Personnel::resetAuthRiskByMail(info.mail, "RFID");
+
+    const QString hoursText = formatMonthlyHoursForRfid(info.monthlyWorkSeconds);
+    const QString reply = QString("GRANTED|%1|%2\n").arg(fullName, hoursText);
+
+    A.write_to_arduino(reply.toUtf8());
+    logRfidAccess(fullName, "Access granted");
+}
+void SignIn::logRfidAccess(const QString& user, const QString& status)
+{
+    addAccessHistoryEntry(user, status, "RFID");
+    qDebug() << "RFID history added:" << user << status;
+}
+void SignIn::setupAccessHistoryTable()
+{
+    ui->historique->clearContents();
+    ui->historique->setRowCount(0);
+    ui->historique->setColumnCount(4);
+
+    QStringList headers;
+    headers << "Time" << "User" << "Status" << "Method";
+    ui->historique->setHorizontalHeaderLabels(headers);
+
+    ui->historique->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->historique->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->historique->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->historique->setShowGrid(false);
+    ui->historique->verticalHeader()->setVisible(false);
+    ui->historique->horizontalHeader()->setHighlightSections(false);
+    ui->historique->horizontalHeader()->setStretchLastSection(true);
+
+    ui->historique->setColumnWidth(0, 95);
+    ui->historique->setColumnWidth(1, 220);
+    ui->historique->setColumnWidth(2, 170);
+
+    ui->historique->verticalHeader()->setDefaultSectionSize(38);
+}
+void SignIn::addAccessHistoryEntry(const QString& user,
+                                   const QString& status,
+                                   const QString& method)
+{
+    const QString timeText = QDateTime::currentDateTime().toString("HH:mm:ss");
+
+    ui->historique->insertRow(0);
+
+    QTableWidgetItem* timeItem   = new QTableWidgetItem(timeText);
+    QTableWidgetItem* userItem   = new QTableWidgetItem(user);
+    QTableWidgetItem* statusItem = new QTableWidgetItem(status);
+    QTableWidgetItem* methodItem = new QTableWidgetItem(method);
+
+    timeItem->setTextAlignment(Qt::AlignCenter);
+    userItem->setTextAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    statusItem->setTextAlignment(Qt::AlignCenter);
+    methodItem->setTextAlignment(Qt::AlignCenter);
+
+    ui->historique->setItem(0, 0, timeItem);
+    ui->historique->setItem(0, 1, userItem);
+    ui->historique->setItem(0, 2, statusItem);
+    ui->historique->setItem(0, 3, methodItem);
+
+    // limiter l'historique à 20 lignes
+    while (ui->historique->rowCount() > 20) {
+        ui->historique->removeRow(ui->historique->rowCount() - 1);
+    }
+}

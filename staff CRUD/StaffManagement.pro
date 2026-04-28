@@ -5,6 +5,7 @@ QT += network
 QT += charts
 QT += pdf
 QT += multimedia
+QT+=serialport
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
@@ -15,12 +16,14 @@ CONFIG += c++17
 
 SOURCES += \
     Bort.cpp \
+    arduino.cpp \
     connection.cpp \
     main.cpp \
     personnel.cpp
 
 HEADERS += \
     Bort.h \
+    arduino.h \
     connection.h \
     personnel.h
 
@@ -39,12 +42,17 @@ DISTFILES += \
     Images/logo.png
 
 
-INCLUDEPATH += C:/opencv/build/include
 
-CONFIG(debug, debug|release) {
-    LIBS += -LC:/opencv/build/x64/vc16/lib \
-            -lopencv_world4120d
-} else {
-    LIBS += -LC:/opencv/build/x64/vc16/lib \
-            -lopencv_world4120
+win32-g++ {
+    INCLUDEPATH += C:/opencv-install-mingw/include
+
+    LIBS += -LC:/opencv-install-mingw/x64/mingw/lib \
+            -lopencv_core4120 \
+            -lopencv_imgproc4120 \
+            -lopencv_imgcodecs4120 \
+            -lopencv_highgui4120 \
+            -lopencv_videoio4120 \
+            -lopencv_objdetect4120
+
+    DEFINES += USE_OPENCV
 }
