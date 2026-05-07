@@ -309,7 +309,7 @@ QLabel[objectName*=&quot;error&quot;] {
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="pageSignIn">
        <property name="styleSheet">
@@ -2626,7 +2626,7 @@ QPushButton#backWbtn:disabled {
                   <property name="geometry">
                    <rect>
                     <x>20</x>
-                    <y>410</y>
+                    <y>370</y>
                     <width>91</width>
                     <height>20</height>
                    </rect>
@@ -2639,7 +2639,7 @@ QPushButton#backWbtn:disabled {
                   <property name="geometry">
                    <rect>
                     <x>170</x>
-                    <y>400</y>
+                    <y>360</y>
                     <width>211</width>
                     <height>41</height>
                    </rect>
@@ -2710,7 +2710,7 @@ QPushButton#backWbtn:disabled {
                   <property name="geometry">
                    <rect>
                     <x>20</x>
-                    <y>250</y>
+                    <y>210</y>
                     <width>151</width>
                     <height>41</height>
                    </rect>
@@ -2727,7 +2727,7 @@ font: 700 9pt &quot;Segoe UI&quot;;</string>
                   <property name="geometry">
                    <rect>
                     <x>170</x>
-                    <y>170</y>
+                    <y>130</y>
                     <width>211</width>
                     <height>41</height>
                    </rect>
@@ -2782,7 +2782,7 @@ QPushButton:pressed {
                   <property name="geometry">
                    <rect>
                     <x>20</x>
-                    <y>340</y>
+                    <y>300</y>
                     <width>101</width>
                     <height>17</height>
                    </rect>
@@ -2795,7 +2795,7 @@ QPushButton:pressed {
                   <property name="geometry">
                    <rect>
                     <x>170</x>
-                    <y>240</y>
+                    <y>200</y>
                     <width>211</width>
                     <height>54</height>
                    </rect>
@@ -2805,7 +2805,7 @@ QPushButton:pressed {
                   <property name="geometry">
                    <rect>
                     <x>170</x>
-                    <y>90</y>
+                    <y>50</y>
                     <width>211</width>
                     <height>54</height>
                    </rect>
@@ -2815,7 +2815,7 @@ QPushButton:pressed {
                   <property name="geometry">
                    <rect>
                     <x>20</x>
-                    <y>100</y>
+                    <y>60</y>
                     <width>121</width>
                     <height>31</height>
                    </rect>
@@ -2847,7 +2847,7 @@ QPushButton:pressed {
                   <property name="geometry">
                    <rect>
                     <x>20</x>
-                    <y>180</y>
+                    <y>140</y>
                     <width>77</width>
                     <height>17</height>
                    </rect>
@@ -2962,7 +2962,7 @@ font-size: 11px;</string>
                   <property name="geometry">
                    <rect>
                     <x>170</x>
-                    <y>320</y>
+                    <y>280</y>
                     <width>211</width>
                     <height>52</height>
                    </rect>
@@ -2999,6 +2999,29 @@ font: 6pt &quot;Segoe UI&quot;;</string>
                   </property>
                   <property name="text">
                    <string>easy input</string>
+                  </property>
+                 </widget>
+                 <widget class="QLineEdit" name="priceinput">
+                  <property name="geometry">
+                   <rect>
+                    <x>170</x>
+                    <y>410</y>
+                    <width>211</width>
+                    <height>54</height>
+                   </rect>
+                  </property>
+                 </widget>
+                 <widget class="QLabel" name="pricelabel">
+                  <property name="geometry">
+                   <rect>
+                    <x>20</x>
+                    <y>430</y>
+                    <width>91</width>
+                    <height>20</height>
+                   </rect>
+                  </property>
+                  <property name="text">
+                   <string>Price</string>
                   </property>
                  </widget>
                 </widget>
@@ -3105,7 +3128,7 @@ QPushButton:pressed {
 </string>
              </property>
              <property name="text">
-              <string>🤖AI Purchase Recommendation</string>
+              <string>🤖Purchase Recommendation</string>
              </property>
             </widget>
             <widget class="QPushButton" name="updateclientbtn">
@@ -4188,7 +4211,7 @@ QPushButton:pressed {
 </string>
          </property>
          <property name="text">
-          <string>🤖AI Prediction</string>
+          <string>🤖Smart Prediction</string>
          </property>
         </widget>
        </widget>

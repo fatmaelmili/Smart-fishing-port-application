@@ -1,6 +1,5 @@
 #ifndef CLIENTS_H
 #define CLIENTS_H
-//nsit which one zedt mel includes donc let's add them all
 #include <QString>
 #include <QVector>
 #include <QStringList>

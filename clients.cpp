@@ -159,13 +159,17 @@ QVector<QStringList> Client::afficherClients(QString search, QString sort)
     }
 
     if(sort == "client's name")
-        query += " ORDER BY TYPE ASC";
+        query += " ORDER BY UPPER(TYPE) ASC";
+
     else if(sort == "date of birth")
         query += " ORDER BY DATECL ASC";
+
     else if(sort == "payment type")
-        query += " ORDER BY MODEPAY ASC";
+        query += " ORDER BY UPPER(MODEPAY) ASC";
+
     else if(sort == "article")
-        query += " ORDER BY ARTICLE ASC";
+        query += " ORDER BY UPPER(ARTICLE) ASC";
+
     else
         query += " ORDER BY IDCLIENTS DESC";
 
@@ -219,52 +223,78 @@ int levenshteinDistance(const QString &s1, const QString &s2)
 QList<QPair<QString, double>> Client::predictTop3(int clientId)
 {
     QSqlQuery query;
+
     QList<QPair<QString, double>> results;
 
-    QString clientArticle = "";
-    query.prepare("SELECT ARTICLE FROM CLIENTS WHERE IDCLIENTS = :id");
+    QString clientArticle;
+
+    // 🔍 Get client's article
+    query.prepare(
+        "SELECT ARTICLE "
+        "FROM CLIENTS "
+        "WHERE IDCLIENTS = :id"
+        );
+
     query.bindValue(":id", clientId);
 
     if(query.exec() && query.next())
-        clientArticle = query.value(0).toString().toLower().trimmed();
+    {
+        clientArticle =
+            query.value(0)
+                .toString()
+                .toLower()
+                .trimmed();
+    }
 
     if(clientArticle.isEmpty())
         return results;
-    query.exec("SELECT ARTICLE, COUNT(*) as freq FROM CLIENTS GROUP BY ARTICLE");
 
-    QList<QPair<QString, double>> scored;
+    // 🧠 Get recommendations from JSON
+    if(!learningData.contains(clientArticle))
+        return results;
 
-    while(query.next())
-    {
-        QString art = query.value(0).toString().toLower().trimmed();
-        int freq = query.value(1).toInt();
-
-        if(art == clientArticle)
-            continue;
-
-        int dist = levenshteinDistance(clientArticle, art);
-        int maxLen = std::max(clientArticle.length(), art.length());
-        double similarity = 1.0 - ((double)dist / maxLen);
-        double learnedBoost = learningData[clientArticle][art];
-        double score = learnedBoost * 20 + similarity * 5 + freq;
-
-        scored.append(qMakePair(art, score));
-    }
-    std::sort(scored.begin(), scored.end(),
-              [](auto &a, auto &b){ return a.second > b.second; });
+    QMap<QString, double> recommendations =
+        learningData[clientArticle];
 
     double total = 0;
-    for(auto &p : scored)
-        total += p.second;
-    for(int i = 0; i < scored.size() && i < 3; i++)
-    {
-        double percent = (scored[i].second / total) * 100;
 
-        results.append(qMakePair(scored[i].first, percent));
+    // 🔢 calculate total
+    for(auto value : recommendations.values())
+        total += value;
+
+    // 📊 convert to list
+    for(auto it = recommendations.begin();
+         it != recommendations.end();
+         ++it)
+    {
+        double percent =
+            (it.value() / total) * 100.0;
+
+        results.append(
+            qMakePair(
+                it.key(),
+                percent
+                )
+            );
     }
+
+    // 📈 sort descending
+    std::sort(results.begin(),
+              results.end(),
+              [](const QPair<QString,double> &a,
+                 const QPair<QString,double> &b)
+              {
+                  return a.second > b.second;
+              });
+
+    // ✂️ keep top 3
+    while(results.size() > 3)
+        results.removeLast();
+
+    // 🧠 LEARNING EFFECT
     for(auto &res : results)
     {
-        learningData[clientArticle][res.first] += 1.0;
+        learningData[clientArticle][res.first] += 0.5;
     }
 
     saveLearning();
@@ -310,7 +340,3 @@ void Client::updateFishScore(QString fish, double value)
 {
     fishScores[fish] += value;
 }
-
-
-
-
