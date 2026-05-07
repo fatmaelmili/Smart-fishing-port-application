@@ -11,11 +11,11 @@ equipment::equipment() {}
 
 equipment::equipment(QString name, QString type, QString state, int qty, int cap)
 {
-    this->name = name;
-    this->type = type;
+    this->name  = name;
+    this->type  = type;
     this->state = state;
-    this->qty = qty;
-    this->cap = cap;
+    this->qty   = qty;
+    this->cap   = cap;
 }
 
 // ─────────────────────────────────────────────
@@ -71,11 +71,11 @@ bool equipment::modifier(QString oldName)
               "NOMEQ = :n, TYPEEQ = :t, ETAT = :e, QTE = :q, CAPACITE = :c "
               "WHERE NOMEQ = :old");
 
-    q.bindValue(":n", name);
-    q.bindValue(":t", type);
-    q.bindValue(":e", state);
-    q.bindValue(":q", qty);
-    q.bindValue(":c", cap);
+    q.bindValue(":n",   name);
+    q.bindValue(":t",   type);
+    q.bindValue(":e",   state);
+    q.bindValue(":q",   qty);
+    q.bindValue(":c",   cap);
     q.bindValue(":old", oldName);
 
     if (!q.exec()) {
@@ -104,7 +104,6 @@ QVector<QStringList> equipment::getAll()
         QStringList row;
         for (int i = 0; i < 5; i++)
             row << q.value(i).toString();
-
         rows.push_back(row);
     }
 
@@ -136,7 +135,6 @@ QVector<QStringList> equipment::search(const QString &text)
         QStringList row;
         for (int i = 0; i < 5; i++)
             row << q.value(i).toString();
-
         rows.push_back(row);
     }
 

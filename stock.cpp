@@ -57,10 +57,12 @@ QSqlQueryModel* Stock::afficher()
 {
     QSqlQueryModel* model = new QSqlQueryModel();
 
-    model->setQuery("SELECT IDSTOCK, QTE, TYPEPOISSON, ETAT FROM \"FATMA\".\"STOCKS\"");
+    model->setQuery("SELECT * FROM FATMA.STOCKS");
 
-    qDebug() << "Rows fetched:" << model->rowCount();
-    qDebug() << "Error (if any):" << model->lastError().text();
+    model->setHeaderData(0, Qt::Horizontal, "IDStock");
+    model->setHeaderData(1, Qt::Horizontal, "Quantity");
+    model->setHeaderData(2, Qt::Horizontal, "Name");
+    model->setHeaderData(3, Qt::Horizontal, "Status");
 
     return model;
 }
@@ -69,7 +71,7 @@ bool Stock::modifier(int id)
 {
     QSqlQuery query;
 
-    QString sql = "UPDATE STOCKS SET "
+    QString sql = "UPDATE FATMA.STOCKS SET "
                   "QTE = :qte, "
                   "TYPEPOISSON = :type, "
                   "ETAT = :etat "
@@ -81,18 +83,20 @@ bool Stock::modifier(int id)
     query.bindValue(":type", typePoisson);
     query.bindValue(":etat", etat);
     query.bindValue(":id", id);
-
+    qDebug() << "Update called for ID:" << id;
     if(query.exec())
     {
         qDebug() << "Update OK";
-        return true;
+        qDebug() << "Rows affected:" << query.numRowsAffected();
+
+        return query.numRowsAffected() > 0;
     }
     else
     {
         qDebug() << "Update ERROR:" << query.lastError().text();
         return false;
     }
-    qDebug() << "Update called for ID:" << id;
+
 }
 
 bool Stock::supprimer(int id)

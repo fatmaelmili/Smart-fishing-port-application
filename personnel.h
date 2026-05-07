@@ -7,6 +7,7 @@
 #include <QVector>
 #include <QStringList>
 #include <QMap>
+#include <QtGlobal>
 
 
 class Personnel
@@ -81,6 +82,25 @@ public:
         QString fullName;
         QString role;
         QByteArray avatar;
+        qint64 monthlyWorkSeconds = 0;
+    };
+    struct VoiceRecord {
+        int idPers = -1;
+        QString mail;
+        QString role;
+        QString cvStatus;
+        QByteArray voiceData;
+        QString voiceFeatures;
+        QString voicePhrase;
+    };
+    struct RfidUserInfo {
+        int idPers = -1;
+        QString nom;
+        QString prenom;
+        QString mail;
+        QString role;
+        QString accountStatus;
+        qint64 monthlyWorkSeconds = 0;
     };
 
     static bool fetchProfileByMail(const QString& mail, UserProfile* out);
@@ -142,6 +162,14 @@ public:
     static bool clearExpiredBlockByMail(const QString& mail);
     static FaceLoginResult authenticateByFaceIdMail(const QString& mail,QString* outMail = nullptr,QString* outRole = nullptr,QString* outCvStatus = nullptr);
     static bool getEmployeeOfMonth(EmployeeOfMonth* out);
+    static bool saveVoiceIdByMail(const QString& mail,const QByteArray& voiceData,const QString& voiceFeatures,const QString& phrase);
+    static bool hasVoiceIdRegistered(const QString& mail);
+    static bool removeVoiceIdByMail(const QString& mail);
+    static QVector<VoiceRecord> getAllRegisteredVoiceIds();
+    static FaceLoginResult authenticateByVoiceIdMail(const QString& mail,QString* outMail = nullptr,QString* outRole = nullptr,QString* outCvStatus = nullptr);
+    static bool startUserSessionByMail(const QString& mail);
+    static bool closeUserSessionByMail(const QString& mail,qint64* outSessionSeconds = nullptr,qint64* outMonthlyTotalSeconds = nullptr);
+    static bool fetchRfidUserByUid(const QString& uid, RfidUserInfo* out);
 
 
 };

@@ -1,5 +1,6 @@
 #ifndef EDITCLIENTDIALOG_H
 #define EDITCLIENTDIALOG_H
+
 #include <QDialog>
 #include <QLineEdit>
 #include <QDateEdit>
@@ -20,6 +21,7 @@ public:
                        QString article,
                        int qte,
                        QString modepay,
+                       double price,
                        int id);
 
 private slots:
@@ -30,14 +32,27 @@ private:
     int clientId;
 
     QLineEdit *nameInput;
+
     QDateEdit *dateInput;
+
     QLineEdit *phoneInput;
-    QLineEdit *articleInput;
+
+    QComboBox *articleInput;
+
     QSpinBox *quantityInput;
+
+    // 💰 NEW PRICE INPUT
+    QLineEdit *priceInput;
+
     QComboBox *paymentInput;
 
     QPushButton *saveBtn;
+
     QPushButton *cancelBtn;
+
+    void loadItems();
+
+    int getMaxQuantity(QString item);
 };
 
 #endif // EDITCLIENTDIALOG_H

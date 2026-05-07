@@ -7,7 +7,54 @@
 #include <QTableWidget>
 #include <QPdfWriter>
 #include <QPainter>
+#ifdef USE_OPENCV
 #include <opencv2/opencv.hpp>
+#endif
+//APRESINTEGRATION
+#include <QColor>
+#include <QPixmap>
+#include <QAudioSource>
+#include <QAudioFormat>
+#include <QAudioDevice>
+#include <QMediaDevices>
+#include <QBuffer>
+#include <QTimer>
+#include <QEventLoop>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QtMath>
+#include <QLabel>
+//MALIK
+#include <QSortFilterProxyModel>
+#include <Qt3DCore/QEntity>
+#include <Qt3DExtras/Qt3DWindow>
+#include "arduino.h"
+//nour
+#include <QResizeEvent>
+#include <QTableWidgetItem>
+#include <QSpinBox>
+#include <QComboBox>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QWidget>
+//sana
+#include "qmessagebox.h"
+#include <QPropertyAnimation>//added this
+#include <QGraphicsOpacityEffect>//added this
+#include <QList>//added this
+#include <QPair>//added this
+#include <QTimer>//added this
+#include <QtCharts/QChartView>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QBarCategoryAxis>
+#include <QtCharts/QValueAxis>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QChart>//added this
+#include <QPdfWriter>
+#include <QPainter>
+#include <QFileDialog>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -20,11 +67,12 @@ class SignIn : public QMainWindow
     Q_OBJECT
 
 public:
-    SignIn(QWidget *parent = nullptr);
+    explicit SignIn(QWidget *parent = nullptr);
     ~SignIn();
 
 private slots:
     //fatma
+private slots:
     void on_btnForgetmdp_clicked();
 
     void on_backsigninBTN_clicked();
@@ -240,6 +288,12 @@ private slots:
 
 
     void on_staffmanagementBTNZ_clicked();
+
+    void on_Voicebtn_clicked();
+
+    void on_withvoicebtn_clicked();
+    void onArduinoReadyRead();
+
     //dhia
     void on_addZonebtn_clicked();
     void loadZonesToTable();
@@ -247,6 +301,12 @@ private slots:
     void on_EditZonebtn_clicked();
     void on_DeleteZone_clicked();
     void on_exportZone_clicked();
+    void showPieChart();
+
+    void on_RiskPrediction_clicked();
+
+    void on_Regulations_clicked();
+
     //sana
     void on_clientaddbtn_clicked();
     void on_deleteclientbtn_clicked();
@@ -257,6 +317,14 @@ private slots:
     void loadItems();
     int getMaxQuantity(QString item);
     void on_itemsinput_currentTextChanged(const QString &text);
+    void on_aiclientbtn_clicked();//added this
+    void loadClientsFromDB();//added this
+    void showAnimatedPopup(QString prediction, double confidence);//added this
+    void runAIPrediction(int clientId);//added this
+    void on_aipredictionbtndashboard_clicked();
+    void showAIPopup();
+    void predictGains();
+    void predictBestFish();//added all of these
     //malik
     void on_delete_stock_clicked();
 
@@ -266,14 +334,55 @@ private slots:
 
     void on_table_stock_clicked(const QModelIndex &index);
     void on_addspecies_stock_clicked();
+    void on_exportpdf_stock_clicked();
+    void on_sort_stock_currentTextChanged(const QString &text);
+    void on_charts_stock_clicked();
+    void on_search_stock_textChanged(const QString &text);
+    void on_recognition_stock_clicked();
     //nour
+    void loadEquipmentList();
+    void on_addEqbtn_F_clicked();
+    void filterAndSortTable();
+    void on_exportpdfbtnE_L_clicked();
+    void on_chatbotbtn_L_clicked();
+    void editRowInline(int row);
+    void deleteRowInline(int row);
 
-    void refreshEquipmentTable();
 
-    void on_addEqbtn_clicked();
-    void on_tableeq_itemSelectionChanged();
-    void on_modifybtn_clicked();
-    void on_deletebtnE_clicked();
+
+
+
+    void on_AnalyticsZone_clicked();
+
+    void on_visual_stock_clicked();
+
+    void on_logOutBTNe_L_clicked();
+
+
+
+    void on_clientsmanagementBTNe_L_clicked();
+
+    void on_stockmanagementBTNe_L_clicked();
+
+    void on_equipmentmanagementBTNe_L_clicked();
+
+    void on_fishingzonemanagementBTNe_L_clicked();
+
+    void on_staffmanagementBTNe_L_clicked();
+
+    void on_userprofiledetails_D_3_clicked();
+
+    void on_staffmanagementBTNe_F_clicked();
+
+    void on_clientsmanagementBTNe_F_clicked();
+
+    void on_stockmanagementBTNe_F_clicked();
+
+    void on_fishingzonemanagementBTNe_F_clicked();
+
+    void on_userprofiledetails_D_2_clicked();
+
+    void on_logOutBTNe_F_clicked();
 
 private:
     //fatma
@@ -289,7 +398,9 @@ private:
     Ui::SignIn *ui;
     QByteArray captureFaceFromCamera();
     QString ensureFaceCascadeFile();
+#ifdef USE_OPENCV
     cv::Mat detectAndCropFace(const cv::Mat& frame);
+#endif
     QByteArray m_cvBlob;
     QByteArray m_avatarBlob;
     QString m_currentRole;
@@ -303,10 +414,13 @@ private:
     QByteArray m_currentAccountAvatar;
     int m_faceAuthFailureCount = 0;
     const int m_faceFraudThreshold = 3;
+    QAudioFormat m_lastVoiceFormat;
+    int m_voiceAuthFailureCount = 0;
+    const int m_voiceFraudThreshold = 3;
     void registerFaceAuthFailure(const QString& reason);
     void resetFaceAuthFailureCounter();
     void showFaceFraudAlert(const QString& reason);
-    void updateUserProfileUI(const QString& fullName, const QByteArray& avatarBytes);
+    void updateUserProfileUI(const QString& fullName, const QString& role, const QByteArray& avatarBytes);
     void applyRolePermissions(const QString& role);
     void setModuleAccess(const QString& prefix, bool allowed, bool hide = true);
     bool showCaptchaPuzzle();
@@ -323,7 +437,9 @@ private:
     bool loadCurrentUserAccountData();
     void loadEmployeeCount();
     void updateFaceIdStatusLabel();
+#ifdef USE_OPENCV
     double compareFacesDistance(const cv::Mat& face1, const cv::Mat& face2);
+#endif
     bool authenticateWithFaceId();
     void runCvAnalysisForSelectedRow(QTableWidget *table);
     QString extractTextFromPdfBlob(const QByteArray& pdfBlob) const;
@@ -337,12 +453,113 @@ private:
     void saveRememberedUser();
     void loadRememberedUser();
     void loadEmployeeOfMonth();
+    QString extractAvatarInitials(const QString& fullName) const;
+    QColor avatarColorFromName(const QString& fullName) const;
+    QByteArray generateInitialsAvatar(const QString& fullName, int size = 160) const;
+    void generateAvatarForAddStaff();
+    void generateAvatarForUpdateStaff();
+    QByteArray captureVoiceFromMicrophone(int durationMs = 3000);
+    QVector<double> pcm16ToSamples(const QByteArray& audioBytes, const QAudioFormat& format) const;
+    QVector<double> extractVoiceFeatures(const QByteArray& audioBytes, const QAudioFormat& format) const;
+    QString voiceFeaturesToJson(const QVector<double>& features) const;
+    QVector<double> jsonToVoiceFeatures(const QString& json) const;
+    double compareVoiceFeatures(const QVector<double>& a, const QVector<double>& b) const;
+    bool authenticateWithVoiceId();
+    void updateVoiceIdStatusLabel();
+    bool beginSessionForCurrentUser();
+    void performLogoutFlow();
+    void showStyledSessionLogoutMessage(const QString& fullName, qint64 sessionSeconds);
+    QString formatDurationEnglish(qint64 totalSeconds) const;
+    QLabel* ensureBestEmployeeHoursLabel();
+    Arduino A;
+    QByteArray m_arduinoBuffer;
+
+    void initArduinoConnection();
+    void processArduinoLine(const QByteArray& line);
+    void processRfidUid(const QString& uid);
+    QString formatMonthlyHoursForRfid(qint64 totalSeconds) const;
+    void setupAccessHistoryTable();
+    void addAccessHistoryEntry(const QString& user,const QString& status,const QString& method);
+    void logRfidAccess(const QString& user, const QString& status);
     //dhia
     int selectedZoneId = -1;
+    int predictSuitability(const QString& zoneType, const QString& riskLevel, double longitude, double latitude);
+    QString suitabilityMessage(int score);
+    QString suitabilityColor(int score);
+    QString suitabilityLevel(int score);
+    QString currentSeason();
+    int environmentalWeatherModifier(double longitude, double latitude);
+    QString generateRegulationsAI(const QString& zoneType, const QString& riskLevel, double longitude, double latitude);
+    double calculateSimilarity(const QString& zoneType1, const QString& riskLevel1, double lon1, double lat1,
+                               const QString& zoneType2, const QString& riskLevel2, double lon2, double lat2);
     //sana
+    double getMonthlyGains();
+    QString getMostSoldItem(int &quantity);
+    int getTotalPurchases();
+    void updateDashboard();
+    void setupBarChart();
+    void setupPieChart();
+    void handleBarClicked(int index);
+    void handlePieClicked(QPieSlice *slice);
+    QMessageBox *loadingMsg = nullptr;//added this
     void loadClients(QString search = "", QString sort = "");
+    void on_pdfitembtn_clicked();
+    void showStyledPopup(QString text);
+    void on_vocalstuffbtn_clicked();
+    void processQuickInput(QString text);
+    int levenshteinDistance(const QString &s1, const QString &s2);
+    void updateInsights();
+
     //nour
-    QString m_selectedEquipmentName;
+
+    //MALIK
+    QSortFilterProxyModel *proxyModel;
+    Qt3DExtras::Qt3DWindow *view;
+    Qt3DCore::QEntity *rootEntity;
+    Qt3DCore::QEntity *currentEntity;
+    void init3DView();
+    Qt3DCore::QEntity* loadModel(QString path);
+    //nour
+    // SpinBoxes injectés dynamiquement pour remplacer quantityedit_F / capacity_F
+    QSpinBox  *m_qtySpinBox  = nullptr;
+    QSpinBox  *m_capSpinBox  = nullptr;
+
+    // FIX RESIZE : flags indiquant si les SpinBoxes sont en mode fallback
+    // (position absolue) faute de layout dans le .ui.
+    // Passent à true uniquement si replaceWidgetInLayout() échoue.
+    bool m_qtyFallback = false;
+    bool m_capFallback = false;
+
+    struct EqRow { QString name, type, state; int qty = 0, cap = 0; };
+    QList<EqRow> m_allEq;
+
+    // Indices de colonnes du QTableWidget
+    static constexpr int COL_NAME  = 0;
+    static constexpr int COL_TYPE  = 1;
+    static constexpr int COL_STATE = 2;
+    static constexpr int COL_QTY   = 3;
+    static constexpr int COL_CAP   = 4;
+    static constexpr int COL_EDIT  = 5;
+    static constexpr int COL_DEL   = 6;
+
+    void setupFormWidgets();
+    void setupTableStyle();
+    void setupSearchBar();
+    void setupSortCombo();
+    void setupButtonStyles();
+    void setupNavHighlight();
+    void addRowButtons(int row);
+    QPushButton* makeIconBtn(const QString &, const QString &, const QString &, QWidget *);
+    //DHIA ET MALIK ARDUINO
+    QByteArray serialBuffer;
+
+    void updateWaterLevel(int distance);  // Update water level in the UI/database
+    void initSerialConnection();
+    void updateDatabaseWaterLevel(int waterLevel);
+protected:
+    // FIX RESIZE : repositionne les SpinBoxes en mode fallback
+    // (quand les pages du .ui n'ont pas de layout).
+    void resizeEvent(QResizeEvent *event) override;
 };
 
 #endif // BORT_H

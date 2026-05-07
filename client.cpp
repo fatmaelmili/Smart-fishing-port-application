@@ -2,6 +2,14 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QDebug>
+#include <QCoreApplication>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QFile>
+#include <QCoreApplication>
+
+QMap<QString, QMap<QString, double>> Client::learningData;
+QMap<QString, double> Client::fishScores;   // ✅ ADD THIS LINE
 
 Client::Client(){}
 
@@ -18,6 +26,67 @@ Client::Client(QString type, QString datecl, float montant,
     this->article = article;
     this->qte = qte;
 }
+//added this
+//====learning lel local ai=======
+void Client::loadLearning()
+{
+    QFile file(QCoreApplication::applicationDirPath() + "/learning.json");
+
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "No learning file yet";
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+    QJsonObject root = doc.object();
+
+    for(auto key : root.keys())
+    {
+        QJsonObject inner = root[key].toObject();
+
+        for(auto subKey : inner.keys())
+        {
+            learningData[key][subKey] = inner[subKey].toDouble();
+        }
+    }
+
+    file.close();
+    qDebug() << "Learning loaded";
+}
+//added this
+//======save the learning======
+void Client::saveLearning()
+{
+    QFile file(QCoreApplication::applicationDirPath() + "/learning.json");
+
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        qDebug() << "Cannot create learning.json";
+        return;
+    }
+
+    QJsonObject root;
+
+    for(auto key : learningData.keys())
+    {
+        QJsonObject inner;
+
+        for(auto subKey : learningData[key].keys())
+        {
+            inner[subKey] = learningData[key][subKey];
+        }
+
+        root[key] = inner;
+    }
+
+    QJsonDocument doc(root);
+    file.write(doc.toJson());
+    file.close();
+
+    qDebug() << "learning.json saved!";
+}
+
 
 //add 3ammi mo7sen
 bool Client::ajouterClient()
@@ -70,7 +139,7 @@ bool Client::modifierClient(int id)
     return q.exec();
 }
 
-// fetch search a sort the big three
+// fetch search w sort the big three
 QVector<QStringList> Client::afficherClients(QString search, QString sort)
 {
     QVector<QStringList> rows;
@@ -90,13 +159,17 @@ QVector<QStringList> Client::afficherClients(QString search, QString sort)
     }
 
     if(sort == "client's name")
-        query += " ORDER BY TYPE ASC";
+        query += " ORDER BY UPPER(TYPE) ASC";
+
     else if(sort == "date of birth")
         query += " ORDER BY DATECL ASC";
+
     else if(sort == "payment type")
-        query += " ORDER BY MODEPAY ASC";
+        query += " ORDER BY UPPER(MODEPAY) ASC";
+
     else if(sort == "article")
-        query += " ORDER BY ARTICLE ASC";
+        query += " ORDER BY UPPER(ARTICLE) ASC";
+
     else
         query += " ORDER BY IDCLIENTS DESC";
 
@@ -119,3 +192,155 @@ QVector<QStringList> Client::afficherClients(QString search, QString sort)
 
     return rows;
 }
+//added this
+int levenshteinDistance(const QString &s1, const QString &s2)
+{
+    int len1 = s1.size(), len2 = s2.size();
+    QVector<QVector<int>> dp(len1 + 1, QVector<int>(len2 + 1));
+
+    for(int i = 0; i <= len1; i++) dp[i][0] = i;
+    for(int j = 0; j <= len2; j++) dp[0][j] = j;
+
+    for(int i = 1; i <= len1; i++)
+    {
+        for(int j = 1; j <= len2; j++)
+        {
+            int cost = (s1[i-1] == s2[j-1]) ? 0 : 1;
+
+            dp[i][j] = std::min({
+                dp[i-1][j] + 1,
+                dp[i][j-1] + 1,
+                dp[i-1][j-1] + cost
+            });
+        }
+    }
+
+    return dp[len1][len2];
+}
+//added this
+//===========jannet l3arrafa====================
+
+QList<QPair<QString, double>> Client::predictTop3(int clientId)
+{
+    QSqlQuery query;
+
+    QList<QPair<QString, double>> results;
+
+    QString clientArticle;
+
+    // 🔍 Get client's article
+    query.prepare(
+        "SELECT ARTICLE "
+        "FROM CLIENTS "
+        "WHERE IDCLIENTS = :id"
+        );
+
+    query.bindValue(":id", clientId);
+
+    if(query.exec() && query.next())
+    {
+        clientArticle =
+            query.value(0)
+                .toString()
+                .toLower()
+                .trimmed();
+    }
+
+    if(clientArticle.isEmpty())
+        return results;
+
+    // 🧠 Get recommendations from JSON
+    if(!learningData.contains(clientArticle))
+        return results;
+
+    QMap<QString, double> recommendations =
+        learningData[clientArticle];
+
+    double total = 0;
+
+    // 🔢 calculate total
+    for(auto value : recommendations.values())
+        total += value;
+
+    // 📊 convert to list
+    for(auto it = recommendations.begin();
+         it != recommendations.end();
+         ++it)
+    {
+        double percent =
+            (it.value() / total) * 100.0;
+
+        results.append(
+            qMakePair(
+                it.key(),
+                percent
+                )
+            );
+    }
+
+    // 📈 sort descending
+    std::sort(results.begin(),
+              results.end(),
+              [](const QPair<QString,double> &a,
+                 const QPair<QString,double> &b)
+              {
+                  return a.second > b.second;
+              });
+
+    // ✂️ keep top 3
+    while(results.size() > 3)
+        results.removeLast();
+
+    // 🧠 LEARNING EFFECT
+    for(auto &res : results)
+    {
+        learningData[clientArticle][res.first] += 0.5;
+    }
+
+    saveLearning();
+
+    return results;
+}
+
+void Client::loadAI()
+{
+    QFile file(QCoreApplication::applicationDirPath() + "/ai_learning.json");
+
+    if(!file.open(QIODevice::ReadOnly))
+        return;
+
+    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+    QJsonObject obj = doc.object();
+
+    for(auto key : obj.keys())
+        fishScores[key] = obj[key].toDouble();
+
+    file.close();
+}
+
+
+void Client::saveAI()
+{
+    QFile file(QCoreApplication::applicationDirPath() + "/ai_learning.json");
+
+    if(!file.open(QIODevice::WriteOnly))
+        return;
+
+    QJsonObject obj;
+
+    for(auto key : fishScores.keys())
+        obj[key] = fishScores[key];
+
+    file.write(QJsonDocument(obj).toJson());
+    file.close();
+}
+
+
+void Client::updateFishScore(QString fish, double value)
+{
+    fishScores[fish] += value;
+}
+
+
+
+

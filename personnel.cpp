@@ -12,6 +12,7 @@
 #include <QSqlError>
 #include <QDebug>
 #include <QDateTime>
+#include <QRegularExpression>
 Personnel::Personnel() {
 }
 QString Personnel::hashPassword(const QString& plain)
@@ -1062,49 +1063,387 @@ bool Personnel::getEmployeeOfMonth(EmployeeOfMonth* out)
 {
     if (!out) return false;
 
+    const QString currentMonthKey = QDate::currentDate().toString("yyyyMM");
+
     QSqlQuery q;
     q.prepare(R"(
         SELECT
             IDPERS,
             TRIM(PRENOM || ' ' || NOM) AS FULLNAME,
-            ROLE,
-            AVATAR
+            NVL(TRIM(ROLE), '-') AS ROLE,
+            AVATAR,
+            NVL(MONTHLY_WORK_SECONDS, 0) AS MONTHLY_SECONDS
         FROM FATMA.PERSONNEL
         WHERE UPPER(TRIM(CVSTATUS)) = 'ACCEPTED'
-        ORDER BY IDPERS
+          AND NVL(WORK_MONTH_KEY, :monthKey) = :monthKey
+        ORDER BY NVL(MONTHLY_WORK_SECONDS, 0) DESC, IDPERS ASC
     )");
+    q.bindValue(":monthKey", currentMonthKey);
 
     if (!q.exec()) {
         qDebug() << "getEmployeeOfMonth error:" << q.lastError().text();
         return false;
     }
 
-    QVector<EmployeeOfMonth> acceptedEmployees;
-
-    while (q.next()) {
-        EmployeeOfMonth emp;
-        emp.idPers = q.value(0).toInt();
-        emp.fullName = q.value(1).toString().trimmed();
-        emp.role = q.value(2).toString().trimmed();
-        emp.avatar = q.value(3).toByteArray();
-        acceptedEmployees.push_back(emp);
-    }
-
-    if (acceptedEmployees.isEmpty()) {
+    if (!q.next()) {
         return false;
     }
 
-    const QDate currentDate = QDate::currentDate();
-
-
-    const int monthKey = currentDate.year() * 100 + currentDate.month();
-
-
-    const int index = monthKey % acceptedEmployees.size();
-
-    *out = acceptedEmployees[index];
+    out->idPers = q.value(0).toInt();
+    out->fullName = q.value(1).toString().trimmed();
+    out->role = q.value(2).toString().trimmed();
+    out->avatar = q.value(3).toByteArray();
+    out->monthlyWorkSeconds = q.value(4).toLongLong();
     return true;
 }
 
+bool Personnel::saveVoiceIdByMail(const QString& mail,
+                                  const QByteArray& voiceData,
+                                  const QString& voiceFeatures,
+                                  const QString& phrase)
+{
+    if (mail.trimmed().isEmpty() || voiceData.isEmpty() || voiceFeatures.trimmed().isEmpty()) {
+        qDebug() << "saveVoiceIdByMail: invalid input.";
+        return false;
+    }
 
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET VOICE_ID_DATA = :voiceData,
+            VOICE_FEATURES = :voiceFeatures,
+            VOICE_ID_ENABLED = 1,
+            VOICE_ID_UPDATED_AT = SYSDATE,
+            VOICE_PHRASE = :phrase
+        WHERE MAIL = :mail
+    )");
 
+    q.bindValue(":voiceData", QVariant::fromValue(voiceData));
+    q.bindValue(":voiceFeatures", voiceFeatures);
+    q.bindValue(":phrase", phrase.trimmed());
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec()) {
+        qDebug() << "saveVoiceIdByMail error:" << q.lastError().text();
+        return false;
+    }
+
+    return q.numRowsAffected() > 0;
+}
+
+bool Personnel::hasVoiceIdRegistered(const QString& mail)
+{
+    if (mail.trimmed().isEmpty()) {
+        return false;
+    }
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT VOICE_ID_ENABLED, VOICE_FEATURES
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec()) {
+        qDebug() << "hasVoiceIdRegistered error:" << q.lastError().text();
+        return false;
+    }
+
+    if (!q.next()) {
+        return false;
+    }
+
+    return q.value(0).toInt() == 1 && !q.value(1).toString().trimmed().isEmpty();
+}
+
+bool Personnel::removeVoiceIdByMail(const QString& mail)
+{
+    if (mail.trimmed().isEmpty()) {
+        return false;
+    }
+
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET VOICE_ID_DATA = NULL,
+            VOICE_FEATURES = NULL,
+            VOICE_ID_ENABLED = 0,
+            VOICE_ID_UPDATED_AT = NULL,
+            VOICE_PHRASE = NULL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec()) {
+        qDebug() << "removeVoiceIdByMail error:" << q.lastError().text();
+        return false;
+    }
+
+    return q.numRowsAffected() > 0;
+}
+
+QVector<Personnel::VoiceRecord> Personnel::getAllRegisteredVoiceIds()
+{
+    QVector<VoiceRecord> records;
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT IDPERS, MAIL, ROLE, CVSTATUS, VOICE_ID_DATA, VOICE_FEATURES, VOICE_PHRASE
+        FROM FATMA.PERSONNEL
+        WHERE VOICE_ID_ENABLED = 1
+          AND VOICE_FEATURES IS NOT NULL
+    )");
+
+    if (!q.exec()) {
+        qDebug() << "getAllRegisteredVoiceIds error:" << q.lastError().text();
+        return records;
+    }
+
+    while (q.next()) {
+        VoiceRecord rec;
+        rec.idPers        = q.value(0).toInt();
+        rec.mail          = q.value(1).toString();
+        rec.role          = q.value(2).toString();
+        rec.cvStatus      = q.value(3).toString();
+        rec.voiceData     = q.value(4).toByteArray();
+        rec.voiceFeatures = q.value(5).toString();
+        rec.voicePhrase   = q.value(6).toString();
+        records.push_back(rec);
+    }
+
+    return records;
+}
+
+Personnel::FaceLoginResult Personnel::authenticateByVoiceIdMail(const QString& mail,
+                                                                QString* outMail,
+                                                                QString* outRole,
+                                                                QString* outCvStatus)
+{
+    if (mail.trimmed().isEmpty()) {
+        return FaceLoginResult::FaceNotRecognized;
+    }
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT MAIL, ROLE, CVSTATUS, VOICE_ID_ENABLED, NVL(ACCOUNT_STATUS, 'ACTIVE')
+        FROM FATMA.PERSONNEL
+        WHERE MAIL = :mail
+    )");
+    q.bindValue(":mail", mail.trimmed());
+
+    if (!q.exec()) {
+        qDebug() << "authenticateByVoiceIdMail error:" << q.lastError().text();
+        return FaceLoginResult::DbError;
+    }
+
+    if (!q.next()) {
+        return FaceLoginResult::FaceNotRecognized;
+    }
+
+    const QString dbMail        = q.value(0).toString();
+    const QString role          = q.value(1).toString();
+    const QString cvStatus      = q.value(2).toString();
+    const int voiceEnabled      = q.value(3).toInt();
+    const QString accountStatus = q.value(4).toString();
+
+    if (outMail) *outMail = dbMail;
+    if (outRole) *outRole = role;
+    if (outCvStatus) *outCvStatus = cvStatus;
+
+    if (accountStatus.trimmed().compare("BLOCKED", Qt::CaseInsensitive) == 0) {
+        if (isBlockExpiredByMail(dbMail)) {
+            clearExpiredBlockByMail(dbMail);
+        } else {
+            return FaceLoginResult::AccountBlocked;
+        }
+    }
+
+    if (voiceEnabled != 1) {
+        registerFailedAuthByMail(dbMail, "VOICE_ID", 20);
+        return FaceLoginResult::FaceNotEnabled;
+    }
+
+    if (cvStatus.trimmed().compare("Accepted", Qt::CaseInsensitive) != 0) {
+        resetAuthRiskByMail(dbMail, "VOICE_ID");
+        return FaceLoginResult::CvNotAccepted;
+    }
+
+    resetAuthRiskByMail(dbMail, "VOICE_ID");
+    return FaceLoginResult::Ok;
+}
+
+bool Personnel::startUserSessionByMail(const QString& mail)
+{
+    const QString cleanMail = mail.trimmed();
+    if (cleanMail.isEmpty()) {
+        return false;
+    }
+
+    const QString currentMonthKey = QDate::currentDate().toString("yyyyMM");
+
+    QSqlQuery q;
+    q.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET
+            MONTHLY_WORK_SECONDS = CASE
+                WHEN NVL(WORK_MONTH_KEY, '0') <> :monthKey THEN 0
+                ELSE NVL(MONTHLY_WORK_SECONDS, 0)
+            END,
+            WORK_MONTH_KEY = :monthKey,
+            SESSION_START_AT = SYSDATE
+        WHERE UPPER(TRIM(MAIL)) = UPPER(TRIM(:mail))
+    )");
+    q.bindValue(":monthKey", currentMonthKey);
+    q.bindValue(":mail", cleanMail);
+
+    if (!q.exec()) {
+        qDebug() << "startUserSessionByMail error:" << q.lastError().text();
+        return false;
+    }
+
+    qDebug() << "startUserSessionByMail mail =" << cleanMail;
+    qDebug() << "startUserSessionByMail rows =" << q.numRowsAffected();
+
+    return q.numRowsAffected() > 0;
+}
+
+bool Personnel::closeUserSessionByMail(const QString& mail,
+                                       qint64* outSessionSeconds,
+                                       qint64* outMonthlyTotalSeconds)
+{
+    const QString cleanMail = mail.trimmed();
+    qDebug() << "closeUserSessionByMail cleanMail =" << cleanMail;
+
+    if (cleanMail.isEmpty()) {
+        qDebug() << "closeUserSessionByMail: empty mail";
+        return false;
+    }
+
+    if (outSessionSeconds) *outSessionSeconds = 0;
+    if (outMonthlyTotalSeconds) *outMonthlyTotalSeconds = 0;
+
+    const QString currentMonthKey = QDate::currentDate().toString("yyyyMM");
+
+    QSqlQuery readQ;
+    readQ.prepare(R"(
+        SELECT
+            ROUND((SYSDATE - SESSION_START_AT) * 86400),
+            NVL(MONTHLY_WORK_SECONDS, 0),
+            NVL(WORK_MONTH_KEY, ?),
+            TO_CHAR(SESSION_START_AT, 'DD-MON-YYYY HH24:MI:SS')
+        FROM FATMA.PERSONNEL
+        WHERE UPPER(TRIM(MAIL)) = UPPER(TRIM(?))
+          AND SESSION_START_AT IS NOT NULL
+    )");
+    readQ.addBindValue(currentMonthKey);
+    readQ.addBindValue(cleanMail);
+
+    qDebug() << "about to exec readQ";
+
+    if (!readQ.exec()) {
+        qDebug() << "closeUserSessionByMail read error =" << readQ.lastError().text();
+        qDebug() << "closeUserSessionByMail read lastQuery =" << readQ.lastQuery();
+        return false;
+    }
+
+    qDebug() << "readQ executed";
+
+    if (!readQ.next()) {
+        qDebug() << "closeUserSessionByMail no row found for mail =" << cleanMail;
+        return false;
+    }
+
+    qint64 sessionSeconds = readQ.value(0).toLongLong();
+    qint64 monthlyTotal = readQ.value(1).toLongLong();
+    const QString storedMonthKey = readQ.value(2).toString().trimmed();
+    const QString startAtText = readQ.value(3).toString().trimmed();
+
+    qDebug() << "startAtText =" << startAtText;
+    qDebug() << "sessionSeconds =" << sessionSeconds;
+    qDebug() << "monthlyTotal before =" << monthlyTotal;
+    qDebug() << "storedMonthKey =" << storedMonthKey;
+
+    if (storedMonthKey != currentMonthKey) {
+        monthlyTotal = 0;
+    }
+
+    if (sessionSeconds < 0) {
+        sessionSeconds = 0;
+    }
+
+    monthlyTotal += sessionSeconds;
+
+    const int sessionSecondsInt = static_cast<int>(sessionSeconds);
+    const int monthlyTotalInt = static_cast<int>(monthlyTotal);
+
+    QSqlQuery updateQ;
+    updateQ.prepare(R"(
+        UPDATE FATMA.PERSONNEL
+        SET
+            LAST_SESSION_SECONDS = ?,
+            MONTHLY_WORK_SECONDS = ?,
+            WORK_MONTH_KEY = ?,
+            SESSION_START_AT = NULL
+        WHERE UPPER(TRIM(MAIL)) = UPPER(TRIM(?))
+    )");
+    updateQ.addBindValue(sessionSecondsInt);
+    updateQ.addBindValue(monthlyTotalInt);
+    updateQ.addBindValue(currentMonthKey);
+    updateQ.addBindValue(cleanMail);
+
+    qDebug() << "about to exec updateQ";
+
+    if (!updateQ.exec()) {
+        qDebug() << "closeUserSessionByMail update error =" << updateQ.lastError().text();
+        qDebug() << "closeUserSessionByMail update lastQuery =" << updateQ.lastQuery();
+        return false;
+    }
+
+    qDebug() << "updateQ executed, rows =" << updateQ.numRowsAffected();
+
+    if (outSessionSeconds) *outSessionSeconds = sessionSeconds;
+    if (outMonthlyTotalSeconds) *outMonthlyTotalSeconds = monthlyTotal;
+
+    return updateQ.numRowsAffected() > 0;
+}
+bool Personnel::fetchRfidUserByUid(const QString& uid, RfidUserInfo* out)
+{
+    if (!out) return false;
+
+    QString cleanUid = uid.trimmed().toUpper();
+    cleanUid.replace(QRegularExpression("\\s+"), " ");
+
+    QSqlQuery q;
+    q.prepare(R"(
+        SELECT IDPERS,
+               NOM,
+               PRENOM,
+               MAIL,
+               ROLE,
+               NVL(ACCOUNT_STATUS, 'ACTIVE'),
+               NVL(MONTHLY_WORK_SECONDS, 0)
+        FROM FATMA.PERSONNEL
+        WHERE UPPER(TRIM(RFID_UID)) = :uid
+    )");
+    q.bindValue(":uid", cleanUid);
+
+    if (!q.exec()) {
+        qDebug() << "fetchRfidUserByUid error:" << q.lastError().text();
+        return false;
+    }
+
+    if (!q.next()) {
+        return false;
+    }
+
+    out->idPers = q.value(0).toInt();
+    out->nom = q.value(1).toString();
+    out->prenom = q.value(2).toString();
+    out->mail = q.value(3).toString();
+    out->role = q.value(4).toString();
+    out->accountStatus = q.value(5).toString();
+    out->monthlyWorkSeconds = q.value(6).toLongLong();
+
+    return true;
+}

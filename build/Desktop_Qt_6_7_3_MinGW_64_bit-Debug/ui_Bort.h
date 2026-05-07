@@ -28,6 +28,7 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStackedWidget>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTableView>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QVBoxLayout>
@@ -39,6 +40,7 @@ class Ui_SignIn
 {
 public:
     QWidget *centralwidget;
+    QVBoxLayout *verticalLayout;
     QStackedWidget *stackedWidget;
     QWidget *pageSignIn;
     QLabel *title;
@@ -52,6 +54,7 @@ public:
     QCheckBox *remembercheck;
     QLabel *label_4;
     QCheckBox *showPassCheck;
+    QPushButton *withvoicebtn;
     QWidget *pageClients;
     QWidget *layoutWidget_12;
     QHBoxLayout *horizontalLayout_14;
@@ -69,7 +72,7 @@ public:
     QVBoxLayout *verticalLayout_10;
     QFrame *headerC;
     QLabel *titreHeaderC;
-    QCommandLinkButton *userprofileC;
+    QCommandLinkButton *userprofiledetailsC;
     QLabel *avatarC;
     QWidget *layoutWidget_13;
     QHBoxLayout *horizontalLayout_15;
@@ -79,7 +82,6 @@ public:
     QLabel *quantitylable;
     QSpinBox *quantityinput;
     QComboBox *choosepayment;
-    QLineEdit *itemsinput;
     QLabel *paymentlable;
     QLabel *clientphonelable;
     QDateEdit *clientdateinput;
@@ -90,6 +92,10 @@ public:
     QLabel *clientnamelable;
     QLabel *clientformlable;
     QLabel *clientdatelable;
+    QComboBox *itemsinput;
+    QPushButton *vocalstuffbtn;
+    QLabel *pricelabel;
+    QLineEdit *priceinput;
     QGroupBox *clientlist;
     QPushButton *mainpagebtn;
     QLabel *clientlistlable;
@@ -119,22 +125,18 @@ public:
     QCommandLinkButton *userprofiledetails_DC;
     QLabel *avatar_DC;
     QLabel *dashtitleC;
-    QGroupBox *stat1C;
-    QLabel *statroleC;
     QPushButton *pdfitembtn;
     QPushButton *backtoclientbtn;
     QFrame *gains;
-    QLabel *numbergains;
+    QLabel *monthsgainslabel;
     QLabel *titlegains;
     QFrame *bestclient;
     QLabel *titlebestC;
     QLabel *trophy_2;
-    QPushButton *browseC;
-    QLabel *namebestC;
-    QLabel *rolebestC;
-    QLabel *rewardbestC;
-    QGroupBox *statcvstatusC;
-    QLabel *stat2C;
+    QLabel *mostsolditemlabel;
+    QPushButton *aipredictionbtndashboard;
+    QLabel *chart1;
+    QLabel *chart2;
     QWidget *pageForgetpass;
     QLabel *ForgotTitle;
     QWidget *layoutWidget;
@@ -195,8 +197,9 @@ public:
     QFrame *cardWeather;
     QLabel *weathertitle;
     QLabel *temp;
-    QGroupBox *portdash;
-    QLabel *portconttt;
+    QFrame *accessHistoryFrame;
+    QTableWidget *historique;
+    QLabel *titleh;
     QWidget *pageStaffManagement;
     QWidget *layoutWidget1;
     QHBoxLayout *horizontalLayout_2;
@@ -251,54 +254,77 @@ public:
     QPushButton *exportpdfstaffbtn;
     QPushButton *backWbtn;
     QLabel *searchlabel;
-    QWidget *pageEquipment;
-    QWidget *layoutWidget_10;
-    QHBoxLayout *horizontalLayout_12;
-    QFrame *sidebarMenuE;
-    QGroupBox *groupBoxE;
-    QPushButton *staffmanagementBTNe;
-    QPushButton *clientsmanagementBTNe;
-    QPushButton *stockmanagementBTNe;
-    QPushButton *fishingzonemanagementBTNe;
-    QPushButton *equipmentmanagementBTNe;
-    QLabel *logoheaderE;
-    QPushButton *logOutBTNe;
-    QFrame *contenumainEq;
-    QWidget *verticalLayoutWidget_8;
-    QVBoxLayout *verticalLayout_9;
-    QFrame *headerE;
-    QLabel *titreHeaderE;
-    QCommandLinkButton *userprofiledetailsE;
-    QLabel *avatarE;
-    QWidget *layoutWidget_11;
-    QHBoxLayout *horizontalLayout_13;
-    QFrame *listEq;
-    QFrame *formEq;
-    QGroupBox *formcontEq;
-    QLabel *labeladdeq;
-    QLabel *Eqnamelabel;
-    QLineEdit *Eqnameedit;
-    QLabel *Eqaddresslabel;
-    QLineEdit *Eqaddressedit;
-    QLabel *statelabel;
-    QLineEdit *stateedit;
-    QLabel *quantitylabel;
-    QLineEdit *quantityedit;
-    QLabel *capacitylab;
-    QLineEdit *capacity;
-    QPushButton *addEqbtn;
-    QPushButton *backWbtnE;
+    QWidget *pageEquipmentList;
+    QWidget *layoutWidget_L_main;
+    QHBoxLayout *horizontalLayout_L;
+    QFrame *sidebarMenuE_L;
+    QGroupBox *groupBoxE_L;
+    QPushButton *staffmanagementBTNe_L;
+    QPushButton *clientsmanagementBTNe_L;
+    QPushButton *stockmanagementBTNe_L;
+    QPushButton *fishingzonemanagementBTNe_L;
+    QPushButton *equipmentmanagementBTNe_L;
+    QLabel *logoheaderE_L;
+    QPushButton *logOutBTNe_L;
+    QFrame *contenumainEq_L;
+    QWidget *verticalLayoutWidget_L_2;
+    QVBoxLayout *verticalLayout_L;
+    QFrame *headerE_L;
+    QLabel *titreHeaderE_L;
+    QFrame *userInfoBox_L;
+    QCommandLinkButton *userprofiledetails_D_3;
+    QLabel *avatarE_F_2;
+    QWidget *layoutWidget_L_2;
+    QHBoxLayout *horizontalLayout_L_sub;
+    QFrame *listEq_L;
     QGroupBox *listequi;
-    QLineEdit *searchbar;
-    QComboBox *sortEq;
-    QLabel *equipmentlist;
-    QTableWidget *tableeq;
-    QPushButton *modifybtn;
-    QPushButton *deletebtnE;
-    QPushButton *chatbotbtn;
-    QPushButton *staticbtnE;
-    QPushButton *exportpdfbtnE;
-    QPushButton *chatbotbtn_2;
+    QLineEdit *searchbar_L;
+    QComboBox *sortEq_L;
+    QLabel *equipmentlist_L;
+    QTableWidget *tableeq_L;
+    QPushButton *chatbotbtn_L;
+    QPushButton *staticbtnE_L;
+    QPushButton *exportpdfbtnE_L;
+    QPushButton *chatbotbtn_2_L;
+    QPushButton *goToFormBtnE;
+    QWidget *pageEquipmentForm;
+    QWidget *layoutWidget_F_main;
+    QHBoxLayout *horizontalLayout_F_2;
+    QFrame *sidebarMenuE_F;
+    QGroupBox *groupBoxE_F;
+    QPushButton *staffmanagementBTNe_F;
+    QPushButton *clientsmanagementBTNe_F;
+    QPushButton *stockmanagementBTNe_F;
+    QPushButton *fishingzonemanagementBTNe_F;
+    QPushButton *equipmentmanagementBTNe_F;
+    QLabel *logoheaderE_F;
+    QPushButton *logOutBTNe_F;
+    QFrame *contenumainEq_F;
+    QWidget *verticalLayoutWidget_F;
+    QVBoxLayout *verticalLayout_F_header;
+    QFrame *headerE_F;
+    QLabel *titreHeaderE_F;
+    QFrame *userInfoBox_F;
+    QLabel *avatarE_F;
+    QCommandLinkButton *userprofiledetails_D_2;
+    QWidget *layoutWidget_F;
+    QHBoxLayout *horizontalLayout_12;
+    QFrame *listEq_F;
+    QFrame *formEq;
+    QGroupBox *formcontEq_F;
+    QLabel *Eqnamelabel_F;
+    QLabel *Eqaddresslabel_F;
+    QLabel *statelabel_F;
+    QLabel *quantitylabel_F;
+    QLabel *capacitylab_F;
+    QPushButton *addEqbtn_F;
+    QPushButton *goToListBtnE;
+    QLabel *labeladdeq_F;
+    QLineEdit *Eqnameedit_F;
+    QLineEdit *Eqaddressedit_F;
+    QLineEdit *stateedit_F;
+    QLineEdit *quantityedit_F;
+    QLineEdit *capacity_F;
     QWidget *pageupdate;
     QWidget *layoutWidget_2;
     QHBoxLayout *horizontalLayout_4;
@@ -373,10 +399,10 @@ public:
     QFrame *beststaff;
     QLabel *titlebest;
     QLabel *trophy;
-    QPushButton *browse;
     QLabel *namebest;
     QLabel *rolebest;
     QLabel *rewardbest;
+    QLabel *bestEmployeeAvatar;
     QFrame *sidebarMenu_D;
     QGroupBox *groupBox_D;
     QPushButton *staffmanagementBTN_D;
@@ -410,6 +436,7 @@ public:
     QFrame *liststaff_A;
     QFrame *formAddStaff_A;
     QGroupBox *formcontdd_A;
+    QGroupBox *formcontdd_A_2;
     QLabel *labeladdstaff_A;
     QLabel *staffnamelabel_A;
     QLineEdit *staffnameedit_A;
@@ -421,23 +448,24 @@ public:
     QLineEdit *mailedit_A;
     QLabel *passlab_A_2;
     QLineEdit *passlab_A;
-    QLabel *cvpathEdit_2;
     QLabel *profile_A;
     QPushButton *browbtn;
     QPushButton *backWbtn_A;
     QPushButton *facebtn;
     QLabel *registerlabel;
+    QPushButton *Voicebtn;
+    QLabel *voicelabel;
     QPushButton *addstaffbtn_A;
     QLabel *imgcover;
     QWidget *pageFishingZone;
-    QWidget *layoutWidget_8;
+    QHBoxLayout *horizontalLayout_17;
     QHBoxLayout *horizontalLayout_10;
     QFrame *sidebarMenu_Z;
     QGroupBox *groupBox_Z;
-    QPushButton *staffmanagementBTNZ;
+    QPushButton *fishingzonemanagementBTNZ;
     QPushButton *clientsmanagementBTNZ;
     QPushButton *stockmanagementBTNZ;
-    QPushButton *fishingzonemanagementBTNZ;
+    QPushButton *staffmanagementBTNZ;
     QPushButton *equipmentmanagementBTNZ;
     QLabel *logoheader_Z;
     QPushButton *logOutBTNZ;
@@ -461,6 +489,8 @@ public:
     QPushButton *DeleteZone;
     QPushButton *AnalyticsZone;
     QPushButton *exportZone;
+    QPushButton *RiskPrediction;
+    QPushButton *Regulations;
     QGroupBox *formzone;
     QLabel *labeladdzone;
     QComboBox *zoneEdit;
@@ -477,18 +507,19 @@ public:
     QLabel *DescriptionLabel;
     QTextEdit *DescriptionEdit;
     QLabel *ZoneImage;
+    QLabel *waterLevelLabel;
     QWidget *pageFishStock;
     QWidget *layoutWidget_6;
     QHBoxLayout *horizontalLayout_8;
     QFrame *sidebarMenu_stock;
     QGroupBox *groupBox_stock;
-    QPushButton *staffmanagementBTN_stock;
+    QPushButton *stockmanagementBTN_stock_2;
     QPushButton *clientsmanagementBTN_stock;
-    QPushButton *stockmanagementBTN_stock;
+    QPushButton *staffmanagementBTN_stock;
     QPushButton *fishingzonemanagementBTN_stock;
     QPushButton *equipmentmanagementBTN_stock;
-    QLabel *logoheader_stock;
     QPushButton *logOutBTN_stock;
+    QLabel *logoheader_stock;
     QFrame *contenumain_S;
     QWidget *verticalLayoutWidget_6;
     QVBoxLayout *verticalLayout_7;
@@ -500,13 +531,6 @@ public:
     QHBoxLayout *horizontalLayout_9;
     QFrame *listfish;
     QGroupBox *liststock;
-    QLineEdit *search_stock;
-    QComboBox *sort_stock;
-    QLabel *fish_stock;
-    QTableWidget *table_stock;
-    QPushButton *deletespecies_stock;
-    QPushButton *Editstock;
-    QGroupBox *form_stock;
     QFrame *formAddSpecies;
     QLabel *zone_stocklabel;
     QLabel *Specieslabel;
@@ -515,10 +539,18 @@ public:
     QLabel *addspecies_stocklabel;
     QLineEdit *speciesname_stock;
     QLineEdit *quantity_stock;
-    QLineEdit *zone_stock;
+    QComboBox *status_stock;
     QPushButton *recognition_stock;
-    QPushButton *exportpdf_stock;
     QPushButton *visual_stock;
+    QPushButton *exportpdf_stock;
+    QGroupBox *form_stock;
+    QComboBox *sort_stock;
+    QTableView *table_stock;
+    QLabel *fish_stock;
+    QPushButton *delete_stock;
+    QLineEdit *search_stock;
+    QPushButton *edit_stock;
+    QPushButton *charts_stock;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -526,7 +558,8 @@ public:
     {
         if (SignIn->objectName().isEmpty())
             SignIn->setObjectName("SignIn");
-        SignIn->resize(1017, 729);
+        SignIn->resize(1280, 720);
+        SignIn->setMinimumSize(QSize(1280, 720));
         SignIn->setStyleSheet(QString::fromUtf8("/* ===== RESET COMPLET ===== */\n"
 "* {\n"
 "    margin: 0;\n"
@@ -816,9 +849,10 @@ public:
 "}"));
         centralwidget = new QWidget(SignIn);
         centralwidget->setObjectName("centralwidget");
+        verticalLayout = new QVBoxLayout(centralwidget);
+        verticalLayout->setObjectName("verticalLayout");
         stackedWidget = new QStackedWidget(centralwidget);
         stackedWidget->setObjectName("stackedWidget");
-        stackedWidget->setGeometry(QRect(0, 10, 1021, 741));
         stackedWidget->setStyleSheet(QString::fromUtf8(""));
         pageSignIn = new QWidget();
         pageSignIn->setObjectName("pageSignIn");
@@ -1119,14 +1153,16 @@ public:
 "}"));
         title = new QLabel(pageSignIn);
         title->setObjectName("title");
-        title->setGeometry(QRect(280, 0, 454, 101));
+        title->setGeometry(QRect(410, 0, 454, 101));
         title->setAlignment(Qt::AlignmentFlag::AlignCenter);
         UserNameEdit = new QLineEdit(pageSignIn);
         UserNameEdit->setObjectName("UserNameEdit");
         UserNameEdit->setGeometry(QRect(580, 190, 358, 46));
+        UserNameEdit->setMinimumSize(QSize(358, 46));
         PasswordEdit = new QLineEdit(pageSignIn);
         PasswordEdit->setObjectName("PasswordEdit");
         PasswordEdit->setGeometry(QRect(580, 290, 358, 46));
+        PasswordEdit->setMinimumSize(QSize(358, 46));
         UserNameLabel = new QLabel(pageSignIn);
         UserNameLabel->setObjectName("UserNameLabel");
         UserNameLabel->setGeometry(QRect(610, 130, 337, 61));
@@ -1137,23 +1173,55 @@ public:
         PasswordLabel->setAlignment(Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter);
         signinbtn = new QPushButton(pageSignIn);
         signinbtn->setObjectName("signinbtn");
-        signinbtn->setGeometry(QRect(600, 450, 348, 94));
+        signinbtn->setGeometry(QRect(560, 440, 348, 94));
         withfacebtn = new QPushButton(pageSignIn);
         withfacebtn->setObjectName("withfacebtn");
-        withfacebtn->setGeometry(QRect(600, 560, 344, 76));
+        withfacebtn->setGeometry(QRect(560, 540, 344, 76));
         btnForgetmdp = new QPushButton(pageSignIn);
         btnForgetmdp->setObjectName("btnForgetmdp");
-        btnForgetmdp->setGeometry(QRect(630, 400, 301, 41));
+        btnForgetmdp->setGeometry(QRect(620, 400, 301, 41));
         remembercheck = new QCheckBox(pageSignIn);
         remembercheck->setObjectName("remembercheck");
-        remembercheck->setGeometry(QRect(550, 350, 354, 51));
+        remembercheck->setGeometry(QRect(510, 350, 354, 51));
         label_4 = new QLabel(pageSignIn);
         label_4->setObjectName("label_4");
         label_4->setGeometry(QRect(40, 200, 471, 421));
         label_4->setPixmap(QPixmap(QString::fromUtf8(":/Images/logo.png")));
         showPassCheck = new QCheckBox(pageSignIn);
         showPassCheck->setObjectName("showPassCheck");
-        showPassCheck->setGeometry(QRect(760, 350, 354, 51));
+        showPassCheck->setGeometry(QRect(730, 350, 354, 51));
+        withvoicebtn = new QPushButton(pageSignIn);
+        withvoicebtn->setObjectName("withvoicebtn");
+        withvoicebtn->setGeometry(QRect(560, 620, 344, 76));
+        withvoicebtn->setStyleSheet(QString::fromUtf8("QPushButton#withvoicebtn {\n"
+"    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,\n"
+"        stop:0 #00897b,\n"
+"        stop:0.5 #00695c,\n"
+"        stop:1 #004d40);\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 8px;\n"
+"    padding: 12px;\n"
+"    font-size: 13px;\n"
+"    font-weight: bold;\n"
+"    font-family: 'Segoe UI', Arial;\n"
+"    margin-top: 10px;\n"
+"    min-height: 42px;\n"
+"    max-height: 42px;\n"
+"    min-width: 280px;\n"
+"    max-width: 280px;\n"
+"    margin-left: 20px;\n"
+"    margin-right: 20px;\n"
+"}\n"
+"\n"
+"QPushButton#withvoicebtn:hover {\n"
+"    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,\n"
+"        stop:0 #009688,\n"
+"        stop:0.5 #00796b,\n"
+"        stop:1 #005b4f);\n"
+"    border: 1px solid #4db6ac;\n"
+"    box-shadow: 0 0 10px rgba(77, 182, 172, 0.2);\n"
+"}"));
         stackedWidget->addWidget(pageSignIn);
         pageClients = new QWidget();
         pageClients->setObjectName("pageClients");
@@ -1695,16 +1763,16 @@ public:
         headerC->setFrameShadow(QFrame::Shadow::Raised);
         titreHeaderC = new QLabel(headerC);
         titreHeaderC->setObjectName("titreHeaderC");
-        titreHeaderC->setGeometry(QRect(220, 20, 461, 61));
+        titreHeaderC->setGeometry(QRect(210, 20, 461, 61));
         titreHeaderC->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        userprofileC = new QCommandLinkButton(headerC);
-        userprofileC->setObjectName("userprofileC");
-        userprofileC->setGeometry(QRect(840, 20, 211, 51));
+        userprofiledetailsC = new QCommandLinkButton(headerC);
+        userprofiledetailsC->setObjectName("userprofiledetailsC");
+        userprofiledetailsC->setGeometry(QRect(1100, 30, 211, 51));
         avatarC = new QLabel(headerC);
         avatarC->setObjectName("avatarC");
-        avatarC->setGeometry(QRect(980, 20, 46, 46));
+        avatarC->setGeometry(QRect(1260, 30, 46, 46));
         avatarC->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
-        userprofileC->raise();
+        userprofiledetailsC->raise();
         titreHeaderC->raise();
         avatarC->raise();
 
@@ -1722,7 +1790,7 @@ public:
         listclientt->setFrameShadow(QFrame::Shadow::Raised);
         formAddClients = new QFrame(listclientt);
         formAddClients->setObjectName("formAddClients");
-        formAddClients->setGeometry(QRect(10, 0, 411, 619));
+        formAddClients->setGeometry(QRect(10, 0, 461, 619));
         formAddClients->setFrameShape(QFrame::Shape::StyledPanel);
         formAddClients->setFrameShadow(QFrame::Shadow::Raised);
         clientaddform = new QGroupBox(formAddClients);
@@ -1730,10 +1798,10 @@ public:
         clientaddform->setGeometry(QRect(10, 10, 401, 601));
         quantitylable = new QLabel(clientaddform);
         quantitylable->setObjectName("quantitylable");
-        quantitylable->setGeometry(QRect(20, 410, 91, 20));
+        quantitylable->setGeometry(QRect(20, 370, 91, 20));
         quantityinput = new QSpinBox(clientaddform);
         quantityinput->setObjectName("quantityinput");
-        quantityinput->setGeometry(QRect(170, 400, 211, 41));
+        quantityinput->setGeometry(QRect(170, 360, 211, 41));
         quantityinput->setStyleSheet(QString::fromUtf8("\n"
 "   background-color: #0E273A;\n"
 "    border: 1px solid #1f4f7a;\n"
@@ -1753,20 +1821,38 @@ public:
         choosepayment->addItem(QString());
         choosepayment->setObjectName("choosepayment");
         choosepayment->setGeometry(QRect(170, 470, 211, 52));
-        itemsinput = new QLineEdit(clientaddform);
-        itemsinput->setObjectName("itemsinput");
-        itemsinput->setGeometry(QRect(170, 320, 211, 54));
+        choosepayment->setStyleSheet(QString::fromUtf8("/* ===== DROPDOWN LIST ===== */\n"
+"QComboBox QAbstractItemView {\n"
+"    background-color: #0A2236; /* fond solide */\n"
+"    color: #E3F2FD;\n"
+"    border: 1px solid #4FC3F7;\n"
+"    border-radius: 8px;\n"
+"    padding: 4px;\n"
+"    selection-background-color: #4FC3F7;\n"
+"    selection-color: #001018;\n"
+"}\n"
+"\n"
+"/* Hover item */\n"
+"QComboBox QAbstractItemView::item:hover {\n"
+"    background-color: rgba(79,195,247,0.25);\n"
+"}\n"
+"\n"
+"/* Selected item */\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background-color: #4FC3F7;\n"
+"    color: #001018;\n"
+"}"));
         paymentlable = new QLabel(clientaddform);
         paymentlable->setObjectName("paymentlable");
         paymentlable->setGeometry(QRect(20, 480, 121, 20));
         clientphonelable = new QLabel(clientaddform);
         clientphonelable->setObjectName("clientphonelable");
-        clientphonelable->setGeometry(QRect(20, 250, 151, 41));
+        clientphonelable->setGeometry(QRect(20, 220, 151, 41));
         clientphonelable->setStyleSheet(QString::fromUtf8("font: 9pt \"Segoe UI\";\n"
 "font: 700 9pt \"Segoe UI\";"));
         clientdateinput = new QDateEdit(clientaddform);
         clientdateinput->setObjectName("clientdateinput");
-        clientdateinput->setGeometry(QRect(170, 170, 211, 41));
+        clientdateinput->setGeometry(QRect(170, 140, 211, 41));
         clientdateinput->setStyleSheet(QString::fromUtf8("\n"
 "   background-color: #0E273A;\n"
 "    border: 1px solid #1f4f7a;\n"
@@ -1779,7 +1865,7 @@ public:
 "    border: 1px solid #22506C;"));
         clientaddbtn = new QPushButton(clientaddform);
         clientaddbtn->setObjectName("clientaddbtn");
-        clientaddbtn->setGeometry(QRect(100, 530, 201, 56));
+        clientaddbtn->setGeometry(QRect(10, 530, 201, 56));
         clientaddbtn->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #1f8fd1;\n"
 "    border-radius: 25px;\n"
@@ -1800,16 +1886,16 @@ public:
 ""));
         itemslable = new QLabel(clientaddform);
         itemslable->setObjectName("itemslable");
-        itemslable->setGeometry(QRect(20, 340, 101, 17));
+        itemslable->setGeometry(QRect(20, 310, 101, 17));
         phoneinput = new QLineEdit(clientaddform);
         phoneinput->setObjectName("phoneinput");
-        phoneinput->setGeometry(QRect(170, 240, 211, 54));
+        phoneinput->setGeometry(QRect(170, 210, 211, 54));
         clientnameinput = new QLineEdit(clientaddform);
         clientnameinput->setObjectName("clientnameinput");
-        clientnameinput->setGeometry(QRect(170, 90, 211, 54));
+        clientnameinput->setGeometry(QRect(170, 60, 211, 54));
         clientnamelable = new QLabel(clientaddform);
         clientnamelable->setObjectName("clientnamelable");
-        clientnamelable->setGeometry(QRect(20, 100, 121, 31));
+        clientnamelable->setGeometry(QRect(20, 70, 121, 31));
         clientformlable = new QLabel(clientaddform);
         clientformlable->setObjectName("clientformlable");
         clientformlable->setGeometry(QRect(80, 0, 221, 41));
@@ -1817,16 +1903,67 @@ public:
         clientformlable->setAlignment(Qt::AlignmentFlag::AlignCenter);
         clientdatelable = new QLabel(clientaddform);
         clientdatelable->setObjectName("clientdatelable");
-        clientdatelable->setGeometry(QRect(20, 180, 77, 17));
+        clientdatelable->setGeometry(QRect(20, 150, 77, 17));
+        itemsinput = new QComboBox(clientaddform);
+        itemsinput->setObjectName("itemsinput");
+        itemsinput->setGeometry(QRect(170, 290, 211, 52));
+        itemsinput->setStyleSheet(QString::fromUtf8("/* ===== DROPDOWN LIST ===== */\n"
+"QComboBox QAbstractItemView {\n"
+"    background-color: #0A2236; /* fond solide */\n"
+"    color: #E3F2FD;\n"
+"    border: 1px solid #4FC3F7;\n"
+"    border-radius: 8px;\n"
+"    padding: 4px;\n"
+"    selection-background-color: #4FC3F7;\n"
+"    selection-color: #001018;\n"
+"}\n"
+"\n"
+"/* Hover item */\n"
+"QComboBox QAbstractItemView::item:hover {\n"
+"    background-color: rgba(79,195,247,0.25);\n"
+"}\n"
+"\n"
+"/* Selected item */\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background-color: #4FC3F7;\n"
+"    color: #001018;\n"
+"}"));
+        vocalstuffbtn = new QPushButton(clientaddform);
+        vocalstuffbtn->setObjectName("vocalstuffbtn");
+        vocalstuffbtn->setGeometry(QRect(230, 530, 151, 56));
+        vocalstuffbtn->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    background-color: #1f8fd1;\n"
+"    border-radius: 25px;\n"
+"    padding: 14px;\n"
+"    color: white;\n"
+"    font-weight: bold;\n"
+" border-radius: 12px;\n"
+"    padding: 8px 16px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: #28a3f0;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: #187bb3;\n"
+"}\n"
+""));
+        pricelabel = new QLabel(clientaddform);
+        pricelabel->setObjectName("pricelabel");
+        pricelabel->setGeometry(QRect(20, 420, 91, 20));
+        priceinput = new QLineEdit(clientaddform);
+        priceinput->setObjectName("priceinput");
+        priceinput->setGeometry(QRect(170, 410, 211, 54));
 
         horizontalLayout_15->addWidget(listclientt);
 
         clientlist = new QGroupBox(contenumainC);
         clientlist->setObjectName("clientlist");
-        clientlist->setGeometry(QRect(410, 100, 411, 621));
+        clientlist->setGeometry(QRect(410, 100, 571, 621));
         mainpagebtn = new QPushButton(clientlist);
         mainpagebtn->setObjectName("mainpagebtn");
-        mainpagebtn->setGeometry(QRect(110, 570, 231, 41));
+        mainpagebtn->setGeometry(QRect(230, 560, 231, 41));
         mainpagebtn->setStyleSheet(QString::fromUtf8("\n"
 "QPushButton {\n"
 "    background-color: #0f2d4d;\n"
@@ -1849,12 +1986,12 @@ public:
 ""));
         clientlistlable = new QLabel(clientlist);
         clientlistlable->setObjectName("clientlistlable");
-        clientlistlable->setGeometry(QRect(50, 90, 191, 51));
+        clientlistlable->setGeometry(QRect(150, 80, 191, 51));
         clientlistlable->setStyleSheet(QString::fromUtf8("font: 700 italic 16pt \"Segoe UI\";"));
         clientlistlable->setAlignment(Qt::AlignmentFlag::AlignCenter);
         aiclientbtn = new QPushButton(clientlist);
         aiclientbtn->setObjectName("aiclientbtn");
-        aiclientbtn->setGeometry(QRect(90, 460, 261, 41));
+        aiclientbtn->setGeometry(QRect(200, 450, 291, 41));
         aiclientbtn->setStyleSheet(QString::fromUtf8("\n"
 "QPushButton {\n"
 "    background-color: #0f2d4d;\n"
@@ -1877,7 +2014,7 @@ public:
 ""));
         updateclientbtn = new QPushButton(clientlist);
         updateclientbtn->setObjectName("updateclientbtn");
-        updateclientbtn->setGeometry(QRect(40, 410, 161, 41));
+        updateclientbtn->setGeometry(QRect(160, 400, 181, 41));
         updateclientbtn->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	font: 700 11pt \"Segoe UI\";\n"
 "    background-color: #15803d;\n"
@@ -1896,7 +2033,7 @@ public:
 ""));
         deleteclientbtn = new QPushButton(clientlist);
         deleteclientbtn->setObjectName("deleteclientbtn");
-        deleteclientbtn->setGeometry(QRect(230, 410, 161, 41));
+        deleteclientbtn->setGeometry(QRect(350, 400, 191, 41));
         deleteclientbtn->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #f97316;\n"
 " font: 700 11pt \"Segoe UI\";\n"
@@ -1916,7 +2053,7 @@ public:
 ""));
         clientdashboardbtn = new QPushButton(clientlist);
         clientdashboardbtn->setObjectName("clientdashboardbtn");
-        clientdashboardbtn->setGeometry(QRect(40, 510, 181, 41));
+        clientdashboardbtn->setGeometry(QRect(160, 500, 181, 41));
         clientdashboardbtn->setStyleSheet(QString::fromUtf8("\n"
 "QPushButton {\n"
 "    background-color: #0f2d4d;\n"
@@ -1943,14 +2080,37 @@ public:
         clientsort->addItem(QString());
         clientsort->addItem(QString());
         clientsort->addItem(QString());
+        clientsort->addItem(QString());
+        clientsort->addItem(QString());
         clientsort->setObjectName("clientsort");
-        clientsort->setGeometry(QRect(250, 90, 141, 54));
+        clientsort->setGeometry(QRect(350, 80, 141, 54));
+        clientsort->setStyleSheet(QString::fromUtf8("/* ===== DROPDOWN LIST ===== */\n"
+"QComboBox QAbstractItemView {\n"
+"    background-color: #0A2236; /* fond solide */\n"
+"    color: #E3F2FD;\n"
+"    border: 1px solid #4FC3F7;\n"
+"    border-radius: 8px;\n"
+"    padding: 4px;\n"
+"    selection-background-color: #4FC3F7;\n"
+"    selection-color: #001018;\n"
+"}\n"
+"\n"
+"/* Hover item */\n"
+"QComboBox QAbstractItemView::item:hover {\n"
+"    background-color: rgba(79,195,247,0.25);\n"
+"}\n"
+"\n"
+"/* Selected item */\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background-color: #4FC3F7;\n"
+"    color: #001018;\n"
+"}"));
         searchclient = new QLineEdit(clientlist);
         searchclient->setObjectName("searchclient");
-        searchclient->setGeometry(QRect(40, 20, 331, 58));
+        searchclient->setGeometry(QRect(150, 10, 371, 58));
         clienttable = new QTableWidget(clientlist);
-        if (clienttable->columnCount() < 8)
-            clienttable->setColumnCount(8);
+        if (clienttable->columnCount() < 9)
+            clienttable->setColumnCount(9);
         QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
         clienttable->setHorizontalHeaderItem(0, __qtablewidgetitem);
         QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
@@ -1967,35 +2127,37 @@ public:
         clienttable->setHorizontalHeaderItem(6, __qtablewidgetitem6);
         QTableWidgetItem *__qtablewidgetitem7 = new QTableWidgetItem();
         clienttable->setHorizontalHeaderItem(7, __qtablewidgetitem7);
+        QTableWidgetItem *__qtablewidgetitem8 = new QTableWidgetItem();
+        clienttable->setHorizontalHeaderItem(8, __qtablewidgetitem8);
         if (clienttable->rowCount() < 11)
             clienttable->setRowCount(11);
-        QTableWidgetItem *__qtablewidgetitem8 = new QTableWidgetItem();
-        clienttable->setVerticalHeaderItem(0, __qtablewidgetitem8);
         QTableWidgetItem *__qtablewidgetitem9 = new QTableWidgetItem();
-        clienttable->setVerticalHeaderItem(1, __qtablewidgetitem9);
+        clienttable->setVerticalHeaderItem(0, __qtablewidgetitem9);
         QTableWidgetItem *__qtablewidgetitem10 = new QTableWidgetItem();
-        clienttable->setVerticalHeaderItem(2, __qtablewidgetitem10);
+        clienttable->setVerticalHeaderItem(1, __qtablewidgetitem10);
         QTableWidgetItem *__qtablewidgetitem11 = new QTableWidgetItem();
-        clienttable->setVerticalHeaderItem(3, __qtablewidgetitem11);
+        clienttable->setVerticalHeaderItem(2, __qtablewidgetitem11);
         QTableWidgetItem *__qtablewidgetitem12 = new QTableWidgetItem();
-        clienttable->setVerticalHeaderItem(4, __qtablewidgetitem12);
+        clienttable->setVerticalHeaderItem(3, __qtablewidgetitem12);
         QTableWidgetItem *__qtablewidgetitem13 = new QTableWidgetItem();
-        clienttable->setVerticalHeaderItem(5, __qtablewidgetitem13);
+        clienttable->setVerticalHeaderItem(4, __qtablewidgetitem13);
         QTableWidgetItem *__qtablewidgetitem14 = new QTableWidgetItem();
-        clienttable->setVerticalHeaderItem(6, __qtablewidgetitem14);
+        clienttable->setVerticalHeaderItem(5, __qtablewidgetitem14);
         QTableWidgetItem *__qtablewidgetitem15 = new QTableWidgetItem();
-        clienttable->setVerticalHeaderItem(7, __qtablewidgetitem15);
+        clienttable->setVerticalHeaderItem(6, __qtablewidgetitem15);
         QTableWidgetItem *__qtablewidgetitem16 = new QTableWidgetItem();
-        clienttable->setVerticalHeaderItem(8, __qtablewidgetitem16);
+        clienttable->setVerticalHeaderItem(7, __qtablewidgetitem16);
+        QTableWidgetItem *__qtablewidgetitem17 = new QTableWidgetItem();
+        clienttable->setVerticalHeaderItem(8, __qtablewidgetitem17);
         clienttable->setObjectName("clienttable");
-        clienttable->setGeometry(QRect(30, 170, 371, 221));
+        clienttable->setGeometry(QRect(100, 160, 471, 221));
         clienttable->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
         clienttable->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
         clienttable->setRowCount(11);
-        clienttable->setColumnCount(8);
+        clienttable->setColumnCount(9);
         clientpdfbtn = new QPushButton(clientlist);
         clientpdfbtn->setObjectName("clientpdfbtn");
-        clientpdfbtn->setGeometry(QRect(240, 510, 161, 41));
+        clientpdfbtn->setGeometry(QRect(360, 500, 161, 41));
         clientpdfbtn->setStyleSheet(QString::fromUtf8("\n"
 "QPushButton {\n"
 "    background-color: #0f2d4d;\n"
@@ -2454,36 +2616,30 @@ public:
         verticalLayout_11->setContentsMargins(0, 0, 0, 0);
         header_DC = new QFrame(verticalLayoutWidget_10);
         header_DC->setObjectName("header_DC");
+        header_DC->setMaximumSize(QSize(1600, 16777215));
         header_DC->setFrameShape(QFrame::Shape::StyledPanel);
         header_DC->setFrameShadow(QFrame::Shadow::Raised);
         titreHeader_DC = new QLabel(header_DC);
         titreHeader_DC->setObjectName("titreHeader_DC");
-        titreHeader_DC->setGeometry(QRect(290, 30, 461, 61));
+        titreHeader_DC->setGeometry(QRect(220, 20, 461, 61));
         titreHeader_DC->setAlignment(Qt::AlignmentFlag::AlignCenter);
         userprofiledetails_DC = new QCommandLinkButton(header_DC);
         userprofiledetails_DC->setObjectName("userprofiledetails_DC");
-        userprofiledetails_DC->setGeometry(QRect(830, 20, 211, 51));
+        userprofiledetails_DC->setGeometry(QRect(1130, 30, 211, 51));
         avatar_DC = new QLabel(header_DC);
         avatar_DC->setObjectName("avatar_DC");
-        avatar_DC->setGeometry(QRect(990, 20, 46, 46));
+        avatar_DC->setGeometry(QRect(1290, 30, 46, 46));
         avatar_DC->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
 
         verticalLayout_11->addWidget(header_DC);
 
         dashtitleC = new QLabel(contenumain_DC);
         dashtitleC->setObjectName("dashtitleC");
-        dashtitleC->setGeometry(QRect(290, 120, 311, 20));
+        dashtitleC->setGeometry(QRect(390, 120, 311, 20));
         dashtitleC->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        stat1C = new QGroupBox(contenumain_DC);
-        stat1C->setObjectName("stat1C");
-        stat1C->setGeometry(QRect(10, 350, 261, 291));
-        statroleC = new QLabel(stat1C);
-        statroleC->setObjectName("statroleC");
-        statroleC->setGeometry(QRect(-30, 70, 301, 201));
-        statroleC->setPixmap(QPixmap(QString::fromUtf8(":/Images/staffdash.png")));
         pdfitembtn = new QPushButton(contenumain_DC);
         pdfitembtn->setObjectName("pdfitembtn");
-        pdfitembtn->setGeometry(QRect(600, 660, 211, 61));
+        pdfitembtn->setGeometry(QRect(750, 580, 211, 61));
         pdfitembtn->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "	font: 700 11pt \"Segoe UI\";\n"
 "    background-color: #15803d;\n"
@@ -2502,7 +2658,7 @@ public:
 ""));
         backtoclientbtn = new QPushButton(contenumain_DC);
         backtoclientbtn->setObjectName("backtoclientbtn");
-        backtoclientbtn->setGeometry(QRect(30, 650, 261, 71));
+        backtoclientbtn->setGeometry(QRect(130, 580, 261, 71));
         backtoclientbtn->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #0f2d4d;\n"
 "    border: 1.5px solid #2c6fa3;\n"
@@ -2523,7 +2679,7 @@ public:
 "}"));
         gains = new QFrame(contenumain_DC);
         gains->setObjectName("gains");
-        gains->setGeometry(QRect(10, 110, 271, 100));
+        gains->setGeometry(QRect(130, 160, 271, 100));
         gains->setMinimumSize(QSize(140, 100));
         gains->setMaximumSize(QSize(16777215, 100));
         gains->setStyleSheet(QString::fromUtf8("\n"
@@ -2537,10 +2693,10 @@ public:
 ""));
         gains->setFrameShape(QFrame::Shape::StyledPanel);
         gains->setFrameShadow(QFrame::Shadow::Raised);
-        numbergains = new QLabel(gains);
-        numbergains->setObjectName("numbergains");
-        numbergains->setGeometry(QRect(60, 50, 181, 41));
-        numbergains->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        monthsgainslabel = new QLabel(gains);
+        monthsgainslabel->setObjectName("monthsgainslabel");
+        monthsgainslabel->setGeometry(QRect(60, 50, 181, 41));
+        monthsgainslabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
         titlegains = new QLabel(gains);
         titlegains->setObjectName("titlegains");
         titlegains->setGeometry(QRect(50, 10, 211, 31));
@@ -2552,36 +2708,53 @@ public:
         titlegains->setAlignment(Qt::AlignmentFlag::AlignCenter);
         bestclient = new QFrame(contenumain_DC);
         bestclient->setObjectName("bestclient");
-        bestclient->setGeometry(QRect(110, 240, 591, 141));
+        bestclient->setGeometry(QRect(540, 150, 521, 141));
         bestclient->setFrameShape(QFrame::Shape::StyledPanel);
         bestclient->setFrameShadow(QFrame::Shadow::Raised);
         titlebestC = new QLabel(bestclient);
         titlebestC->setObjectName("titlebestC");
-        titlebestC->setGeometry(QRect(180, 10, 221, 20));
+        titlebestC->setGeometry(QRect(180, 10, 251, 20));
         titlebestC->setStyleSheet(QString::fromUtf8("font: 700 11pt \"Segoe UI\";"));
         trophy_2 = new QLabel(bestclient);
         trophy_2->setObjectName("trophy_2");
         trophy_2->setGeometry(QRect(10, 10, 131, 121));
         trophy_2->setPixmap(QPixmap(QString::fromUtf8(":/Images/bestresized.png")));
-        browseC = new QPushButton(bestclient);
-        browseC->setObjectName("browseC");
-        browseC->setGeometry(QRect(410, 90, 171, 41));
-        namebestC = new QLabel(bestclient);
-        namebestC->setObjectName("namebestC");
-        namebestC->setGeometry(QRect(200, 40, 161, 20));
-        rolebestC = new QLabel(bestclient);
-        rolebestC->setObjectName("rolebestC");
-        rolebestC->setGeometry(QRect(200, 70, 161, 20));
-        rewardbestC = new QLabel(bestclient);
-        rewardbestC->setObjectName("rewardbestC");
-        rewardbestC->setGeometry(QRect(200, 100, 201, 21));
-        statcvstatusC = new QGroupBox(contenumain_DC);
-        statcvstatusC->setObjectName("statcvstatusC");
-        statcvstatusC->setGeometry(QRect(360, 380, 421, 271));
-        stat2C = new QLabel(statcvstatusC);
-        stat2C->setObjectName("stat2C");
-        stat2C->setGeometry(QRect(-20, 30, 541, 291));
-        stat2C->setPixmap(QPixmap(QString::fromUtf8(":/Images/cvdash.png")));
+        mostsolditemlabel = new QLabel(bestclient);
+        mostsolditemlabel->setObjectName("mostsolditemlabel");
+        mostsolditemlabel->setGeometry(QRect(130, 40, 391, 81));
+        aipredictionbtndashboard = new QPushButton(contenumain_DC);
+        aipredictionbtndashboard->setObjectName("aipredictionbtndashboard");
+        aipredictionbtndashboard->setGeometry(QRect(450, 630, 231, 71));
+        aipredictionbtndashboard->setStyleSheet(QString::fromUtf8("QPushButton {\n"
+"    background-color: #0f2d4d;\n"
+"    border: 1.5px solid #2c6fa3;\n"
+"    border-radius: 12px;\n"
+"    padding: 8px 16px;\n"
+"    color: #cfe9ff;\n"
+"    font-weight: 500;\n"
+"font: 700 11pt \"Segoe UI\";\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    background-color: #123a5c;\n"
+"    border: 1.5px solid #3aa0ff;\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"    background-color: #0b223a;\n"
+"}"));
+        chart1 = new QLabel(contenumain_DC);
+        chart1->setObjectName("chart1");
+        chart1->setGeometry(QRect(600, 300, 451, 271));
+        chart1->setStyleSheet(QString::fromUtf8("background-color: #132f4c;\n"
+"border-radius: 15px;\n"
+"border: 1px solid #1f6aa5;"));
+        chart2 = new QLabel(contenumain_DC);
+        chart2->setObjectName("chart2");
+        chart2->setGeometry(QRect(50, 310, 501, 261));
+        chart2->setStyleSheet(QString::fromUtf8("background-color: #132f4c;\n"
+"border-radius: 15px;\n"
+"border: 1px solid #1f6aa5;"));
         stackedWidget->addWidget(dashC);
         pageForgetpass = new QWidget();
         pageForgetpass->setObjectName("pageForgetpass");
@@ -2663,16 +2836,18 @@ public:
 ""));
         ForgotTitle = new QLabel(pageForgetpass);
         ForgotTitle->setObjectName("ForgotTitle");
-        ForgotTitle->setGeometry(QRect(290, 50, 451, 51));
+        ForgotTitle->setGeometry(QRect(410, 60, 451, 51));
         ForgotTitle->setAlignment(Qt::AlignmentFlag::AlignCenter);
         layoutWidget = new QWidget(pageForgetpass);
         layoutWidget->setObjectName("layoutWidget");
-        layoutWidget->setGeometry(QRect(80, 140, 891, 481));
+        layoutWidget->setGeometry(QRect(120, 140, 1011, 481));
         horizontalLayout = new QHBoxLayout(layoutWidget);
         horizontalLayout->setObjectName("horizontalLayout");
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
         leftpanelForget = new QFrame(layoutWidget);
         leftpanelForget->setObjectName("leftpanelForget");
+        leftpanelForget->setMinimumSize(QSize(500, 0));
+        leftpanelForget->setMaximumSize(QSize(1000, 16777215));
         leftpanelForget->setFrameShape(QFrame::Shape::StyledPanel);
         leftpanelForget->setFrameShadow(QFrame::Shadow::Raised);
         label = new QLabel(leftpanelForget);
@@ -2822,12 +2997,13 @@ public:
 "}"));
         layoutWidget_14 = new QWidget(pageresetmdp);
         layoutWidget_14->setObjectName("layoutWidget_14");
-        layoutWidget_14->setGeometry(QRect(60, 130, 891, 481));
+        layoutWidget_14->setGeometry(QRect(130, 140, 991, 481));
         horizontalLayout_16 = new QHBoxLayout(layoutWidget_14);
         horizontalLayout_16->setObjectName("horizontalLayout_16");
         horizontalLayout_16->setContentsMargins(0, 0, 0, 0);
         leftpanelForgetR = new QFrame(layoutWidget_14);
         leftpanelForgetR->setObjectName("leftpanelForgetR");
+        leftpanelForgetR->setMinimumSize(QSize(500, 0));
         leftpanelForgetR->setFrameShape(QFrame::Shape::StyledPanel);
         leftpanelForgetR->setFrameShadow(QFrame::Shadow::Raised);
         labelR = new QLabel(leftpanelForgetR);
@@ -2870,7 +3046,7 @@ public:
 
         ResetTitle = new QLabel(pageresetmdp);
         ResetTitle->setObjectName("ResetTitle");
-        ResetTitle->setGeometry(QRect(270, 40, 451, 51));
+        ResetTitle->setGeometry(QRect(420, 60, 451, 51));
         ResetTitle->setAlignment(Qt::AlignmentFlag::AlignCenter);
         stackedWidget->addWidget(pageresetmdp);
         pageWelcome = new QWidget();
@@ -3159,6 +3335,129 @@ public:
 "    border-top: 1px solid rgba(255,255,255,0.16);\n"
 "    border-left: 1px solid rgba(255,255,255,0.10);\n"
 "}\n"
+"QFrame#accessHi"
+                        "storyFrame {\n"
+"    background: qlineargradient(\n"
+"        x1: 0, y1: 0, x2: 1, y2: 1,\n"
+"        stop: 0 #081a2f,\n"
+"        stop: 0.5 #0b2545,\n"
+"        stop: 1 #123a63\n"
+"    );\n"
+"    border: 1px solid rgba(120, 190, 255, 0.25);\n"
+"    border-radius: 18px;\n"
+"}\n"
+"\n"
+"QLabel#titleh {\n"
+"    background: transparent;\n"
+"    border: none;\n"
+"    color: white;\n"
+"    font-size: 24px;\n"
+"    font-weight: 700;\n"
+"    padding: 8px 12px;\n"
+"}\n"
+"\n"
+"QTableWidget#historique {\n"
+"    background-color: rgba(3, 18, 35, 0.55);\n"
+"    alternate-background-color: rgba(10, 35, 65, 0.45);\n"
+"    color: white;\n"
+"    border: 1px solid rgba(255, 255, 255, 0.08);\n"
+"    border-radius: 14px;\n"
+"    gridline-color: rgba(255, 255, 255, 0.06);\n"
+"    font-size: 13px;\n"
+"    padding: 6px;\n"
+"    outline: 0;\n"
+"    selection-background-color: rgba(59, 130, 246, 0.30);\n"
+"    selection-color: white;\n"
+"}\n"
+"\n"
+"QTableWidget#historique::item {\n"
+"    padding: 10px;\n"
+"    border-bottom: 1px solid"
+                        " rgba(255,255,255,0.05);\n"
+"}\n"
+"\n"
+"QTableWidget#historique::item:selected {\n"
+"    background-color: rgba(59,130,246,0.35);\n"
+"    color: white;\n"
+"}\n"
+"\n"
+"QHeaderView::section {\n"
+"    background: qlineargradient(\n"
+"        x1: 0, y1: 0, x2: 1, y2: 0,\n"
+"        stop: 0 #123d6b,\n"
+"        stop: 1 #0f5b8d\n"
+"    );\n"
+"    color: #dff3ff;\n"
+"    border: none;\n"
+"    border-bottom: 1px solid rgba(255,255,255,0.10);\n"
+"    padding: 10px;\n"
+"    font-size: 13px;\n"
+"    font-weight: 700;\n"
+"}\n"
+"\n"
+"QTableCornerButton::section {\n"
+"    background: #123d6b;\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    background: transparent;\n"
+"    width: 10px;\n"
+"    margin: 6px 2px 6px 2px;\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical {\n"
+"    background: rgba(110, 190, 255, 0.75);\n"
+"    min-height: 28px;\n"
+"    border-radius: 5px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:vertical:hover {\n"
+"    background: rgba(140, 210, 255, 0.95);\n"
+"}\n"
+"\n"
+"QScrollBar::"
+                        "add-line:vertical,\n"
+"QScrollBar::sub-line:vertical {\n"
+"    height: 0px;\n"
+"    border: none;\n"
+"    background: none;\n"
+"}\n"
+"\n"
+"QScrollBar::add-page:vertical,\n"
+"QScrollBar::sub-page:vertical {\n"
+"    background: transparent;\n"
+"}\n"
+"\n"
+"QScrollBar:horizontal {\n"
+"    background: transparent;\n"
+"    height: 10px;\n"
+"    margin: 2px 6px 2px 6px;\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:horizontal {\n"
+"    background: rgba(110, 190, 255, 0.75);\n"
+"    min-width: 28px;\n"
+"    border-radius: 5px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle:horizontal:hover {\n"
+"    background: rgba(140, 210, 255, 0.95);\n"
+"}\n"
+"\n"
+"QScrollBar::add-line:horizontal,\n"
+"QScrollBar::sub-line:horizontal {\n"
+"    width: 0px;\n"
+"    border: none;\n"
+"    background: none;\n"
+"}\n"
+"\n"
+"QScrollBar::add-page:horizontal,\n"
+"QScrollBar::sub-page:horizontal {\n"
+"    background: transparent;\n"
+"}\n"
 ""));
         sidebarMenu_W = new QFrame(pageWelcome);
         sidebarMenu_W->setObjectName("sidebarMenu_W");
@@ -3197,31 +3496,32 @@ public:
         logOutBTN_W->setGeometry(QRect(40, 650, 121, 61));
         verticalLayoutWidget_2 = new QWidget(pageWelcome);
         verticalLayoutWidget_2->setObjectName("verticalLayoutWidget_2");
-        verticalLayoutWidget_2->setGeometry(QRect(-271, -21, 1431, 101));
+        verticalLayoutWidget_2->setGeometry(QRect(-250, -20, 1711, 101));
         verticalLayout_3 = new QVBoxLayout(verticalLayoutWidget_2);
         verticalLayout_3->setObjectName("verticalLayout_3");
         verticalLayout_3->setContentsMargins(0, 0, 0, 0);
         header_W = new QFrame(verticalLayoutWidget_2);
         header_W->setObjectName("header_W");
+        header_W->setMinimumSize(QSize(1200, 0));
         header_W->setFrameShape(QFrame::Shape::StyledPanel);
         header_W->setFrameShadow(QFrame::Shadow::Raised);
         titreHeader_W = new QLabel(header_W);
         titreHeader_W->setObjectName("titreHeader_W");
-        titreHeader_W->setGeometry(QRect(490, 20, 461, 61));
+        titreHeader_W->setGeometry(QRect(370, 30, 461, 61));
         titreHeader_W->setAlignment(Qt::AlignmentFlag::AlignCenter);
         userprofiledetails_W = new QCommandLinkButton(header_W);
         userprofiledetails_W->setObjectName("userprofiledetails_W");
-        userprofiledetails_W->setGeometry(QRect(1050, 40, 211, 51));
+        userprofiledetails_W->setGeometry(QRect(1310, 30, 211, 51));
         avatar_W = new QLabel(header_W);
         avatar_W->setObjectName("avatar_W");
-        avatar_W->setGeometry(QRect(1200, 40, 46, 46));
+        avatar_W->setGeometry(QRect(1460, 30, 46, 46));
         avatar_W->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
 
         verticalLayout_3->addWidget(header_W);
 
         port = new QLabel(pageWelcome);
         port->setObjectName("port");
-        port->setGeometry(QRect(720, 220, 300, 500));
+        port->setGeometry(QRect(960, 210, 300, 500));
         port->setMinimumSize(QSize(300, 500));
         port->setMaximumSize(QSize(300, 500));
         port->setPixmap(QPixmap(QString::fromUtf8(":/Images/testport.png")));
@@ -3237,7 +3537,7 @@ public:
         titleW->setAlignment(Qt::AlignmentFlag::AlignCenter);
         cardEmployees = new QFrame(pageWelcome);
         cardEmployees->setObjectName("cardEmployees");
-        cardEmployees->setGeometry(QRect(220, 200, 140, 100));
+        cardEmployees->setGeometry(QRect(310, 200, 140, 100));
         cardEmployees->setMinimumSize(QSize(140, 100));
         cardEmployees->setMaximumSize(QSize(16777215, 100));
         cardEmployees->setFrameShape(QFrame::Shape::StyledPanel);
@@ -3252,7 +3552,7 @@ public:
         numberstaff->setAlignment(Qt::AlignmentFlag::AlignCenter);
         cardStock = new QFrame(pageWelcome);
         cardStock->setObjectName("cardStock");
-        cardStock->setGeometry(QRect(380, 200, 140, 100));
+        cardStock->setGeometry(QRect(480, 200, 140, 100));
         cardStock->setMinimumSize(QSize(140, 100));
         cardStock->setMaximumSize(QSize(16777215, 100));
         cardStock->setFrameShape(QFrame::Shape::StyledPanel);
@@ -3267,7 +3567,7 @@ public:
         stockkkk->setAlignment(Qt::AlignmentFlag::AlignCenter);
         cardClients = new QFrame(pageWelcome);
         cardClients->setObjectName("cardClients");
-        cardClients->setGeometry(QRect(540, 200, 140, 100));
+        cardClients->setGeometry(QRect(650, 200, 140, 100));
         cardClients->setMinimumSize(QSize(140, 100));
         cardClients->setMaximumSize(QSize(16777215, 100));
         cardClients->setFrameShape(QFrame::Shape::StyledPanel);
@@ -3282,7 +3582,7 @@ public:
         clientssssssss->setAlignment(Qt::AlignmentFlag::AlignCenter);
         cardEqui = new QFrame(pageWelcome);
         cardEqui->setObjectName("cardEqui");
-        cardEqui->setGeometry(QRect(270, 320, 140, 100));
+        cardEqui->setGeometry(QRect(360, 320, 140, 100));
         cardEqui->setMinimumSize(QSize(140, 100));
         cardEqui->setMaximumSize(QSize(16777215, 100));
         cardEqui->setFrameShape(QFrame::Shape::StyledPanel);
@@ -3297,7 +3597,7 @@ public:
         boatt->setAlignment(Qt::AlignmentFlag::AlignCenter);
         cardWeather = new QFrame(pageWelcome);
         cardWeather->setObjectName("cardWeather");
-        cardWeather->setGeometry(QRect(450, 320, 140, 100));
+        cardWeather->setGeometry(QRect(610, 320, 140, 100));
         cardWeather->setMinimumSize(QSize(140, 100));
         cardWeather->setMaximumSize(QSize(16777215, 100));
         cardWeather->setFrameShape(QFrame::Shape::StyledPanel);
@@ -3310,15 +3610,36 @@ public:
         temp->setObjectName("temp");
         temp->setGeometry(QRect(30, 40, 81, 31));
         temp->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        portdash = new QGroupBox(pageWelcome);
-        portdash->setObjectName("portdash");
-        portdash->setGeometry(QRect(200, 420, 511, 311));
-        portconttt = new QLabel(portdash);
-        portconttt->setObjectName("portconttt");
-        portconttt->setGeometry(QRect(-40, -80, 700, 500));
-        portconttt->setMinimumSize(QSize(700, 500));
-        portconttt->setMaximumSize(QSize(700, 500));
-        portconttt->setPixmap(QPixmap(QString::fromUtf8(":/Images/dashhhresize.png")));
+        accessHistoryFrame = new QFrame(pageWelcome);
+        accessHistoryFrame->setObjectName("accessHistoryFrame");
+        accessHistoryFrame->setGeometry(QRect(220, 430, 671, 261));
+        accessHistoryFrame->setFrameShape(QFrame::Shape::StyledPanel);
+        accessHistoryFrame->setFrameShadow(QFrame::Shadow::Raised);
+        historique = new QTableWidget(accessHistoryFrame);
+        if (historique->columnCount() < 4)
+            historique->setColumnCount(4);
+        QTableWidgetItem *__qtablewidgetitem18 = new QTableWidgetItem();
+        historique->setHorizontalHeaderItem(0, __qtablewidgetitem18);
+        QTableWidgetItem *__qtablewidgetitem19 = new QTableWidgetItem();
+        historique->setHorizontalHeaderItem(1, __qtablewidgetitem19);
+        QTableWidgetItem *__qtablewidgetitem20 = new QTableWidgetItem();
+        historique->setHorizontalHeaderItem(2, __qtablewidgetitem20);
+        QTableWidgetItem *__qtablewidgetitem21 = new QTableWidgetItem();
+        historique->setHorizontalHeaderItem(3, __qtablewidgetitem21);
+        if (historique->rowCount() < 2)
+            historique->setRowCount(2);
+        historique->setObjectName("historique");
+        historique->setGeometry(QRect(60, 60, 581, 181));
+        historique->setStyleSheet(QString::fromUtf8(""));
+        historique->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
+        historique->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
+        historique->setRowCount(2);
+        historique->setColumnCount(4);
+        titleh = new QLabel(accessHistoryFrame);
+        titleh->setObjectName("titleh");
+        titleh->setGeometry(QRect(180, 10, 311, 41));
+        titleh->setStyleSheet(QString::fromUtf8(""));
+        titleh->setAlignment(Qt::AlignmentFlag::AlignCenter);
         stackedWidget->addWidget(pageWelcome);
         pageStaffManagement = new QWidget();
         pageStaffManagement->setObjectName("pageStaffManagement");
@@ -3702,36 +4023,28 @@ public:
 "    height: 0;\n"
 "}\n"
 "\n"
-"/* ================================================= */\n"
-"/* ================= BUTTONS ======================= */\n"
-"/* ================================================= */\n"
-"\n"
-"\n"
-"#cvanalysebtn,\n"
-"#staticbtn,\n"
-"#uploadcvbtn,\n"
-"#uploadAvatarbtn,\n"
-"#exportpdfstaffbtn {\n"
-"    background-color: rgba(20, 60, 95, 0.9);\n"
-"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
-"    border-radius: 12px;\n"
-"    color: #e3f2fd;\n"
-"    padding: 10px 16px;\n"
-"    font-weight: 600;\n"
+"/* ===== LINK STYLE BUTTONS ===== */\n"
+"#ubploacvbtn,\n"
+"#ubploaAvatarbtn {\n"
+"    background: transparent;\n"
+"    border: none;\n"
+"    color: #22C55E; /* bleu clair moderne */\n"
+"    font-size: 13px;\n"
+"    font-weight: 700;\n"
 "}\n"
 "\n"
-"#uploadcvbtn:hover,\n"
-"#uploadAvatarbtn:hover,\n"
-"#cvanalysebtn:hover,\n"
-"#staticbtn:hover,\n"
-"#exportpdfstaffbtn:hover {\n"
-"    background-color: rgba(79, 195, 247, 0.35);\n"
-"    color: white;\n"
+"#ubploacvbtn:hover,\n"
+"#ubploaAvatarbtn:hover {\n"
+"    color: #4ADE80; /* bleu glow */\n"
+"    border-bottom: 1px solid #7DD3FC;\n"
 "}\n"
 "\n"
+"#ubploacvbtn:pressed,\n"
+"#ubploaAvatarbtn:pressed {\n"
+"    color: #0284C7;\n"
+"}\n"
 "/* ===== DELETE BUTTON ===== */\n"
-"#delet"
-                        "estaffbtn {\n"
+"#deletestaffbtn {\n"
 "    background-color: rgba(183, 28, 28, 0.9);\n"
 "    border: none;\n"
 "    border-radius: 12px;\n"
@@ -3741,7 +4054,8 @@ public:
 "}\n"
 "\n"
 "#deletestaffbtn:hover {\n"
-"    background-color: #e53935;\n"
+"    backgr"
+                        "ound-color: #e53935;\n"
 "    box-shadow: 0 0 15px rgba(244, 67, 54, 0.6);\n"
 "}\n"
 "/* ======================================= */\n"
@@ -3766,14 +4080,14 @@ public:
 "\n"
 "/* Click (pressed) */\n"
 "#modifystaffbtn:pressed {\n"
-"    background-color: #f57f17;            /* Jaune fonc"
-                        "\303\251 */\n"
+"    background-color: #f57f17;            /* Jaune fonc\303\251 */\n"
 "    box-shadow: inset 0 3px 6px rgba(0,0,0,0.35);\n"
 "}\n"
 "/* =========================================================\n"
 "   BACK TO WELCOME BUTTON\n"
 "   ========================================================= */\n"
-"QPushButton#backWbtn {\n"
+"QPu"
+                        "shButton#backWbtn {\n"
 "    background: rgba(20, 38, 58, 0.65);   /* navy soft */\n"
 "    color: rgba(234,240,255,0.90);\n"
 "    border-radius: 14px;\n"
@@ -3799,14 +4113,46 @@ public:
 "/* Optional: disabled */\n"
 "QPushButton#backWbtn:disabled {\n"
 "    background: rgba(20, 38, 58, 0.35);\n"
-"    color: rgba(234,240"
-                        ",255,0.45);\n"
+"    color: rgba(234,240,255,0.45);\n"
 "    border: 1px solid rgba(120,160,200,0.15);\n"
+"}\n"
+"/* ===== DROPDOWN LIST ===== */\n"
+"QComboBox QAbstractItemView {\n"
+"    background-color: #0A2236; /* fond solide */\n"
+"    color: #E3F2FD;\n"
+"    border: 1px solid #"
+                        "4FC3F7;\n"
+"    border-radius: 8px;\n"
+"    padding: 4px;\n"
+"    selection-background-color: #4FC3F7;\n"
+"    selection-color: #001018;\n"
+"}\n"
+"\n"
+"/* Hover item */\n"
+"QComboBox QAbstractItemView::item:hover {\n"
+"    background-color: rgba(79,195,247,0.25);\n"
+"}\n"
+"\n"
+"/* Selected item */\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background-color: #4FC3F7;\n"
+"    color: #001018;\n"
+"}\n"
+"#cvanalysebtn, #staticbtn, #exportpdfstaffbtn { \n"
+"background-color: rgba(20, 60, 95, 0.9);\n"
+"border: 1px solid rgba(79, 195, 247, 0.4); \n"
+"border-radius: 12px; \n"
+"color: #e3f2fd; \n"
+"padding: 10px 16px; \n"
+"font-weight: 600; }  \n"
+"#cvanalysebtn:hover, #staticbtn:hover, #exportpdfstaffbtn:hover\n"
+" { background-color: rgba(79, 195, 247, 0.35);\n"
+" color: white; \n"
 "}\n"
 ""));
         layoutWidget1 = new QWidget(pageStaffManagement);
         layoutWidget1->setObjectName("layoutWidget1");
-        layoutWidget1->setGeometry(QRect(0, 0, 1491, 761));
+        layoutWidget1->setGeometry(QRect(0, -10, 1491, 761));
         horizontalLayout_2 = new QHBoxLayout(layoutWidget1);
         horizontalLayout_2->setObjectName("horizontalLayout_2");
         horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
@@ -3868,32 +4214,33 @@ public:
         titreHeader->setAlignment(Qt::AlignmentFlag::AlignCenter);
         userprofiledetails = new QCommandLinkButton(header);
         userprofiledetails->setObjectName("userprofiledetails");
-        userprofiledetails->setGeometry(QRect(830, 20, 211, 51));
+        userprofiledetails->setGeometry(QRect(1110, 30, 211, 51));
         avatar = new QLabel(header);
         avatar->setObjectName("avatar");
-        avatar->setGeometry(QRect(990, 20, 46, 46));
+        avatar->setGeometry(QRect(1270, 30, 46, 46));
         avatar->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
 
         verticalLayout_2->addWidget(header);
 
         layoutWidget2 = new QWidget(contenumain);
         layoutWidget2->setObjectName("layoutWidget2");
-        layoutWidget2->setGeometry(QRect(-10, 100, 831, 621));
+        layoutWidget2->setGeometry(QRect(-10, 100, 1282, 621));
         horizontalLayout_3 = new QHBoxLayout(layoutWidget2);
         horizontalLayout_3->setObjectName("horizontalLayout_3");
         horizontalLayout_3->setContentsMargins(0, 0, 0, 0);
         liststaff = new QFrame(layoutWidget2);
         liststaff->setObjectName("liststaff");
+        liststaff->setMinimumSize(QSize(1280, 0));
         liststaff->setFrameShape(QFrame::Shape::StyledPanel);
         liststaff->setFrameShadow(QFrame::Shadow::Raised);
         formAddStaff = new QFrame(liststaff);
         formAddStaff->setObjectName("formAddStaff");
-        formAddStaff->setGeometry(QRect(10, 0, 411, 619));
+        formAddStaff->setGeometry(QRect(10, 0, 481, 619));
         formAddStaff->setFrameShape(QFrame::Shape::StyledPanel);
         formAddStaff->setFrameShadow(QFrame::Shadow::Raised);
         formcontdd = new QGroupBox(formAddStaff);
         formcontdd->setObjectName("formcontdd");
-        formcontdd->setGeometry(QRect(10, 10, 401, 601));
+        formcontdd->setGeometry(QRect(10, 10, 441, 601));
         labeladdstaff = new QLabel(formcontdd);
         labeladdstaff->setObjectName("labeladdstaff");
         labeladdstaff->setGeometry(QRect(100, 0, 151, 41));
@@ -3906,58 +4253,48 @@ public:
         role->addItem(QString());
         role->addItem(QString());
         role->addItem(QString());
-        role->addItem(QString());
         role->setObjectName("role");
-        role->setGeometry(QRect(0, 400, 161, 52));
+        role->setGeometry(QRect(0, 400, 181, 52));
         staffnamelabel = new QLabel(formcontdd);
         staffnamelabel->setObjectName("staffnamelabel");
         staffnamelabel->setGeometry(QRect(10, 70, 131, 20));
         staffnameedit = new QLineEdit(formcontdd);
         staffnameedit->setObjectName("staffnameedit");
-        staffnameedit->setGeometry(QRect(150, 50, 221, 54));
+        staffnameedit->setGeometry(QRect(150, 50, 241, 54));
         staffaddresslabel = new QLabel(formcontdd);
         staffaddresslabel->setObjectName("staffaddresslabel");
         staffaddresslabel->setGeometry(QRect(10, 130, 111, 20));
         staffaddressedit = new QLineEdit(formcontdd);
         staffaddressedit->setObjectName("staffaddressedit");
-        staffaddressedit->setGeometry(QRect(150, 120, 221, 54));
+        staffaddressedit->setGeometry(QRect(150, 120, 241, 54));
         tellabel = new QLabel(formcontdd);
         tellabel->setObjectName("tellabel");
         tellabel->setGeometry(QRect(10, 210, 141, 20));
         teledit = new QLineEdit(formcontdd);
         teledit->setObjectName("teledit");
-        teledit->setGeometry(QRect(150, 190, 221, 54));
+        teledit->setGeometry(QRect(150, 190, 241, 54));
         maillabel = new QLabel(formcontdd);
         maillabel->setObjectName("maillabel");
         maillabel->setGeometry(QRect(10, 270, 151, 20));
         mailedit = new QLineEdit(formcontdd);
         mailedit->setObjectName("mailedit");
-        mailedit->setGeometry(QRect(150, 260, 221, 54));
+        mailedit->setGeometry(QRect(150, 260, 241, 54));
         cvstat = new QComboBox(formcontdd);
         cvstat->addItem(QString());
         cvstat->addItem(QString());
         cvstat->addItem(QString());
         cvstat->addItem(QString());
-        cvstat->addItem(QString());
-        cvstat->addItem(QString());
-        cvstat->addItem(QString());
-        cvstat->addItem(QString());
-        cvstat->addItem(QString());
-        cvstat->addItem(QString());
-        cvstat->addItem(QString());
-        cvstat->addItem(QString());
-        cvstat->addItem(QString());
         cvstat->setObjectName("cvstat");
-        cvstat->setGeometry(QRect(190, 400, 161, 52));
+        cvstat->setGeometry(QRect(200, 400, 181, 52));
         passlab = new QLabel(formcontdd);
         passlab->setObjectName("passlab");
         passlab->setGeometry(QRect(10, 340, 141, 20));
         passlab_2 = new QLineEdit(formcontdd);
         passlab_2->setObjectName("passlab_2");
-        passlab_2->setGeometry(QRect(150, 330, 221, 54));
+        passlab_2->setGeometry(QRect(150, 330, 241, 54));
         ubploacvbtn = new QPushButton(formcontdd);
         ubploacvbtn->setObjectName("ubploacvbtn");
-        ubploacvbtn->setGeometry(QRect(30, 460, 90, 29));
+        ubploacvbtn->setGeometry(QRect(-10, 460, 161, 29));
         ubploacvbtn->setStyleSheet(QString::fromUtf8("#uploadcvbtn\n"
 " {\n"
 "    background-color: rgba(20, 60, 95, 0.9);\n"
@@ -3975,85 +4312,85 @@ public:
 "}"));
         addstaffbtn = new QPushButton(formcontdd);
         addstaffbtn->setObjectName("addstaffbtn");
-        addstaffbtn->setGeometry(QRect(50, 530, 261, 60));
+        addstaffbtn->setGeometry(QRect(50, 530, 281, 60));
         cvpathEdit = new QLabel(formcontdd);
         cvpathEdit->setObjectName("cvpathEdit");
         cvpathEdit->setGeometry(QRect(150, 470, 241, 20));
         cvpathEdit->setAlignment(Qt::AlignmentFlag::AlignCenter);
         ubploaAvatarbtn = new QPushButton(formcontdd);
         ubploaAvatarbtn->setObjectName("ubploaAvatarbtn");
-        ubploaAvatarbtn->setGeometry(QRect(10, 500, 131, 29));
+        ubploaAvatarbtn->setGeometry(QRect(-10, 490, 151, 29));
         avatarpathEdit = new QLabel(formcontdd);
         avatarpathEdit->setObjectName("avatarpathEdit");
         avatarpathEdit->setGeometry(QRect(150, 500, 241, 20));
         avatarpathEdit->setAlignment(Qt::AlignmentFlag::AlignCenter);
         liststaffff = new QGroupBox(liststaff);
         liststaffff->setObjectName("liststaffff");
-        liststaffff->setGeometry(QRect(420, 0, 391, 621));
+        liststaffff->setGeometry(QRect(480, 0, 581, 621));
         staffsearchbarre = new QLineEdit(liststaffff);
         staffsearchbarre->setObjectName("staffsearchbarre");
-        staffsearchbarre->setGeometry(QRect(20, 30, 361, 58));
+        staffsearchbarre->setGeometry(QRect(40, 40, 501, 58));
         sortstaff = new QComboBox(liststaffff);
         sortstaff->addItem(QString());
         sortstaff->addItem(QString());
         sortstaff->addItem(QString());
         sortstaff->addItem(QString());
         sortstaff->setObjectName("sortstaff");
-        sortstaff->setGeometry(QRect(230, 90, 151, 54));
+        sortstaff->setGeometry(QRect(340, 100, 201, 54));
         stafflistlabel = new QLabel(liststaffff);
         stafflistlabel->setObjectName("stafflistlabel");
-        stafflistlabel->setGeometry(QRect(30, 90, 191, 51));
+        stafflistlabel->setGeometry(QRect(120, 100, 191, 51));
         stafflistlabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
         tablestaff = new QTableWidget(liststaffff);
         if (tablestaff->columnCount() < 10)
             tablestaff->setColumnCount(10);
-        QTableWidgetItem *__qtablewidgetitem17 = new QTableWidgetItem();
-        tablestaff->setHorizontalHeaderItem(0, __qtablewidgetitem17);
-        QTableWidgetItem *__qtablewidgetitem18 = new QTableWidgetItem();
-        tablestaff->setHorizontalHeaderItem(1, __qtablewidgetitem18);
-        QTableWidgetItem *__qtablewidgetitem19 = new QTableWidgetItem();
-        tablestaff->setHorizontalHeaderItem(2, __qtablewidgetitem19);
-        QTableWidgetItem *__qtablewidgetitem20 = new QTableWidgetItem();
-        tablestaff->setHorizontalHeaderItem(3, __qtablewidgetitem20);
-        QTableWidgetItem *__qtablewidgetitem21 = new QTableWidgetItem();
-        tablestaff->setHorizontalHeaderItem(4, __qtablewidgetitem21);
         QTableWidgetItem *__qtablewidgetitem22 = new QTableWidgetItem();
-        tablestaff->setHorizontalHeaderItem(5, __qtablewidgetitem22);
+        tablestaff->setHorizontalHeaderItem(0, __qtablewidgetitem22);
         QTableWidgetItem *__qtablewidgetitem23 = new QTableWidgetItem();
-        tablestaff->setHorizontalHeaderItem(6, __qtablewidgetitem23);
+        tablestaff->setHorizontalHeaderItem(1, __qtablewidgetitem23);
         QTableWidgetItem *__qtablewidgetitem24 = new QTableWidgetItem();
-        tablestaff->setHorizontalHeaderItem(7, __qtablewidgetitem24);
+        tablestaff->setHorizontalHeaderItem(2, __qtablewidgetitem24);
         QTableWidgetItem *__qtablewidgetitem25 = new QTableWidgetItem();
-        tablestaff->setHorizontalHeaderItem(8, __qtablewidgetitem25);
+        tablestaff->setHorizontalHeaderItem(3, __qtablewidgetitem25);
+        QTableWidgetItem *__qtablewidgetitem26 = new QTableWidgetItem();
+        tablestaff->setHorizontalHeaderItem(4, __qtablewidgetitem26);
+        QTableWidgetItem *__qtablewidgetitem27 = new QTableWidgetItem();
+        tablestaff->setHorizontalHeaderItem(5, __qtablewidgetitem27);
+        QTableWidgetItem *__qtablewidgetitem28 = new QTableWidgetItem();
+        tablestaff->setHorizontalHeaderItem(6, __qtablewidgetitem28);
+        QTableWidgetItem *__qtablewidgetitem29 = new QTableWidgetItem();
+        tablestaff->setHorizontalHeaderItem(7, __qtablewidgetitem29);
+        QTableWidgetItem *__qtablewidgetitem30 = new QTableWidgetItem();
+        tablestaff->setHorizontalHeaderItem(8, __qtablewidgetitem30);
         if (tablestaff->rowCount() < 2)
             tablestaff->setRowCount(2);
         tablestaff->setObjectName("tablestaff");
-        tablestaff->setGeometry(QRect(10, 150, 381, 221));
+        tablestaff->setGeometry(QRect(40, 160, 501, 221));
         tablestaff->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
         tablestaff->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
         tablestaff->setRowCount(2);
         tablestaff->setColumnCount(10);
         modifystaffbtn = new QPushButton(liststaffff);
         modifystaffbtn->setObjectName("modifystaffbtn");
-        modifystaffbtn->setGeometry(QRect(20, 380, 161, 41));
+        modifystaffbtn->setGeometry(QRect(40, 390, 241, 41));
         deletestaffbtn = new QPushButton(liststaffff);
         deletestaffbtn->setObjectName("deletestaffbtn");
-        deletestaffbtn->setGeometry(QRect(210, 380, 171, 41));
+        deletestaffbtn->setGeometry(QRect(300, 390, 241, 41));
         cvanalysebtn = new QPushButton(liststaffff);
         cvanalysebtn->setObjectName("cvanalysebtn");
-        cvanalysebtn->setGeometry(QRect(80, 430, 261, 41));
+        cvanalysebtn->setGeometry(QRect(130, 440, 351, 41));
         staticbtn = new QPushButton(liststaffff);
         staticbtn->setObjectName("staticbtn");
-        staticbtn->setGeometry(QRect(30, 490, 171, 41));
+        staticbtn->setGeometry(QRect(130, 500, 161, 41));
         exportpdfstaffbtn = new QPushButton(liststaffff);
         exportpdfstaffbtn->setObjectName("exportpdfstaffbtn");
-        exportpdfstaffbtn->setGeometry(QRect(220, 490, 161, 41));
+        exportpdfstaffbtn->setGeometry(QRect(310, 500, 171, 41));
         backWbtn = new QPushButton(liststaffff);
         backWbtn->setObjectName("backWbtn");
-        backWbtn->setGeometry(QRect(110, 550, 211, 61));
+        backWbtn->setGeometry(QRect(190, 550, 211, 61));
         searchlabel = new QLabel(liststaffff);
         searchlabel->setObjectName("searchlabel");
-        searchlabel->setGeometry(QRect(-20, 0, 391, 31));
+        searchlabel->setGeometry(QRect(-20, 10, 391, 31));
         searchlabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
         horizontalLayout_3->addWidget(liststaff);
@@ -4062,26 +4399,13 @@ public:
         horizontalLayout_2->addWidget(contenumain);
 
         stackedWidget->addWidget(pageStaffManagement);
-        pageEquipment = new QWidget();
-        pageEquipment->setObjectName("pageEquipment");
-        pageEquipment->setStyleSheet(QString::fromUtf8("/* =================================================\n"
-"  NOUR\n"
-"   ================================================= */\n"
-"QWidget#pageEquipment {\n"
-"    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,\n"
-"        stop:0 #071a2c,\n"
-"        stop:0.35 #082136,\n"
-"        stop:0.7 #071c2d,\n"
-"        stop:1 #040f1a);\n"
-"    font-family: \"Segoe UI\";\n"
-"    color: #EAF0FF;\n"
-"}\n"
-"\n"
-"/* =================================================\n"
+        pageEquipmentList = new QWidget();
+        pageEquipmentList->setObjectName("pageEquipmentList");
+        pageEquipmentList->setStyleSheet(QString::fromUtf8("/* =================================================\n"
 "   HEADER + SIDEBAR (SAME STYLE)\n"
 "   ================================================= */\n"
-"QFrame#headerE,\n"
-"QFrame#sidebarMenuE {\n"
+"QFrame#headerE_L,\n"
+"QFrame#sidebarMenuE_L{\n"
 "    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,\n"
 "        stop:0 rgba(12, 42, 75, 0.95),\n"
 "        stop:0.55 rgba(8, 30, 55, 0.95),\n"
@@ -4090,122 +4414,43 @@ public:
 "    border-radius: 16px;\n"
 "}\n"
 "\n"
-"QFrame#headerE {\n"
+"QFrame#headerE_L {\n"
 "    padding: 10px 16px;\n"
 "}\n"
 "\n"
-"QFrame#sidebarMenuE {\n"
+"QFrame#sidebarMenuE_L {\n"
 "    padding: 12px;\n"
 "}\n"
 "\n"
-"/* ================="
-                        "================================\n"
+"/* =================================================\n"
 "   HEADER CONTENT\n"
 "   ================================================= */\n"
-"QLabel#titreHeaderE {\n"
+"QLabel#titreHeaderE_L {\n"
 "    color: #EAF0FF;\n"
 "    font-size: 15px;\n"
 "    font-weight: 800;\n"
 "    letter-spacing: 0.5px;\n"
 "}\n"
 "\n"
-"QLabel#avatarE {\n"
+"QLabel#avatarE_F_2{\n"
 "    min-width: 42px;\n"
 "    max-width: 42px;\n"
 "    min-height: 42px;\n"
 "    max-height: 42px;\n"
-"    border-radius: 21px;\n"
+"    bor"
+                        "der-radius: 21px;\n"
 "    border: 2px solid rgba(88,184,255,0.6);\n"
 "    background-color: rgba(255,255,255,0.06);\n"
 "}\n"
-"\n"
-"/* User profile button */\n"
-"QCommandLinkButton#userprofiledetailsE {\n"
-"    background-color: rgba(8, 18, 38, 0.55);\n"
-"    border: 1px solid rgba(255,255,255,0.15);\n"
-"    border-radius: 12px;\n"
-"    padding: 8px 14px;\n"
-"    color: #EAF0FF;\n"
-"    font-weight: 700;\n"
-"}\n"
-"\n"
-"QCommandLinkButton#userprofiledetailsE:hover {\n"
-"    background-color: rgba(88,184,255,0.15);\n"
-"    border: 1px solid rgba(88,184,255,0.45);\n"
-"}\n"
-"\n"
-"QCommandLinkButton#userprofiledetailsE:pressed {\n"
-""
-                        "    background-color: rgba(88,184,255,0.25);\n"
-"}\n"
-"\n"
-"/* =================================================\n"
-"   SIDEBAR GROUP\n"
-"   ================================================= */\n"
-"QGroupBox#groupBox {\n"
+"QGroupBox#groupBoxE_L{\n"
 "    border: none;\n"
 "    margin-top: 6px;\n"
 "}\n"
 "\n"
 "/* =================================================\n"
-"   SIDEBAR BUTTONS (BASE)\n"
-"   ================================================= */\n"
-"QPushButton#clientsmanagementBTNe,\n"
-"QPushButton#equipmentmanagementBTNe,\n"
-"QPushButton#fishingzonemanagementBTNe,\n"
-"QPushButton#staffmanagementBTNe,\n"
-"QPushButton#stockmanagementBTNe {\n"
-"    background: transparent;\n"
-"    border: none;\n"
-"    color: rgba(234,240,255,0.80);\n"
-"    padding: 12px 14px;\n"
-"    border-radius: 12px;\n"
-"    text-align: left;\n"
-"    font-size: 13px;\n"
-"    font-weight: 650;\n"
-"}\n"
-"\n"
-"/* Hover effect */\n"
-"QPushButton#clientsmanagementBTNe:hover,\n"
-"QPushButton#equipmentmanagementBTNe:hover,\n"
-"QPushButton#fishingzonemanagementBTNe:hover,\n"
-""
-                        "QPushButton#staffmanagementBTNe:hover,\n"
-"QPushButton#stockmanagementBTNe:hover {\n"
-"    background-color: rgba(88,184,255,0.14);\n"
-"    border: 1px solid rgba(88,184,255,0.25);\n"
-"    color: #FFFFFF;\n"
-"}\n"
-"\n"
-"/* Pressed */\n"
-"QPushButton#clientsmanagementBTNe:pressed,\n"
-"QPushButton#equipmentmanagementBTNe:pressed,\n"
-"QPushButton#fishingzonemanagementBTNe:pressed,\n"
-"QPushButton#staffmanagementBTNe:pressed,\n"
-"QPushButton#stockmanagementBTNe:pressed {\n"
-"    background-color: rgba(88,184,255,0.25);\n"
-"}\n"
-"\n"
-"/* =================================================\n"
-"   ACTIVE / SELECTED BUTTON    ================================================= */\n"
-"QPushButton[active=\"true\"] {\n"
-"    background-color: rgba(10, 102, 255, 0.28);\n"
-"    border: 1px solid rgba(10, 102, 255, 0.55);\n"
-"    color: #FFFFFF;\n"
-"    padding-left: 18px;\n"
-"}\n"
-"QPushButton#equipmentmanagementBTNe[active=\"true\"] {\n"
-"    background-color: rgba(10, 102, 255, 0.35);\n"
-"    border-left: 4px solid #4FC3F7;\n"
-""
-                        "    color: white;\n"
-"    font-weight: 600;\n"
-"}\n"
-"\n"
-"/* =================================================\n"
 "   LOG OUT BUTTON\n"
 "   ================================================= */\n"
-"QPushButton#logOutBTNe {\n"
+"QPushButton#logOutBTNe_L {\n"
 "    background: transparent;\n"
 "    border: none;\n"
 "    color: rgba(234,240,255,0.65);\n"
@@ -4215,529 +4460,413 @@ public:
 "    font-weight: 650;\n"
 "}\n"
 "\n"
-"QPushButton#logOutBTNe:hover {\n"
+"QPushButton#logOutBTNe_L:hover {\n"
 "    background-color: rgba(255, 120, 120, 0.12);\n"
 "    border: 1px solid rgba(255, 120, 120, 0.25);\n"
 "    color: #FFC1C1;\n"
 "}\n"
 "\n"
-"/* =================================================\n"
-"   MAIN CONTENT AREA\n"
-"   ================================================= */\n"
-"QFrame#contenumainEq {\n"
-"    background-color: transparent;\n"
+"\n"
+"/* User profile button */\n"
+"QCommandLinkButton#userprofiledetails_D_3 {\n"
+"    background-color: rgba(8, 18, 38, 0.55);\n"
+"    border: 1px solid rgba(255,255,255,0.15);\n"
+"    border-radius: 12px;\n"
+"    padding: 8px 14px;\n"
+"    color: #EA"
+                        "F0FF;\n"
+"    font-weight: 700;\n"
 "}\n"
 "\n"
-"/* =================================================\n"
-"   MENUBAR + STATUSBAR\n"
-"   ================================================= */\n"
-"QMenuBar {\n"
-"    background-color: rgba(6, "
-                        "22, 40, 0.95);\n"
-"    color: rgba(234,240,255,0.85);\n"
-"    border-bottom: 1px solid rgba(255,255,255,0.12);\n"
-"    padding: 6px;\n"
+"QCommandLinkButton#userprofiledetails_D_3:hover {\n"
+"    background-color: rgba(88,184,255,0.15);\n"
+"    border: 1px solid rgba(88,184,255,0.45);\n"
 "}\n"
 "\n"
-"QStatusBar {\n"
-"    background-color: rgba(6, 22, 40, 0.95);\n"
-"    color: rgba(234,240,255,0.70);\n"
-"    border-top: 1px solid rgba(255,255,255,0.12);\n"
+"QCommandLinkButton#userprofiledetails_D_3:pressed {\n"
+"    background-color: rgba(88,184,255,0.25);\n"
 "}\n"
-"/* =======================\n"
-"   FORM CARD (LEFT)\n"
-"   objectName: formEq\n"
-"   ======================= */\n"
-"QFrame#formEq {\n"
-"    background-color: rgba(255,255,255,0.06);\n"
-"    border: 1px solid rgba(79,195,247,0.18);\n"
+""));
+        layoutWidget_L_main = new QWidget(pageEquipmentList);
+        layoutWidget_L_main->setObjectName("layoutWidget_L_main");
+        layoutWidget_L_main->setGeometry(QRect(0, 0, 1271, 741));
+        horizontalLayout_L = new QHBoxLayout(layoutWidget_L_main);
+        horizontalLayout_L->setObjectName("horizontalLayout_L");
+        horizontalLayout_L->setContentsMargins(0, 0, 0, 0);
+        sidebarMenuE_L = new QFrame(layoutWidget_L_main);
+        sidebarMenuE_L->setObjectName("sidebarMenuE_L");
+        sidebarMenuE_L->setMinimumSize(QSize(200, 0));
+        sidebarMenuE_L->setMaximumSize(QSize(200, 16777215));
+        sidebarMenuE_L->setFrameShape(QFrame::Shape::NoFrame);
+        sidebarMenuE_L->setFrameShadow(QFrame::Shadow::Raised);
+        groupBoxE_L = new QGroupBox(sidebarMenuE_L);
+        groupBoxE_L->setObjectName("groupBoxE_L");
+        groupBoxE_L->setGeometry(QRect(10, 100, 200, 581));
+        groupBoxE_L->setMinimumSize(QSize(200, 0));
+        groupBoxE_L->setMaximumSize(QSize(200, 16777215));
+        staffmanagementBTNe_L = new QPushButton(groupBoxE_L);
+        staffmanagementBTNe_L->setObjectName("staffmanagementBTNe_L");
+        staffmanagementBTNe_L->setGeometry(QRect(0, 90, 181, 61));
+        staffmanagementBTNe_L->setProperty("active", QVariant(false));
+        clientsmanagementBTNe_L = new QPushButton(groupBoxE_L);
+        clientsmanagementBTNe_L->setObjectName("clientsmanagementBTNe_L");
+        clientsmanagementBTNe_L->setGeometry(QRect(0, 150, 191, 51));
+        stockmanagementBTNe_L = new QPushButton(groupBoxE_L);
+        stockmanagementBTNe_L->setObjectName("stockmanagementBTNe_L");
+        stockmanagementBTNe_L->setGeometry(QRect(0, 210, 171, 51));
+        fishingzonemanagementBTNe_L = new QPushButton(groupBoxE_L);
+        fishingzonemanagementBTNe_L->setObjectName("fishingzonemanagementBTNe_L");
+        fishingzonemanagementBTNe_L->setGeometry(QRect(-10, 330, 221, 51));
+        equipmentmanagementBTNe_L = new QPushButton(groupBoxE_L);
+        equipmentmanagementBTNe_L->setObjectName("equipmentmanagementBTNe_L");
+        equipmentmanagementBTNe_L->setGeometry(QRect(-10, 270, 201, 41));
+        equipmentmanagementBTNe_L->setProperty("active", QVariant(true));
+        logoheaderE_L = new QLabel(sidebarMenuE_L);
+        logoheaderE_L->setObjectName("logoheaderE_L");
+        logoheaderE_L->setGeometry(QRect(0, 10, 181, 151));
+        logoheaderE_L->setPixmap(QPixmap(QString::fromUtf8(":/Images/logoHeader1.png")));
+        logOutBTNe_L = new QPushButton(sidebarMenuE_L);
+        logOutBTNe_L->setObjectName("logOutBTNe_L");
+        logOutBTNe_L->setGeometry(QRect(40, 650, 121, 61));
+
+        horizontalLayout_L->addWidget(sidebarMenuE_L);
+
+        contenumainEq_L = new QFrame(layoutWidget_L_main);
+        contenumainEq_L->setObjectName("contenumainEq_L");
+        contenumainEq_L->setFrameShape(QFrame::Shape::StyledPanel);
+        contenumainEq_L->setFrameShadow(QFrame::Shadow::Raised);
+        contenumainEq_L->setProperty("active", QVariant(true));
+        verticalLayoutWidget_L_2 = new QWidget(contenumainEq_L);
+        verticalLayoutWidget_L_2->setObjectName("verticalLayoutWidget_L_2");
+        verticalLayoutWidget_L_2->setGeometry(QRect(-270, 0, 1431, 101));
+        verticalLayout_L = new QVBoxLayout(verticalLayoutWidget_L_2);
+        verticalLayout_L->setObjectName("verticalLayout_L");
+        verticalLayout_L->setContentsMargins(0, 0, 0, 0);
+        headerE_L = new QFrame(verticalLayoutWidget_L_2);
+        headerE_L->setObjectName("headerE_L");
+        headerE_L->setFrameShape(QFrame::Shape::StyledPanel);
+        headerE_L->setFrameShadow(QFrame::Shadow::Raised);
+        titreHeaderE_L = new QLabel(headerE_L);
+        titreHeaderE_L->setObjectName("titreHeaderE_L");
+        titreHeaderE_L->setGeometry(QRect(220, 20, 461, 61));
+        titreHeaderE_L->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        userInfoBox_L = new QFrame(headerE_L);
+        userInfoBox_L->setObjectName("userInfoBox_L");
+        userInfoBox_L->setGeometry(QRect(810, 15, 251, 61));
+        userprofiledetails_D_3 = new QCommandLinkButton(userInfoBox_L);
+        userprofiledetails_D_3->setObjectName("userprofiledetails_D_3");
+        userprofiledetails_D_3->setGeometry(QRect(10, 5, 180, 51));
+        avatarE_F_2 = new QLabel(userInfoBox_L);
+        avatarE_F_2->setObjectName("avatarE_F_2");
+        avatarE_F_2->setGeometry(QRect(190, 7, 46, 46));
+        avatarE_F_2->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
+
+        verticalLayout_L->addWidget(headerE_L);
+
+        layoutWidget_L_2 = new QWidget(contenumainEq_L);
+        layoutWidget_L_2->setObjectName("layoutWidget_L_2");
+        layoutWidget_L_2->setGeometry(QRect(-10, 100, 831, 621));
+        horizontalLayout_L_sub = new QHBoxLayout(layoutWidget_L_2);
+        horizontalLayout_L_sub->setObjectName("horizontalLayout_L_sub");
+        horizontalLayout_L_sub->setContentsMargins(0, 0, 0, 0);
+        listEq_L = new QFrame(layoutWidget_L_2);
+        listEq_L->setObjectName("listEq_L");
+        listEq_L->setFrameShape(QFrame::Shape::StyledPanel);
+        listEq_L->setFrameShadow(QFrame::Shadow::Raised);
+
+        horizontalLayout_L_sub->addWidget(listEq_L);
+
+        listequi = new QGroupBox(contenumainEq_L);
+        listequi->setObjectName("listequi");
+        listequi->setGeometry(QRect(150, 110, 801, 561));
+        searchbar_L = new QLineEdit(listequi);
+        searchbar_L->setObjectName("searchbar_L");
+        searchbar_L->setGeometry(QRect(20, 10, 391, 58));
+        sortEq_L = new QComboBox(listequi);
+        sortEq_L->addItem(QString());
+        sortEq_L->addItem(QString());
+        sortEq_L->addItem(QString());
+        sortEq_L->addItem(QString());
+        sortEq_L->setObjectName("sortEq_L");
+        sortEq_L->setGeometry(QRect(600, 10, 151, 54));
+        equipmentlist_L = new QLabel(listequi);
+        equipmentlist_L->setObjectName("equipmentlist_L");
+        equipmentlist_L->setGeometry(QRect(430, 20, 151, 31));
+        equipmentlist_L->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        tableeq_L = new QTableWidget(listequi);
+        if (tableeq_L->columnCount() < 5)
+            tableeq_L->setColumnCount(5);
+        QTableWidgetItem *__qtablewidgetitem31 = new QTableWidgetItem();
+        tableeq_L->setHorizontalHeaderItem(0, __qtablewidgetitem31);
+        QTableWidgetItem *__qtablewidgetitem32 = new QTableWidgetItem();
+        tableeq_L->setHorizontalHeaderItem(1, __qtablewidgetitem32);
+        QTableWidgetItem *__qtablewidgetitem33 = new QTableWidgetItem();
+        tableeq_L->setHorizontalHeaderItem(2, __qtablewidgetitem33);
+        QTableWidgetItem *__qtablewidgetitem34 = new QTableWidgetItem();
+        tableeq_L->setHorizontalHeaderItem(3, __qtablewidgetitem34);
+        QTableWidgetItem *__qtablewidgetitem35 = new QTableWidgetItem();
+        tableeq_L->setHorizontalHeaderItem(4, __qtablewidgetitem35);
+        if (tableeq_L->rowCount() < 3)
+            tableeq_L->setRowCount(3);
+        tableeq_L->setObjectName("tableeq_L");
+        tableeq_L->setGeometry(QRect(20, 120, 781, 221));
+        tableeq_L->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
+        tableeq_L->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
+        tableeq_L->setRowCount(3);
+        tableeq_L->setColumnCount(5);
+        chatbotbtn_L = new QPushButton(listequi);
+        chatbotbtn_L->setObjectName("chatbotbtn_L");
+        chatbotbtn_L->setGeometry(QRect(80, 350, 261, 41));
+        staticbtnE_L = new QPushButton(listequi);
+        staticbtnE_L->setObjectName("staticbtnE_L");
+        staticbtnE_L->setGeometry(QRect(170, 420, 171, 41));
+        exportpdfbtnE_L = new QPushButton(listequi);
+        exportpdfbtnE_L->setObjectName("exportpdfbtnE_L");
+        exportpdfbtnE_L->setGeometry(QRect(420, 420, 161, 41));
+        chatbotbtn_2_L = new QPushButton(listequi);
+        chatbotbtn_2_L->setObjectName("chatbotbtn_2_L");
+        chatbotbtn_2_L->setGeometry(QRect(440, 350, 261, 41));
+        goToFormBtnE = new QPushButton(listequi);
+        goToFormBtnE->setObjectName("goToFormBtnE");
+        goToFormBtnE->setGeometry(QRect(300, 490, 191, 40));
+
+        horizontalLayout_L->addWidget(contenumainEq_L);
+
+        stackedWidget->addWidget(pageEquipmentList);
+        pageEquipmentForm = new QWidget();
+        pageEquipmentForm->setObjectName("pageEquipmentForm");
+        pageEquipmentForm->setStyleSheet(QString::fromUtf8("/* =================================================\n"
+"   HEADER + SIDEBAR (SAME STYLE)\n"
+"   ================================================= */\n"
+"QFrame#headerE_F,\n"
+"QFrame#sidebarMenuE_F{\n"
+"    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,\n"
+"        stop:0 rgba(12, 42, 75, 0.95),\n"
+"        stop:0.55 rgba(8, 30, 55, 0.95),\n"
+"        stop:1 rgba(6, 22, 40, 0.95));\n"
+"    border: 1px solid rgba(255,255,255,0.12);\n"
 "    border-radius: 16px;\n"
 "}\n"
 "\n"
-"/* Title label */\n"
-"QLabel#labeladdeq {\n"
-"    color: #E3F2FD;\n"
-"    font-size: 18px;\n"
-"    font-weight: 700;\n"
-"    padding: 8px 0;\n"
+"QFrame#headerE_F {\n"
+"    padding: 10px 16px;\n"
 "}\n"
 "\n"
-"/* All labels inside the form */\n"
-"QFrame#formEq QLabel {\n"
-"    color: rgba(227,242,253,0.88);\n"
-"    font-size: 13px;\n"
-"    font-weight: 600;\n"
+"QFrame#sidebarMenuC {\n"
+"    padding: 12px;\n"
 "}\n"
 "\n"
-"/* Inputs (LineEdits) */\n"
-"QLineEdit {\n"
-"    background-color: rgba(10, 35, 55, 0.65);\n"
-"    color: #E3F2FD;\n"
-""
-                        "    border: 1px solid rgba(79,195,247,0.25);\n"
-"    border-radius: 10px;\n"
-"    padding: 8px 12px;\n"
-"    min-height: 36px;\n"
-"    font-size: 13px;\n"
+"/* =================================================\n"
+"   HEADER CONTENT\n"
+"   ================================================= */\n"
+"QLabel#titreHeaderE_F {\n"
+"    color: #EAF0FF;\n"
+"    font-size: 15px;\n"
+"    font-weight: 800;\n"
+"    letter-spacing: 0.5px;\n"
 "}\n"
 "\n"
-"QLineEdit:focus {\n"
-"    border: 1px solid #4FC3F7;\n"
-"    background-color: rgba(10, 35, 55, 0.85);\n"
+"QLabel#avatarE_F{\n"
+"    min-width: 42px;\n"
+"    max-width: 42px;\n"
+"    min-height: 42px;\n"
+"    max-height: 42px;\n"
+"    border-"
+                        "radius: 21px;\n"
+"    border: 2px solid rgba(88,184,255,0.6);\n"
+"    background-color: rgba(255,255,255,0.06);\n"
 "}\n"
-"\n"
-"/* ComboBoxes  */\n"
-"QComboBox {\n"
-"    background-color: rgba(10, 35, 55, 0.65);\n"
-"    color: #E3F2FD;\n"
-"    border: 1px solid rgba(79,195,247,0.25);\n"
-"    border-radius: 10px;\n"
-"    padding: 7px 12px;\n"
-"    min-height: 36px;\n"
-"    font-size: 13px;\n"
-"}\n"
-"\n"
-"QComboBox:hover {\n"
-"    border: 1px solid rgba(79,195,247,0.45);\n"
-"}\n"
-"\n"
-"QComboBox:focus {\n"
-"    border: 1px solid #4FC3F7;\n"
-"    background-color: rgba(10, 35, 55, 0.85);\n"
-"}\n"
-"\n"
-"QComboBox::drop-down {\n"
-"    width: 36px;\n"
+"QGroupBox#groupBoxE_F{\n"
 "    border: none;\n"
+"    margin-top: 6px;\n"
 "}\n"
 "\n"
-"QComboBox::down-arrow {\n"
-"    image: none;\n"
-"    border-left: 6px solid transparent;\n"
-"    border-right: 6px solid transparent;\n"
-"    border-top: 8px solid rgba(227,242,253"
-                        ",0.8);\n"
-"    margin-right: 10px;\n"
+"/* =================================================\n"
+"   LOG OUT BUTTON\n"
+"   ================================================= */\n"
+"QPushButton#logOutBTNe_F {\n"
+"    background: transparent;\n"
+"    border: none;\n"
+"    color: rgba(234,240,255,0.65);\n"
+"    padding: 12px 14px;\n"
+"    border-radius: 12px;\n"
+"    text-align: left;\n"
+"    font-weight: 650;\n"
+"}\n"
+"\n"
+"QPushButton#logOutBTNe_F:hover {\n"
+"    background-color: rgba(255, 120, 120, 0.12);\n"
+"    border: 1px solid rgba(255, 120, 120, 0.25);\n"
+"    color: #FFC1C1;\n"
 "}\n"
 "\n"
 "\n"
+"/* User profile button */\n"
+"QCommandLinkButton#userprofiledetails_D_2 {\n"
+"    background-color: rgba(8, 18, 38, 0.55);\n"
+"    border: 1px solid rgba(255,255,255,0.15);\n"
+"    border-radius: 12px;\n"
+"    padding: 8px 14px;\n"
+"    color: #EAF0FF"
+                        ";\n"
+"    font-weight: 700;\n"
+"}\n"
 "\n"
-"/* Add Staff Button (addEqbtn) */\n"
-"QPushButton#addEqbtn {\n"
-"    background-color: #0288D1;\n"
+"QCommandLinkButton#userprofiledetails_D_2:hover {\n"
+"    background-color: rgba(88,184,255,0.15);\n"
+"    border: 1px solid rgba(88,184,255,0.45);\n"
+"}\n"
+"\n"
+"QCommandLinkButton#userprofiledetails_D_2:pressed {\n"
+"    background-color: rgba(88,184,255,0.25);\n"
+"}"));
+        layoutWidget_F_main = new QWidget(pageEquipmentForm);
+        layoutWidget_F_main->setObjectName("layoutWidget_F_main");
+        layoutWidget_F_main->setGeometry(QRect(-10, 0, 1261, 701));
+        horizontalLayout_F_2 = new QHBoxLayout(layoutWidget_F_main);
+        horizontalLayout_F_2->setObjectName("horizontalLayout_F_2");
+        horizontalLayout_F_2->setContentsMargins(0, 0, 0, 0);
+        sidebarMenuE_F = new QFrame(layoutWidget_F_main);
+        sidebarMenuE_F->setObjectName("sidebarMenuE_F");
+        sidebarMenuE_F->setMinimumSize(QSize(200, 0));
+        sidebarMenuE_F->setMaximumSize(QSize(200, 16777215));
+        sidebarMenuE_F->setFrameShape(QFrame::Shape::NoFrame);
+        sidebarMenuE_F->setFrameShadow(QFrame::Shadow::Raised);
+        groupBoxE_F = new QGroupBox(sidebarMenuE_F);
+        groupBoxE_F->setObjectName("groupBoxE_F");
+        groupBoxE_F->setGeometry(QRect(10, 100, 200, 581));
+        groupBoxE_F->setMinimumSize(QSize(200, 0));
+        groupBoxE_F->setMaximumSize(QSize(200, 16777215));
+        staffmanagementBTNe_F = new QPushButton(groupBoxE_F);
+        staffmanagementBTNe_F->setObjectName("staffmanagementBTNe_F");
+        staffmanagementBTNe_F->setGeometry(QRect(0, 100, 181, 61));
+        staffmanagementBTNe_F->setProperty("active", QVariant(false));
+        clientsmanagementBTNe_F = new QPushButton(groupBoxE_F);
+        clientsmanagementBTNe_F->setObjectName("clientsmanagementBTNe_F");
+        clientsmanagementBTNe_F->setGeometry(QRect(0, 160, 191, 51));
+        stockmanagementBTNe_F = new QPushButton(groupBoxE_F);
+        stockmanagementBTNe_F->setObjectName("stockmanagementBTNe_F");
+        stockmanagementBTNe_F->setGeometry(QRect(0, 220, 171, 51));
+        fishingzonemanagementBTNe_F = new QPushButton(groupBoxE_F);
+        fishingzonemanagementBTNe_F->setObjectName("fishingzonemanagementBTNe_F");
+        fishingzonemanagementBTNe_F->setGeometry(QRect(-10, 340, 221, 51));
+        equipmentmanagementBTNe_F = new QPushButton(groupBoxE_F);
+        equipmentmanagementBTNe_F->setObjectName("equipmentmanagementBTNe_F");
+        equipmentmanagementBTNe_F->setGeometry(QRect(-10, 280, 201, 41));
+        equipmentmanagementBTNe_F->setProperty("active", QVariant(true));
+        logoheaderE_F = new QLabel(sidebarMenuE_F);
+        logoheaderE_F->setObjectName("logoheaderE_F");
+        logoheaderE_F->setGeometry(QRect(0, 10, 181, 151));
+        logoheaderE_F->setPixmap(QPixmap(QString::fromUtf8(":/Images/logoHeader1.png")));
+        logOutBTNe_F = new QPushButton(sidebarMenuE_F);
+        logOutBTNe_F->setObjectName("logOutBTNe_F");
+        logOutBTNe_F->setGeometry(QRect(40, 650, 121, 61));
+
+        horizontalLayout_F_2->addWidget(sidebarMenuE_F);
+
+        contenumainEq_F = new QFrame(layoutWidget_F_main);
+        contenumainEq_F->setObjectName("contenumainEq_F");
+        contenumainEq_F->setFrameShape(QFrame::Shape::StyledPanel);
+        contenumainEq_F->setFrameShadow(QFrame::Shadow::Raised);
+        contenumainEq_F->setProperty("active", QVariant(true));
+        verticalLayoutWidget_F = new QWidget(contenumainEq_F);
+        verticalLayoutWidget_F->setObjectName("verticalLayoutWidget_F");
+        verticalLayoutWidget_F->setGeometry(QRect(-270, 0, 1431, 101));
+        verticalLayout_F_header = new QVBoxLayout(verticalLayoutWidget_F);
+        verticalLayout_F_header->setObjectName("verticalLayout_F_header");
+        verticalLayout_F_header->setContentsMargins(0, 0, 0, 0);
+        headerE_F = new QFrame(verticalLayoutWidget_F);
+        headerE_F->setObjectName("headerE_F");
+        headerE_F->setFrameShape(QFrame::Shape::StyledPanel);
+        headerE_F->setFrameShadow(QFrame::Shadow::Raised);
+        titreHeaderE_F = new QLabel(headerE_F);
+        titreHeaderE_F->setObjectName("titreHeaderE_F");
+        titreHeaderE_F->setGeometry(QRect(220, 20, 461, 61));
+        titreHeaderE_F->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        userInfoBox_F = new QFrame(headerE_F);
+        userInfoBox_F->setObjectName("userInfoBox_F");
+        userInfoBox_F->setGeometry(QRect(810, 15, 251, 61));
+        avatarE_F = new QLabel(userInfoBox_F);
+        avatarE_F->setObjectName("avatarE_F");
+        avatarE_F->setGeometry(QRect(190, 7, 46, 46));
+        avatarE_F->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
+        userprofiledetails_D_2 = new QCommandLinkButton(userInfoBox_F);
+        userprofiledetails_D_2->setObjectName("userprofiledetails_D_2");
+        userprofiledetails_D_2->setGeometry(QRect(10, 5, 241, 51));
+
+        verticalLayout_F_header->addWidget(headerE_F);
+
+        layoutWidget_F = new QWidget(contenumainEq_F);
+        layoutWidget_F->setObjectName("layoutWidget_F");
+        layoutWidget_F->setGeometry(QRect(-10, 100, 831, 621));
+        horizontalLayout_12 = new QHBoxLayout(layoutWidget_F);
+        horizontalLayout_12->setObjectName("horizontalLayout_12");
+        horizontalLayout_12->setContentsMargins(0, 0, 0, 0);
+        listEq_F = new QFrame(layoutWidget_F);
+        listEq_F->setObjectName("listEq_F");
+        listEq_F->setFrameShape(QFrame::Shape::StyledPanel);
+        listEq_F->setFrameShadow(QFrame::Shadow::Raised);
+        formEq = new QFrame(listEq_F);
+        formEq->setObjectName("formEq");
+        formEq->setGeometry(QRect(40, 0, 741, 619));
+        formEq->setFrameShape(QFrame::Shape::StyledPanel);
+        formEq->setFrameShadow(QFrame::Shadow::Raised);
+        formcontEq_F = new QGroupBox(formEq);
+        formcontEq_F->setObjectName("formcontEq_F");
+        formcontEq_F->setGeometry(QRect(10, 10, 731, 601));
+        Eqnamelabel_F = new QLabel(formcontEq_F);
+        Eqnamelabel_F->setObjectName("Eqnamelabel_F");
+        Eqnamelabel_F->setGeometry(QRect(150, 70, 131, 20));
+        Eqaddresslabel_F = new QLabel(formcontEq_F);
+        Eqaddresslabel_F->setObjectName("Eqaddresslabel_F");
+        Eqaddresslabel_F->setGeometry(QRect(160, 130, 111, 20));
+        statelabel_F = new QLabel(formcontEq_F);
+        statelabel_F->setObjectName("statelabel_F");
+        statelabel_F->setGeometry(QRect(150, 200, 141, 20));
+        quantitylabel_F = new QLabel(formcontEq_F);
+        quantitylabel_F->setObjectName("quantitylabel_F");
+        quantitylabel_F->setGeometry(QRect(140, 270, 151, 20));
+        capacitylab_F = new QLabel(formcontEq_F);
+        capacitylab_F->setObjectName("capacitylab_F");
+        capacitylab_F->setGeometry(QRect(140, 340, 141, 20));
+        addEqbtn_F = new QPushButton(formcontEq_F);
+        addEqbtn_F->setObjectName("addEqbtn_F");
+        addEqbtn_F->setGeometry(QRect(190, 410, 321, 61));
+        addEqbtn_F->setStyleSheet(QString::fromUtf8(" background-color: #0288D1;\n"
 "    color: white;\n"
 "    border: none;\n"
 "    border-radius: 12px;\n"
 "    min-height: 40px;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"QPushButton#addEqbtn:hover {\n"
-"    background-color: #039BE5;\n"
-"}\n"
-"\n"
-"QPushButton#addEqbtn:pressed {\n"
-"    background-color: #01579B;\n"
-"}\n"
-"/* ================================================= */\n"
-"/* ============ Equi LIST CONTAINER =============== */\n"
-"/* ================================================= */\n"
-"\n"
-"#listequi {\n"
-"    background-color: rgba(12, 32, 52, 0.95);\n"
-"    border: 1px solid rgba(79, 195, 247, 0.25);\n"
-"    border-radius: 18px;\n"
-"    padding: 15px;\n"
-"    margin-left: 10px;\n"
-"}\n"
-"\n"
-"#listequi::title {\n"
-"    subcontrol-origin: margin;\n"
-"    left: 15px;\n"
-"    top: 8px;\n"
-"    padding: 0 8px;\n"
-"    color: #4fc3f7;\n"
-"    font-weight: 700;\n"
-"    font-si"
-                        "ze: 14px;\n"
-"}\n"
-"\n"
-"/* ================================================= */\n"
-"/* ================= SEARCH BAR ==================== */\n"
-"/* ================================================= */\n"
-"\n"
-"#searchbar {\n"
-"    background-color: rgba(20, 45, 70, 0.9);\n"
-"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
-"    border-radius: 14px;\n"
-"    padding: 10px 15px;\n"
-"    color: white;\n"
-"    font-size: 13px;\n"
-"}\n"
-"\n"
-"#searchbar:focus {\n"
-"    border: 1px solid #4fc3f7;\n"
-"    background-color: rgba(30, 75, 120, 0.9);\n"
-"}\n"
-"\n"
-"/* ================================================= */\n"
-"/* ================= SORT COMBO ==================== */\n"
-"/* ================================================= */\n"
-"\n"
-"#sortEq {\n"
-"    background-color: rgba(20, 45, 70, 0.9);\n"
-"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
-"    border-radius: 12px;\n"
-"    padding: 6px 12px;\n"
-"    color: #e3f2fd;\n"
-"}\n"
-"\n"
-"#sortEq:hover {\n"
-"    background-color: rgba(79, 195, 247, 0.25);\n"
-"}\n"
-""
-                        "\n"
-"/* ================================================= */\n"
-"/* ================== TABLE ======================== */\n"
-"/* ================================================= */\n"
-"\n"
-"#tableeq {\n"
-"    background-color: rgba(10, 25, 40, 0.95);\n"
-"    border: 1px solid rgba(79, 195, 247, 0.3);\n"
-"    border-radius: 14px;\n"
-"    gridline-color: rgba(79, 195, 247, 0.15);\n"
-"    color: #e3f2fd;\n"
-"    font-size: 12px;\n"
-"}\n"
-"\n"
-"#tableeq::item {\n"
-"    padding: 8px;\n"
-"}\n"
-"\n"
-"#tableeq::item:selected {\n"
-"    background-color: rgba(79, 195, 247, 0.35);\n"
-"    color: white;\n"
-"}\n"
-"\n"
-"QHeaderView::section {\n"
-"    background-color: rgba(15, 55, 90, 0.95);\n"
-"    color: #4fc3f7;\n"
-"    padding: 8px;\n"
-"    border: none;\n"
-"    font-weight: bold;\n"
-"}\n"
-"\n"
-"/* Scrollbars table */\n"
-"QTableWidget QScrollBar:vertical {\n"
-"    background: transparent;\n"
-"    width: 8px;\n"
-"}\n"
-"\n"
-"QTableWidget QScrollBar::handle:vertical {\n"
-"    background: #4fc3f7;\n"
-"    border-radius: 4px"
-                        ";\n"
-"}\n"
-"\n"
-"QTableWidget QScrollBar::add-line,\n"
-"QTableWidget QScrollBar::sub-line {\n"
-"    height: 0;\n"
-"}\n"
-"\n"
-"/* ================================================= */\n"
-"/* ================= BUTTONS ======================= */\n"
-"/* ================================================= */\n"
-"\n"
-"\n"
-"#chatbotbtn,\n"
-"#chatbotbtn_2,\n"
-"#staticbtnE,\n"
-"#exportpdfbtnE {\n"
-"    background-color: rgba(20, 60, 95, 0.9);\n"
-"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
-"    border-radius: 12px;\n"
-"    color: #e3f2fd;\n"
-"    padding: 10px 16px;\n"
-"    font-weight: 600;\n"
-"}\n"
-"\n"
-"\n"
-"#chatbotbtn:hover,\n"
-"#chatbotbtn_2:hover,\n"
-"#staticbtnE:hover,\n"
-"#exportpdfbtnE:hover {\n"
-"    background-color: rgba(79, 195, 247, 0.35);\n"
-"    color: white;\n"
-"}\n"
-"\n"
-"/* ===== DELETE BUTTON ===== */\n"
-"#deletebtnE {\n"
-"    background-color: rgba(183, 28, 28, 0.9);\n"
-"    border: none;\n"
-"    border-radius: 12px;\n"
-"    color: white;\n"
-"    padding: 10px 16px;\n"
-"    font-weight: 600;\n"
-""
-                        "}\n"
-"\n"
-"#deletebtnE:hover {\n"
-"    background-color: #e53935;\n"
-"    box-shadow: 0 0 15px rgba(244, 67, 54, 0.6);\n"
-"}\n"
-"/* ======================================= */\n"
-"/* ========= MODIFY STAFF BUTTON ========= */\n"
-"/* ======================================= */\n"
-"\n"
-"#modifybtn {\n"
-"    background-color: #f9a825;            /* Jaune principal */\n"
-"    color: #1a1a1a;\n"
-"    border: none;\n"
-"    border-radius: 14px;\n"
-"    padding: 12px 20px;\n"
-"    font-size: 14px;\n"
-"    font-weight: 700;\n"
-"}\n"
-"\n"
-"/* Hover */\n"
-"#modifybtn:hover {\n"
-"    background-color: #fbc02d;            /* Jaune plus clair */\n"
-"    box-shadow: 0 0 15px rgba(251, 192, 45, 0.6);\n"
-"}\n"
-"\n"
-"/* Click (pressed) */\n"
-"#modifybtn:pressed {\n"
-"    background-color: #f57f17;            /* Jaune fonc\303\251 */\n"
-"    box-shadow: inset 0 3px 6px rgba(0,0,0,0.35);\n"
-"}\n"
-"/* =========================================================\n"
-"   BACK TO WELCOME BUTTON\n"
-"   ======================================"
-                        "=================== */\n"
-"QPushButton#backWbtnE {\n"
-"    background: rgba(20, 38, 58, 0.65);   /* navy soft */\n"
-"    color: rgba(234,240,255,0.90);\n"
-"    border-radius: 14px;\n"
-"    padding: 10px 18px;\n"
-"    border: 1px solid rgba(120,160,200,0.25);\n"
-"    font-size: 13px;\n"
-"    font-weight: 700;\n"
-"}\n"
-"\n"
-"/* Hover */\n"
-"QPushButton#backWbtnE:hover {\n"
-"    background: rgba(37, 99, 235, 0.20);  /* blue highlight */\n"
-"    border: 1px solid rgba(88,184,255,0.55);\n"
-"    color: #FFFFFF;\n"
-"}\n"
-"\n"
-"/* Pressed */\n"
-"QPushButton#backWbtnE:pressed {\n"
-"    background: rgba(15, 23, 42, 0.95);\n"
-"    border: 1px solid rgba(88,184,255,0.75);\n"
-"}\n"
-"\n"
-"/* Optional: disabled */\n"
-"QPushButton#backWbtnE:disabled {\n"
-"    background: rgba(20, 38, 58, 0.35);\n"
-"    color: rgba(234,240,255,0.45);\n"
-"    border: 1px solid rgba(120,160,200,0.15);\n"
-"}\n"
-""));
-        layoutWidget_10 = new QWidget(pageEquipment);
-        layoutWidget_10->setObjectName("layoutWidget_10");
-        layoutWidget_10->setGeometry(QRect(0, 0, 1491, 761));
-        horizontalLayout_12 = new QHBoxLayout(layoutWidget_10);
-        horizontalLayout_12->setObjectName("horizontalLayout_12");
-        horizontalLayout_12->setContentsMargins(0, 0, 0, 0);
-        sidebarMenuE = new QFrame(layoutWidget_10);
-        sidebarMenuE->setObjectName("sidebarMenuE");
-        sidebarMenuE->setMinimumSize(QSize(200, 0));
-        sidebarMenuE->setMaximumSize(QSize(200, 16777215));
-        sidebarMenuE->setFrameShape(QFrame::Shape::NoFrame);
-        sidebarMenuE->setFrameShadow(QFrame::Shadow::Raised);
-        groupBoxE = new QGroupBox(sidebarMenuE);
-        groupBoxE->setObjectName("groupBoxE");
-        groupBoxE->setGeometry(QRect(10, 100, 200, 581));
-        groupBoxE->setMinimumSize(QSize(200, 0));
-        groupBoxE->setMaximumSize(QSize(200, 16777215));
-        staffmanagementBTNe = new QPushButton(groupBoxE);
-        staffmanagementBTNe->setObjectName("staffmanagementBTNe");
-        staffmanagementBTNe->setGeometry(QRect(0, 80, 181, 61));
-        staffmanagementBTNe->setProperty("active", QVariant(false));
-        clientsmanagementBTNe = new QPushButton(groupBoxE);
-        clientsmanagementBTNe->setObjectName("clientsmanagementBTNe");
-        clientsmanagementBTNe->setGeometry(QRect(0, 150, 191, 51));
-        stockmanagementBTNe = new QPushButton(groupBoxE);
-        stockmanagementBTNe->setObjectName("stockmanagementBTNe");
-        stockmanagementBTNe->setGeometry(QRect(0, 210, 171, 51));
-        fishingzonemanagementBTNe = new QPushButton(groupBoxE);
-        fishingzonemanagementBTNe->setObjectName("fishingzonemanagementBTNe");
-        fishingzonemanagementBTNe->setGeometry(QRect(-10, 320, 221, 51));
-        equipmentmanagementBTNe = new QPushButton(groupBoxE);
-        equipmentmanagementBTNe->setObjectName("equipmentmanagementBTNe");
-        equipmentmanagementBTNe->setGeometry(QRect(-10, 270, 201, 41));
-        equipmentmanagementBTNe->setProperty("active", QVariant(true));
-        logoheaderE = new QLabel(sidebarMenuE);
-        logoheaderE->setObjectName("logoheaderE");
-        logoheaderE->setGeometry(QRect(0, 10, 181, 151));
-        logoheaderE->setPixmap(QPixmap(QString::fromUtf8(":/Images/logoHeader1.png")));
-        logOutBTNe = new QPushButton(sidebarMenuE);
-        logOutBTNe->setObjectName("logOutBTNe");
-        logOutBTNe->setGeometry(QRect(40, 650, 121, 61));
+"    font-weight: bold;"));
+        goToListBtnE = new QPushButton(formcontEq_F);
+        goToListBtnE->setObjectName("goToListBtnE");
+        goToListBtnE->setGeometry(QRect(250, 500, 200, 40));
+        labeladdeq_F = new QLabel(formcontEq_F);
+        labeladdeq_F->setObjectName("labeladdeq_F");
+        labeladdeq_F->setGeometry(QRect(180, -10, 371, 51));
+        labeladdeq_F->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        Eqnameedit_F = new QLineEdit(formEq);
+        Eqnameedit_F->setObjectName("Eqnameedit_F");
+        Eqnameedit_F->setGeometry(QRect(310, 60, 221, 54));
+        Eqaddressedit_F = new QLineEdit(formEq);
+        Eqaddressedit_F->setObjectName("Eqaddressedit_F");
+        Eqaddressedit_F->setGeometry(QRect(310, 130, 221, 54));
+        stateedit_F = new QLineEdit(formEq);
+        stateedit_F->setObjectName("stateedit_F");
+        stateedit_F->setGeometry(QRect(310, 200, 221, 54));
+        quantityedit_F = new QLineEdit(formEq);
+        quantityedit_F->setObjectName("quantityedit_F");
+        quantityedit_F->setGeometry(QRect(310, 270, 221, 54));
+        capacity_F = new QLineEdit(formEq);
+        capacity_F->setObjectName("capacity_F");
+        capacity_F->setGeometry(QRect(310, 340, 221, 54));
 
-        horizontalLayout_12->addWidget(sidebarMenuE);
-
-        contenumainEq = new QFrame(layoutWidget_10);
-        contenumainEq->setObjectName("contenumainEq");
-        contenumainEq->setFrameShape(QFrame::Shape::StyledPanel);
-        contenumainEq->setFrameShadow(QFrame::Shadow::Raised);
-        contenumainEq->setProperty("active", QVariant(true));
-        verticalLayoutWidget_8 = new QWidget(contenumainEq);
-        verticalLayoutWidget_8->setObjectName("verticalLayoutWidget_8");
-        verticalLayoutWidget_8->setGeometry(QRect(-270, 0, 1431, 101));
-        verticalLayout_9 = new QVBoxLayout(verticalLayoutWidget_8);
-        verticalLayout_9->setObjectName("verticalLayout_9");
-        verticalLayout_9->setContentsMargins(0, 0, 0, 0);
-        headerE = new QFrame(verticalLayoutWidget_8);
-        headerE->setObjectName("headerE");
-        headerE->setFrameShape(QFrame::Shape::StyledPanel);
-        headerE->setFrameShadow(QFrame::Shadow::Raised);
-        titreHeaderE = new QLabel(headerE);
-        titreHeaderE->setObjectName("titreHeaderE");
-        titreHeaderE->setGeometry(QRect(220, 20, 461, 61));
-        titreHeaderE->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        userprofiledetailsE = new QCommandLinkButton(headerE);
-        userprofiledetailsE->setObjectName("userprofiledetailsE");
-        userprofiledetailsE->setGeometry(QRect(830, 20, 211, 51));
-        avatarE = new QLabel(headerE);
-        avatarE->setObjectName("avatarE");
-        avatarE->setGeometry(QRect(990, 20, 46, 46));
-        avatarE->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
-
-        verticalLayout_9->addWidget(headerE);
-
-        layoutWidget_11 = new QWidget(contenumainEq);
-        layoutWidget_11->setObjectName("layoutWidget_11");
-        layoutWidget_11->setGeometry(QRect(-10, 100, 831, 621));
-        horizontalLayout_13 = new QHBoxLayout(layoutWidget_11);
-        horizontalLayout_13->setObjectName("horizontalLayout_13");
-        horizontalLayout_13->setContentsMargins(0, 0, 0, 0);
-        listEq = new QFrame(layoutWidget_11);
-        listEq->setObjectName("listEq");
-        listEq->setFrameShape(QFrame::Shape::StyledPanel);
-        listEq->setFrameShadow(QFrame::Shadow::Raised);
-        formEq = new QFrame(listEq);
-        formEq->setObjectName("formEq");
-        formEq->setGeometry(QRect(10, 0, 411, 619));
-        formEq->setFrameShape(QFrame::Shape::StyledPanel);
-        formEq->setFrameShadow(QFrame::Shadow::Raised);
-        formcontEq = new QGroupBox(formEq);
-        formcontEq->setObjectName("formcontEq");
-        formcontEq->setGeometry(QRect(10, 10, 401, 601));
-        labeladdeq = new QLabel(formcontEq);
-        labeladdeq->setObjectName("labeladdeq");
-        labeladdeq->setGeometry(QRect(100, 0, 181, 51));
-        labeladdeq->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        Eqnamelabel = new QLabel(formcontEq);
-        Eqnamelabel->setObjectName("Eqnamelabel");
-        Eqnamelabel->setGeometry(QRect(10, 70, 131, 20));
-        Eqnameedit = new QLineEdit(formcontEq);
-        Eqnameedit->setObjectName("Eqnameedit");
-        Eqnameedit->setGeometry(QRect(150, 50, 221, 54));
-        Eqaddresslabel = new QLabel(formcontEq);
-        Eqaddresslabel->setObjectName("Eqaddresslabel");
-        Eqaddresslabel->setGeometry(QRect(10, 130, 111, 20));
-        Eqaddressedit = new QLineEdit(formcontEq);
-        Eqaddressedit->setObjectName("Eqaddressedit");
-        Eqaddressedit->setGeometry(QRect(150, 120, 221, 54));
-        statelabel = new QLabel(formcontEq);
-        statelabel->setObjectName("statelabel");
-        statelabel->setGeometry(QRect(10, 210, 141, 20));
-        stateedit = new QLineEdit(formcontEq);
-        stateedit->setObjectName("stateedit");
-        stateedit->setGeometry(QRect(150, 190, 221, 54));
-        quantitylabel = new QLabel(formcontEq);
-        quantitylabel->setObjectName("quantitylabel");
-        quantitylabel->setGeometry(QRect(10, 270, 151, 20));
-        quantityedit = new QLineEdit(formcontEq);
-        quantityedit->setObjectName("quantityedit");
-        quantityedit->setGeometry(QRect(150, 260, 221, 54));
-        capacitylab = new QLabel(formcontEq);
-        capacitylab->setObjectName("capacitylab");
-        capacitylab->setGeometry(QRect(10, 340, 141, 20));
-        capacity = new QLineEdit(formcontEq);
-        capacity->setObjectName("capacity");
-        capacity->setGeometry(QRect(150, 330, 221, 54));
-        addEqbtn = new QPushButton(formcontEq);
-        addEqbtn->setObjectName("addEqbtn");
-        addEqbtn->setGeometry(QRect(40, 420, 321, 61));
-        backWbtnE = new QPushButton(formcontEq);
-        backWbtnE->setObjectName("backWbtnE");
-        backWbtnE->setGeometry(QRect(40, 500, 321, 61));
-        listequi = new QGroupBox(listEq);
-        listequi->setObjectName("listequi");
-        listequi->setGeometry(QRect(420, 0, 391, 621));
-        searchbar = new QLineEdit(listequi);
-        searchbar->setObjectName("searchbar");
-        searchbar->setGeometry(QRect(20, 10, 361, 58));
-        sortEq = new QComboBox(listequi);
-        sortEq->addItem(QString());
-        sortEq->addItem(QString());
-        sortEq->addItem(QString());
-        sortEq->addItem(QString());
-        sortEq->setObjectName("sortEq");
-        sortEq->setGeometry(QRect(230, 80, 151, 54));
-        equipmentlist = new QLabel(listequi);
-        equipmentlist->setObjectName("equipmentlist");
-        equipmentlist->setGeometry(QRect(30, 80, 191, 51));
-        equipmentlist->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        tableeq = new QTableWidget(listequi);
-        if (tableeq->columnCount() < 5)
-            tableeq->setColumnCount(5);
-        QTableWidgetItem *__qtablewidgetitem26 = new QTableWidgetItem();
-        tableeq->setHorizontalHeaderItem(0, __qtablewidgetitem26);
-        QTableWidgetItem *__qtablewidgetitem27 = new QTableWidgetItem();
-        tableeq->setHorizontalHeaderItem(1, __qtablewidgetitem27);
-        QTableWidgetItem *__qtablewidgetitem28 = new QTableWidgetItem();
-        tableeq->setHorizontalHeaderItem(2, __qtablewidgetitem28);
-        QTableWidgetItem *__qtablewidgetitem29 = new QTableWidgetItem();
-        tableeq->setHorizontalHeaderItem(3, __qtablewidgetitem29);
-        QTableWidgetItem *__qtablewidgetitem30 = new QTableWidgetItem();
-        tableeq->setHorizontalHeaderItem(4, __qtablewidgetitem30);
-        if (tableeq->rowCount() < 3)
-            tableeq->setRowCount(3);
-        tableeq->setObjectName("tableeq");
-        tableeq->setGeometry(QRect(10, 140, 381, 221));
-        tableeq->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
-        tableeq->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
-        tableeq->setRowCount(3);
-        tableeq->setColumnCount(5);
-        modifybtn = new QPushButton(listequi);
-        modifybtn->setObjectName("modifybtn");
-        modifybtn->setGeometry(QRect(20, 380, 161, 41));
-        deletebtnE = new QPushButton(listequi);
-        deletebtnE->setObjectName("deletebtnE");
-        deletebtnE->setGeometry(QRect(210, 380, 171, 41));
-        chatbotbtn = new QPushButton(listequi);
-        chatbotbtn->setObjectName("chatbotbtn");
-        chatbotbtn->setGeometry(QRect(80, 430, 261, 41));
-        staticbtnE = new QPushButton(listequi);
-        staticbtnE->setObjectName("staticbtnE");
-        staticbtnE->setGeometry(QRect(30, 490, 171, 41));
-        exportpdfbtnE = new QPushButton(listequi);
-        exportpdfbtnE->setObjectName("exportpdfbtnE");
-        exportpdfbtnE->setGeometry(QRect(220, 490, 161, 41));
-        chatbotbtn_2 = new QPushButton(listequi);
-        chatbotbtn_2->setObjectName("chatbotbtn_2");
-        chatbotbtn_2->setGeometry(QRect(80, 540, 261, 41));
-
-        horizontalLayout_13->addWidget(listEq);
+        horizontalLayout_12->addWidget(listEq_F);
 
 
-        horizontalLayout_12->addWidget(contenumainEq);
+        horizontalLayout_F_2->addWidget(contenumainEq_F);
 
-        stackedWidget->addWidget(pageEquipment);
+        stackedWidget->addWidget(pageEquipmentForm);
         pageupdate = new QWidget();
         pageupdate->setObjectName("pageupdate");
         pageupdate->setStyleSheet(QString::fromUtf8("/* =================================================\n"
@@ -5233,7 +5362,49 @@ public:
 "    color: rgba(234,240,255,0.45);\n"
 "    border: 1px solid rgba(120,160,200,0.15);\n"
 "}\n"
-""));
+"/* ===== LINK STYLE BUTTONS ===== */\n"
+"#ubploacvbtn_U,\n"
+"#ubploavatarbtn_U {\n"
+"    background: transparent;\n"
+"    border: none;\n"
+"    color: #22C55E; /* bleu clair moderne */\n"
+"    font-size: 13px;\n"
+"    font-weight: 700;\n"
+"}\n"
+"\n"
+"#ubploacvbtn_U:hover,\n"
+"#ubploaubploavatarbtn_U:hover {\n"
+"    color: #4ADE80; /* bleu glow */\n"
+"    border-bottom: 1px solid #7DD3FC;\n"
+"}\n"
+"\n"
+"#ubploacvbtn_U:pressed,\n"
+"#ubploaubploavatarbtn_U:pressed {\n"
+"    color: #0284C7;\n"
+""
+                        "}\n"
+"\n"
+"/* ===== DROPDOWN LIST ===== */\n"
+"QComboBox QAbstractItemView {\n"
+"    background-color: #0A2236; /* fond solide */\n"
+"    color: #E3F2FD;\n"
+"    border: 1px solid #4FC3F7;\n"
+"    border-radius: 8px;\n"
+"    padding: 4px;\n"
+"    selection-background-color: #4FC3F7;\n"
+"    selection-color: #001018;\n"
+"}\n"
+"\n"
+"/* Hover item */\n"
+"QComboBox QAbstractItemView::item:hover {\n"
+"    background-color: rgba(79,195,247,0.25);\n"
+"}\n"
+"\n"
+"/* Selected item */\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background-color: #4FC3F7;\n"
+"    color: #001018;\n"
+"}"));
         layoutWidget_2 = new QWidget(pageupdate);
         layoutWidget_2->setObjectName("layoutWidget_2");
         layoutWidget_2->setGeometry(QRect(0, -10, 1491, 761));
@@ -5298,32 +5469,33 @@ public:
         titreHeader_U->setAlignment(Qt::AlignmentFlag::AlignCenter);
         userprofiledetails_U = new QCommandLinkButton(header_U);
         userprofiledetails_U->setObjectName("userprofiledetails_U");
-        userprofiledetails_U->setGeometry(QRect(830, 20, 211, 51));
+        userprofiledetails_U->setGeometry(QRect(1110, 30, 211, 51));
         avatar_U = new QLabel(header_U);
         avatar_U->setObjectName("avatar_U");
-        avatar_U->setGeometry(QRect(990, 20, 46, 46));
+        avatar_U->setGeometry(QRect(1270, 30, 46, 46));
         avatar_U->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
 
         verticalLayout_5->addWidget(header_U);
 
         layoutWidget_3 = new QWidget(contenumain_U);
         layoutWidget_3->setObjectName("layoutWidget_3");
-        layoutWidget_3->setGeometry(QRect(-10, 100, 831, 621));
+        layoutWidget_3->setGeometry(QRect(-10, 100, 1282, 621));
         horizontalLayout_5 = new QHBoxLayout(layoutWidget_3);
         horizontalLayout_5->setObjectName("horizontalLayout_5");
         horizontalLayout_5->setContentsMargins(0, 0, 0, 0);
         liststaff_U = new QFrame(layoutWidget_3);
         liststaff_U->setObjectName("liststaff_U");
+        liststaff_U->setMinimumSize(QSize(1280, 0));
         liststaff_U->setFrameShape(QFrame::Shape::StyledPanel);
         liststaff_U->setFrameShadow(QFrame::Shadow::Raised);
         formAddStaff_U = new QFrame(liststaff_U);
         formAddStaff_U->setObjectName("formAddStaff_U");
-        formAddStaff_U->setGeometry(QRect(10, 0, 411, 619));
+        formAddStaff_U->setGeometry(QRect(10, 0, 481, 619));
         formAddStaff_U->setFrameShape(QFrame::Shape::StyledPanel);
         formAddStaff_U->setFrameShadow(QFrame::Shadow::Raised);
         formcontdd_U = new QGroupBox(formAddStaff_U);
         formcontdd_U->setObjectName("formcontdd_U");
-        formcontdd_U->setGeometry(QRect(10, 0, 401, 601));
+        formcontdd_U->setGeometry(QRect(10, 0, 501, 601));
         labeladdstaff_U = new QLabel(formcontdd_U);
         labeladdstaff_U->setObjectName("labeladdstaff_U");
         labeladdstaff_U->setGeometry(QRect(100, 0, 151, 41));
@@ -5336,130 +5508,125 @@ public:
         role_U->addItem(QString());
         role_U->addItem(QString());
         role_U->addItem(QString());
-        role_U->addItem(QString());
         role_U->setObjectName("role_U");
-        role_U->setGeometry(QRect(0, 400, 161, 52));
+        role_U->setGeometry(QRect(0, 400, 171, 52));
         staffnamelabel_U = new QLabel(formcontdd_U);
         staffnamelabel_U->setObjectName("staffnamelabel_U");
         staffnamelabel_U->setGeometry(QRect(10, 70, 131, 20));
         staffnameedit_U = new QLineEdit(formcontdd_U);
         staffnameedit_U->setObjectName("staffnameedit_U");
-        staffnameedit_U->setGeometry(QRect(150, 50, 221, 54));
+        staffnameedit_U->setGeometry(QRect(150, 50, 241, 54));
         staffaddresslabel_U = new QLabel(formcontdd_U);
         staffaddresslabel_U->setObjectName("staffaddresslabel_U");
         staffaddresslabel_U->setGeometry(QRect(10, 130, 111, 20));
         staffaddressedit_U = new QLineEdit(formcontdd_U);
         staffaddressedit_U->setObjectName("staffaddressedit_U");
-        staffaddressedit_U->setGeometry(QRect(150, 120, 221, 54));
+        staffaddressedit_U->setGeometry(QRect(150, 120, 241, 54));
         tellabel_U = new QLabel(formcontdd_U);
         tellabel_U->setObjectName("tellabel_U");
         tellabel_U->setGeometry(QRect(10, 210, 141, 20));
         teledit_U = new QLineEdit(formcontdd_U);
         teledit_U->setObjectName("teledit_U");
-        teledit_U->setGeometry(QRect(150, 190, 221, 54));
+        teledit_U->setGeometry(QRect(150, 190, 241, 54));
         maillabel_U = new QLabel(formcontdd_U);
         maillabel_U->setObjectName("maillabel_U");
         maillabel_U->setGeometry(QRect(10, 270, 151, 20));
         mailedit_U = new QLineEdit(formcontdd_U);
         mailedit_U->setObjectName("mailedit_U");
-        mailedit_U->setGeometry(QRect(150, 260, 221, 54));
+        mailedit_U->setGeometry(QRect(150, 260, 241, 54));
         cvstat_U = new QComboBox(formcontdd_U);
         cvstat_U->addItem(QString());
         cvstat_U->addItem(QString());
         cvstat_U->addItem(QString());
         cvstat_U->addItem(QString());
-        cvstat_U->addItem(QString());
-        cvstat_U->addItem(QString());
-        cvstat_U->addItem(QString());
-        cvstat_U->addItem(QString());
-        cvstat_U->addItem(QString());
         cvstat_U->setObjectName("cvstat_U");
-        cvstat_U->setGeometry(QRect(190, 400, 161, 52));
+        cvstat_U->setGeometry(QRect(200, 400, 181, 52));
         passlab_U = new QLabel(formcontdd_U);
         passlab_U->setObjectName("passlab_U");
         passlab_U->setGeometry(QRect(10, 340, 141, 20));
         passlab_U_2 = new QLineEdit(formcontdd_U);
         passlab_U_2->setObjectName("passlab_U_2");
-        passlab_U_2->setGeometry(QRect(150, 330, 221, 54));
+        passlab_U_2->setGeometry(QRect(150, 330, 241, 54));
         ubploacvbtn_U = new QPushButton(formcontdd_U);
         ubploacvbtn_U->setObjectName("ubploacvbtn_U");
         ubploacvbtn_U->setGeometry(QRect(10, 460, 90, 29));
         addstaffbtn_U = new QPushButton(formcontdd_U);
         addstaffbtn_U->setObjectName("addstaffbtn_U");
-        addstaffbtn_U->setGeometry(QRect(50, 530, 261, 60));
+        addstaffbtn_U->setGeometry(QRect(50, 530, 281, 60));
         cvpathEdit_U = new QLabel(formcontdd_U);
         cvpathEdit_U->setObjectName("cvpathEdit_U");
         cvpathEdit_U->setGeometry(QRect(120, 470, 271, 20));
         cvpathEdit_U->setAlignment(Qt::AlignmentFlag::AlignCenter);
         ubploavatarbtn_U = new QPushButton(formcontdd_U);
         ubploavatarbtn_U->setObjectName("ubploavatarbtn_U");
-        ubploavatarbtn_U->setGeometry(QRect(-1, 490, 121, 29));
+        ubploavatarbtn_U->setGeometry(QRect(-1, 490, 141, 29));
         avatarpathEdit_U = new QLabel(formcontdd_U);
         avatarpathEdit_U->setObjectName("avatarpathEdit_U");
         avatarpathEdit_U->setGeometry(QRect(130, 490, 271, 20));
         avatarpathEdit_U->setAlignment(Qt::AlignmentFlag::AlignCenter);
         liststaffff_U = new QGroupBox(liststaff_U);
         liststaffff_U->setObjectName("liststaffff_U");
-        liststaffff_U->setGeometry(QRect(420, 0, 391, 621));
+        liststaffff_U->setGeometry(QRect(479, 0, 1221, 621));
+        liststaffff_U->setMinimumSize(QSize(0, 0));
         staffsearchbarre_U = new QLineEdit(liststaffff_U);
         staffsearchbarre_U->setObjectName("staffsearchbarre_U");
-        staffsearchbarre_U->setGeometry(QRect(20, 30, 361, 58));
+        staffsearchbarre_U->setGeometry(QRect(40, 40, 501, 58));
         sortstaff_U = new QComboBox(liststaffff_U);
         sortstaff_U->addItem(QString());
         sortstaff_U->addItem(QString());
         sortstaff_U->addItem(QString());
         sortstaff_U->addItem(QString());
         sortstaff_U->setObjectName("sortstaff_U");
-        sortstaff_U->setGeometry(QRect(230, 90, 151, 54));
+        sortstaff_U->setGeometry(QRect(330, 100, 211, 54));
         stafflistlabel_U = new QLabel(liststaffff_U);
         stafflistlabel_U->setObjectName("stafflistlabel_U");
-        stafflistlabel_U->setGeometry(QRect(30, 90, 191, 51));
+        stafflistlabel_U->setGeometry(QRect(130, 100, 191, 51));
         stafflistlabel_U->setAlignment(Qt::AlignmentFlag::AlignCenter);
         tablestaff_U = new QTableWidget(liststaffff_U);
         if (tablestaff_U->columnCount() < 8)
             tablestaff_U->setColumnCount(8);
-        QTableWidgetItem *__qtablewidgetitem31 = new QTableWidgetItem();
-        tablestaff_U->setHorizontalHeaderItem(0, __qtablewidgetitem31);
-        QTableWidgetItem *__qtablewidgetitem32 = new QTableWidgetItem();
-        tablestaff_U->setHorizontalHeaderItem(1, __qtablewidgetitem32);
-        QTableWidgetItem *__qtablewidgetitem33 = new QTableWidgetItem();
-        tablestaff_U->setHorizontalHeaderItem(2, __qtablewidgetitem33);
-        QTableWidgetItem *__qtablewidgetitem34 = new QTableWidgetItem();
-        tablestaff_U->setHorizontalHeaderItem(3, __qtablewidgetitem34);
-        QTableWidgetItem *__qtablewidgetitem35 = new QTableWidgetItem();
-        tablestaff_U->setHorizontalHeaderItem(4, __qtablewidgetitem35);
         QTableWidgetItem *__qtablewidgetitem36 = new QTableWidgetItem();
-        tablestaff_U->setHorizontalHeaderItem(5, __qtablewidgetitem36);
+        tablestaff_U->setHorizontalHeaderItem(0, __qtablewidgetitem36);
         QTableWidgetItem *__qtablewidgetitem37 = new QTableWidgetItem();
-        tablestaff_U->setHorizontalHeaderItem(6, __qtablewidgetitem37);
+        tablestaff_U->setHorizontalHeaderItem(1, __qtablewidgetitem37);
         QTableWidgetItem *__qtablewidgetitem38 = new QTableWidgetItem();
-        tablestaff_U->setHorizontalHeaderItem(7, __qtablewidgetitem38);
+        tablestaff_U->setHorizontalHeaderItem(2, __qtablewidgetitem38);
+        QTableWidgetItem *__qtablewidgetitem39 = new QTableWidgetItem();
+        tablestaff_U->setHorizontalHeaderItem(3, __qtablewidgetitem39);
+        QTableWidgetItem *__qtablewidgetitem40 = new QTableWidgetItem();
+        tablestaff_U->setHorizontalHeaderItem(4, __qtablewidgetitem40);
+        QTableWidgetItem *__qtablewidgetitem41 = new QTableWidgetItem();
+        tablestaff_U->setHorizontalHeaderItem(5, __qtablewidgetitem41);
+        QTableWidgetItem *__qtablewidgetitem42 = new QTableWidgetItem();
+        tablestaff_U->setHorizontalHeaderItem(6, __qtablewidgetitem42);
+        QTableWidgetItem *__qtablewidgetitem43 = new QTableWidgetItem();
+        tablestaff_U->setHorizontalHeaderItem(7, __qtablewidgetitem43);
         if (tablestaff_U->rowCount() < 2)
             tablestaff_U->setRowCount(2);
         tablestaff_U->setObjectName("tablestaff_U");
-        tablestaff_U->setGeometry(QRect(10, 150, 381, 221));
+        tablestaff_U->setGeometry(QRect(40, 160, 501, 221));
         tablestaff_U->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
         tablestaff_U->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
         tablestaff_U->setRowCount(2);
         tablestaff_U->setColumnCount(8);
         deletestaffbtn_U = new QPushButton(liststaffff_U);
         deletestaffbtn_U->setObjectName("deletestaffbtn_U");
-        deletestaffbtn_U->setGeometry(QRect(30, 380, 341, 41));
+        deletestaffbtn_U->setGeometry(QRect(130, 390, 351, 41));
         cvanalysebtn_U = new QPushButton(liststaffff_U);
         cvanalysebtn_U->setObjectName("cvanalysebtn_U");
-        cvanalysebtn_U->setGeometry(QRect(30, 430, 341, 41));
+        cvanalysebtn_U->setGeometry(QRect(130, 440, 351, 41));
         staticbtn_U = new QPushButton(liststaffff_U);
         staticbtn_U->setObjectName("staticbtn_U");
-        staticbtn_U->setGeometry(QRect(30, 490, 171, 41));
+        staticbtn_U->setGeometry(QRect(130, 500, 171, 41));
         exportpdfstaffbtn_U = new QPushButton(liststaffff_U);
         exportpdfstaffbtn_U->setObjectName("exportpdfstaffbtn_U");
-        exportpdfstaffbtn_U->setGeometry(QRect(220, 490, 161, 41));
+        exportpdfstaffbtn_U->setGeometry(QRect(320, 500, 161, 41));
         backWbtn_U = new QPushButton(liststaffff_U);
         backWbtn_U->setObjectName("backWbtn_U");
-        backWbtn_U->setGeometry(QRect(110, 550, 211, 61));
+        backWbtn_U->setGeometry(QRect(200, 550, 211, 61));
         searchlabel_U = new QLabel(liststaffff_U);
         searchlabel_U->setObjectName("searchlabel_U");
-        searchlabel_U->setGeometry(QRect(-30, 0, 391, 31));
+        searchlabel_U->setGeometry(QRect(-20, 10, 391, 31));
         searchlabel_U->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
         horizontalLayout_5->addWidget(liststaff_U);
@@ -5861,60 +6028,60 @@ public:
         header_D->setFrameShadow(QFrame::Shadow::Raised);
         titreHeader_D = new QLabel(header_D);
         titreHeader_D->setObjectName("titreHeader_D");
-        titreHeader_D->setGeometry(QRect(290, 30, 461, 61));
+        titreHeader_D->setGeometry(QRect(210, 30, 461, 61));
         titreHeader_D->setAlignment(Qt::AlignmentFlag::AlignCenter);
         userprofiledetails_D = new QCommandLinkButton(header_D);
         userprofiledetails_D->setObjectName("userprofiledetails_D");
-        userprofiledetails_D->setGeometry(QRect(830, 20, 211, 51));
+        userprofiledetails_D->setGeometry(QRect(1120, 40, 211, 51));
         avatar_D = new QLabel(header_D);
         avatar_D->setObjectName("avatar_D");
-        avatar_D->setGeometry(QRect(990, 20, 46, 46));
+        avatar_D->setGeometry(QRect(1280, 40, 46, 46));
         avatar_D->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
 
         verticalLayout_4->addWidget(header_D);
 
         dashtitle = new QLabel(contenumain_D);
         dashtitle->setObjectName("dashtitle");
-        dashtitle->setGeometry(QRect(290, 120, 311, 20));
+        dashtitle->setGeometry(QRect(360, 120, 311, 20));
         dashtitle->setAlignment(Qt::AlignmentFlag::AlignCenter);
         statcvstatus = new QGroupBox(contenumain_D);
         statcvstatus->setObjectName("statcvstatus");
-        statcvstatus->setGeometry(QRect(410, 330, 401, 281));
+        statcvstatus->setGeometry(QRect(580, 330, 401, 281));
         statcv = new QLabel(statcvstatus);
         statcv->setObjectName("statcv");
         statcv->setGeometry(QRect(-50, -30, 461, 361));
         statcv->setPixmap(QPixmap(QString::fromUtf8(":/Images/cvdash.png")));
         statRole = new QGroupBox(contenumain_D);
         statRole->setObjectName("statRole");
-        statRole->setGeometry(QRect(10, 330, 391, 281));
+        statRole->setGeometry(QRect(50, 330, 391, 281));
         statrole = new QLabel(statRole);
         statrole->setObjectName("statrole");
         statrole->setGeometry(QRect(-30, 30, 411, 241));
         statrole->setPixmap(QPixmap(QString::fromUtf8(":/Images/staffdash.png")));
         exportbtn = new QPushButton(contenumain_D);
         exportbtn->setObjectName("exportbtn");
-        exportbtn->setGeometry(QRect(580, 670, 211, 61));
+        exportbtn->setGeometry(QRect(680, 640, 211, 61));
         backstfbtn = new QPushButton(contenumain_D);
         backstfbtn->setObjectName("backstfbtn");
-        backstfbtn->setGeometry(QRect(30, 670, 211, 61));
+        backstfbtn->setGeometry(QRect(130, 640, 211, 61));
         cardstaff = new QFrame(contenumain_D);
         cardstaff->setObjectName("cardstaff");
-        cardstaff->setGeometry(QRect(20, 180, 140, 100));
-        cardstaff->setMinimumSize(QSize(140, 100));
+        cardstaff->setGeometry(QRect(130, 170, 160, 130));
+        cardstaff->setMinimumSize(QSize(160, 130));
         cardstaff->setMaximumSize(QSize(16777215, 100));
         cardstaff->setFrameShape(QFrame::Shape::StyledPanel);
         cardstaff->setFrameShadow(QFrame::Shadow::Raised);
         totalemp = new QLabel(cardstaff);
         totalemp->setObjectName("totalemp");
-        totalemp->setGeometry(QRect(20, 0, 91, 31));
+        totalemp->setGeometry(QRect(30, 10, 91, 31));
         totalemp->setAlignment(Qt::AlignmentFlag::AlignCenter);
         numberemp = new QLabel(cardstaff);
         numberemp->setObjectName("numberemp");
-        numberemp->setGeometry(QRect(30, 40, 71, 31));
+        numberemp->setGeometry(QRect(40, 50, 71, 31));
         numberemp->setAlignment(Qt::AlignmentFlag::AlignCenter);
         beststaff = new QFrame(contenumain_D);
         beststaff->setObjectName("beststaff");
-        beststaff->setGeometry(QRect(190, 160, 601, 151));
+        beststaff->setGeometry(QRect(380, 160, 601, 151));
         beststaff->setFrameShape(QFrame::Shape::StyledPanel);
         beststaff->setFrameShadow(QFrame::Shadow::Raised);
         titlebest = new QLabel(beststaff);
@@ -5924,9 +6091,6 @@ public:
         trophy->setObjectName("trophy");
         trophy->setGeometry(QRect(10, 10, 131, 121));
         trophy->setPixmap(QPixmap(QString::fromUtf8(":/Images/bestresized.png")));
-        browse = new QPushButton(beststaff);
-        browse->setObjectName("browse");
-        browse->setGeometry(QRect(410, 100, 171, 41));
         namebest = new QLabel(beststaff);
         namebest->setObjectName("namebest");
         namebest->setGeometry(QRect(200, 40, 161, 20));
@@ -5936,6 +6100,9 @@ public:
         rewardbest = new QLabel(beststaff);
         rewardbest->setObjectName("rewardbest");
         rewardbest->setGeometry(QRect(200, 100, 161, 20));
+        bestEmployeeAvatar = new QLabel(beststaff);
+        bestEmployeeAvatar->setObjectName("bestEmployeeAvatar");
+        bestEmployeeAvatar->setGeometry(QRect(440, 20, 121, 101));
         sidebarMenu_D = new QFrame(staffdash);
         sidebarMenu_D->setObjectName("sidebarMenu_D");
         sidebarMenu_D->setGeometry(QRect(10, 0, 200, 759));
@@ -6554,91 +6721,126 @@ public:
         titreHeader_A->setAlignment(Qt::AlignmentFlag::AlignCenter);
         userprofiledetails_A = new QCommandLinkButton(header_A);
         userprofiledetails_A->setObjectName("userprofiledetails_A");
-        userprofiledetails_A->setGeometry(QRect(830, 20, 211, 51));
+        userprofiledetails_A->setGeometry(QRect(1110, 30, 211, 51));
         avatar_A = new QLabel(header_A);
         avatar_A->setObjectName("avatar_A");
-        avatar_A->setGeometry(QRect(990, 20, 46, 46));
+        avatar_A->setGeometry(QRect(1270, 30, 46, 46));
         avatar_A->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
 
         verticalLayout_6->addWidget(header_A);
 
         layoutWidget_5 = new QWidget(contenumain_A);
         layoutWidget_5->setObjectName("layoutWidget_5");
-        layoutWidget_5->setGeometry(QRect(-10, 100, 831, 621));
+        layoutWidget_5->setGeometry(QRect(-10, 100, 1282, 621));
         horizontalLayout_7 = new QHBoxLayout(layoutWidget_5);
         horizontalLayout_7->setObjectName("horizontalLayout_7");
         horizontalLayout_7->setContentsMargins(0, 0, 0, 0);
         liststaff_A = new QFrame(layoutWidget_5);
         liststaff_A->setObjectName("liststaff_A");
+        liststaff_A->setMinimumSize(QSize(1280, 0));
         liststaff_A->setFrameShape(QFrame::Shape::StyledPanel);
         liststaff_A->setFrameShadow(QFrame::Shadow::Raised);
         formAddStaff_A = new QFrame(liststaff_A);
         formAddStaff_A->setObjectName("formAddStaff_A");
-        formAddStaff_A->setGeometry(QRect(10, 0, 411, 619));
+        formAddStaff_A->setGeometry(QRect(10, 0, 491, 619));
         formAddStaff_A->setFrameShape(QFrame::Shape::StyledPanel);
         formAddStaff_A->setFrameShadow(QFrame::Shadow::Raised);
         formcontdd_A = new QGroupBox(formAddStaff_A);
         formcontdd_A->setObjectName("formcontdd_A");
-        formcontdd_A->setGeometry(QRect(0, 10, 401, 571));
-        labeladdstaff_A = new QLabel(formcontdd_A);
+        formcontdd_A->setGeometry(QRect(0, 10, 1201, 601));
+        formcontdd_A_2 = new QGroupBox(formcontdd_A);
+        formcontdd_A_2->setObjectName("formcontdd_A_2");
+        formcontdd_A_2->setGeometry(QRect(10, 0, 461, 571));
+        labeladdstaff_A = new QLabel(formcontdd_A_2);
         labeladdstaff_A->setObjectName("labeladdstaff_A");
-        labeladdstaff_A->setGeometry(QRect(130, 0, 151, 41));
+        labeladdstaff_A->setGeometry(QRect(130, -10, 151, 41));
         labeladdstaff_A->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        staffnamelabel_A = new QLabel(formcontdd_A);
+        staffnamelabel_A = new QLabel(formcontdd_A_2);
         staffnamelabel_A->setObjectName("staffnamelabel_A");
-        staffnamelabel_A->setGeometry(QRect(10, 70, 131, 20));
-        staffnameedit_A = new QLineEdit(formcontdd_A);
+        staffnamelabel_A->setGeometry(QRect(20, 40, 131, 20));
+        staffnameedit_A = new QLineEdit(formcontdd_A_2);
         staffnameedit_A->setObjectName("staffnameedit_A");
-        staffnameedit_A->setGeometry(QRect(150, 50, 221, 54));
-        staffaddresslabel_A = new QLabel(formcontdd_A);
+        staffnameedit_A->setGeometry(QRect(160, 30, 301, 54));
+        staffaddresslabel_A = new QLabel(formcontdd_A_2);
         staffaddresslabel_A->setObjectName("staffaddresslabel_A");
-        staffaddresslabel_A->setGeometry(QRect(10, 130, 111, 20));
-        staffaddressedit_A = new QLineEdit(formcontdd_A);
+        staffaddresslabel_A->setGeometry(QRect(20, 100, 111, 20));
+        staffaddressedit_A = new QLineEdit(formcontdd_A_2);
         staffaddressedit_A->setObjectName("staffaddressedit_A");
-        staffaddressedit_A->setGeometry(QRect(150, 120, 221, 54));
-        tellabel_A = new QLabel(formcontdd_A);
+        staffaddressedit_A->setGeometry(QRect(160, 90, 301, 54));
+        tellabel_A = new QLabel(formcontdd_A_2);
         tellabel_A->setObjectName("tellabel_A");
-        tellabel_A->setGeometry(QRect(10, 210, 141, 20));
-        teledit_A = new QLineEdit(formcontdd_A);
+        tellabel_A->setGeometry(QRect(10, 170, 141, 20));
+        teledit_A = new QLineEdit(formcontdd_A_2);
         teledit_A->setObjectName("teledit_A");
-        teledit_A->setGeometry(QRect(150, 190, 221, 54));
-        maillabel_A = new QLabel(formcontdd_A);
+        teledit_A->setGeometry(QRect(160, 160, 301, 54));
+        maillabel_A = new QLabel(formcontdd_A_2);
         maillabel_A->setObjectName("maillabel_A");
-        maillabel_A->setGeometry(QRect(10, 270, 151, 20));
-        mailedit_A = new QLineEdit(formcontdd_A);
+        maillabel_A->setGeometry(QRect(10, 250, 151, 20));
+        mailedit_A = new QLineEdit(formcontdd_A_2);
         mailedit_A->setObjectName("mailedit_A");
-        mailedit_A->setGeometry(QRect(150, 260, 221, 54));
-        passlab_A_2 = new QLabel(formcontdd_A);
+        mailedit_A->setGeometry(QRect(160, 230, 291, 54));
+        passlab_A_2 = new QLabel(formcontdd_A_2);
         passlab_A_2->setObjectName("passlab_A_2");
-        passlab_A_2->setGeometry(QRect(10, 340, 141, 20));
-        passlab_A = new QLineEdit(formcontdd_A);
+        passlab_A_2->setGeometry(QRect(10, 310, 141, 20));
+        passlab_A = new QLineEdit(formcontdd_A_2);
         passlab_A->setObjectName("passlab_A");
-        passlab_A->setGeometry(QRect(150, 330, 221, 54));
-        cvpathEdit_2 = new QLabel(formcontdd_A);
-        cvpathEdit_2->setObjectName("cvpathEdit_2");
-        cvpathEdit_2->setGeometry(QRect(30, 490, 311, 20));
-        cvpathEdit_2->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        profile_A = new QLabel(formcontdd_A);
+        passlab_A->setGeometry(QRect(160, 290, 291, 54));
+        profile_A = new QLabel(formcontdd_A_2);
         profile_A->setObjectName("profile_A");
-        profile_A->setGeometry(QRect(10, 410, 141, 20));
-        browbtn = new QPushButton(formcontdd_A);
+        profile_A->setGeometry(QRect(190, 360, 201, 20));
+        browbtn = new QPushButton(formcontdd_A_2);
         browbtn->setObjectName("browbtn");
-        browbtn->setGeometry(QRect(130, 400, 261, 41));
-        backWbtn_A = new QPushButton(formcontdd_A);
+        browbtn->setGeometry(QRect(10, 350, 171, 41));
+        backWbtn_A = new QPushButton(formcontdd_A_2);
         backWbtn_A->setObjectName("backWbtn_A");
-        backWbtn_A->setGeometry(QRect(10, 450, 161, 41));
-        facebtn = new QPushButton(formcontdd_A);
+        backWbtn_A->setGeometry(QRect(10, 400, 171, 41));
+        facebtn = new QPushButton(formcontdd_A_2);
         facebtn->setObjectName("facebtn");
-        facebtn->setGeometry(QRect(10, 500, 371, 41));
-        registerlabel = new QLabel(formcontdd_A);
+        facebtn->setGeometry(QRect(10, 500, 441, 41));
+        registerlabel = new QLabel(formcontdd_A_2);
         registerlabel->setObjectName("registerlabel");
-        registerlabel->setGeometry(QRect(190, 460, 211, 20));
-        addstaffbtn_A = new QPushButton(formAddStaff_A);
+        registerlabel->setGeometry(QRect(190, 410, 211, 20));
+        Voicebtn = new QPushButton(formcontdd_A_2);
+        Voicebtn->setObjectName("Voicebtn");
+        Voicebtn->setGeometry(QRect(10, 450, 441, 41));
+        Voicebtn->setStyleSheet(QString::fromUtf8("QPushButton#Voicebtn {\n"
+"    background: rgba(20, 38, 58, 0.65);   /* navy soft */\n"
+"    color: rgba(234,240,255,0.90);\n"
+"    border-radius: 14px;\n"
+"    padding: 10px 18px;\n"
+"    border: 1px solid rgba(120,160,200,0.25);\n"
+"    font-size: 13px;\n"
+"    font-weight: 700;\n"
+"}\n"
+"\n"
+"/* Hover */\n"
+"QPushButton#Voicebtn:hover {\n"
+"    background: rgba(37, 99, 235, 0.20);  /* blue highlight */\n"
+"    border: 1px solid rgba(88,184,255,0.55);\n"
+"    color: #FFFFFF;\n"
+"}\n"
+"\n"
+"/* Pressed */\n"
+"QPushButton#Voicebtn:pressed {\n"
+"    background: rgba(15, 23, 42, 0.95);\n"
+"    border: 1px solid rgba(88,184,255,0.75);\n"
+"}\n"
+"\n"
+"/* Optional: disabled */\n"
+"QPushButton#Voicebtn:disabled {\n"
+"    background: rgba(20, 38, 58, 0.35);\n"
+"    color: rgba(234,240,255,0.45);\n"
+"    border: 1px solid rgba(120,160,200,0.15);\n"
+"}"));
+        voicelabel = new QLabel(formcontdd_A_2);
+        voicelabel->setObjectName("voicelabel");
+        voicelabel->setGeometry(QRect(180, 460, 211, 20));
+        addstaffbtn_A = new QPushButton(formcontdd_A);
         addstaffbtn_A->setObjectName("addstaffbtn_A");
-        addstaffbtn_A->setGeometry(QRect(10, 560, 371, 40));
+        addstaffbtn_A->setGeometry(QRect(20, 550, 441, 40));
         imgcover = new QLabel(liststaff_A);
         imgcover->setObjectName("imgcover");
-        imgcover->setGeometry(QRect(420, 0, 401, 621));
+        imgcover->setGeometry(QRect(600, -10, 501, 621));
         imgcover->setPixmap(QPixmap(QString::fromUtf8(":/Images/profile.jpg")));
 
         horizontalLayout_7->addWidget(liststaff_A);
@@ -6780,10 +6982,10 @@ public:
 "    color: #FFFFFF;\n"
 "    padding-left: 18px;\n"
 "}\n"
-"QPushButton#staffmanagementBTNZ[active=\"true\"] {\n"
-"    background-color: rgba(10, 102, 255, 0.35);\n"
-""
-                        "    border-left: 4px solid #4FC3F7;\n"
+"QPushButton#fishingzonemanagementBTNZ[active=\"true\"] {\n"
+"    background-color: rgba(10, 102, 255, 0."
+                        "35);\n"
+"    border-left: 4px solid #4FC3F7;\n"
 "    color: white;\n"
 "    font-weight: 600;\n"
 "}\n"
@@ -6817,8 +7019,8 @@ public:
 "/* =================================================\n"
 "   MENUBAR + STATUSBAR\n"
 "   ================================================= */\n"
-"QMenu"
-                        "Bar {\n"
+""
+                        "QMenuBar {\n"
 "    background-color: rgba(6, 22, 40, 0.95);\n"
 "    color: rgba(234,240,255,0.85);\n"
 "    border-bottom: 1px solid rgba(255,255,255,0.12);\n"
@@ -6856,8 +7058,8 @@ public:
 "}\n"
 "\n"
 "/* Inputs (LineEdits) */\n"
-"QLineEdi"
-                        "t {\n"
+"QLi"
+                        "neEdit {\n"
 "    background-color: rgba(10, 35, 55, 0.65);\n"
 "    color: #E3F2FD;\n"
 "    border: 1px solid rgba(79,195,247,0.25);\n"
@@ -6899,8 +7101,8 @@ public:
 "\n"
 "QComboBox::down-arrow {\n"
 "    image: none;\n"
-"    border-left: 6px solid transpar"
-                        "ent;\n"
+"    border-left: 6px solid tra"
+                        "nsparent;\n"
 "    border-right: 6px solid transparent;\n"
 "    border-top: 8px solid rgba(227,242,253,0.8);\n"
 "    margin-right: 10px;\n"
@@ -6939,8 +7141,8 @@ public:
 "QPushButton#addZonebtn:pressed {\n"
 "    background-color: #01579B;\n"
 "}\n"
-"/* ======================================="
-                        "========== */\n"
+"/* =================================="
+                        "=============== */\n"
 "/* ============ STAFF LIST CONTAINER =============== */\n"
 "/* ================================================= */\n"
 "\n"
@@ -6976,8 +7178,8 @@ public:
 "}\n"
 "\n"
 "#ZoneSearch:focus {\n"
-"    border: 1px solid #4"
-                        "fc3f7;\n"
+"    border: 1px sol"
+                        "id #4fc3f7;\n"
 "    background-color: rgba(30, 75, 120, 0.9);\n"
 "}\n"
 "\n"
@@ -7011,8 +7213,8 @@ public:
 "}\n"
 "\n"
 "#ZoneTable::item {\n"
-"    padding"
-                        ": 8px;\n"
+"    pa"
+                        "dding: 8px;\n"
 "}\n"
 "\n"
 "#ZoneTable::item:selected {\n"
@@ -7053,9 +7255,9 @@ public:
 "#staticbtn,\n"
 "#exportpdfstaffbtn {\n"
 "    background-color: rgba(20, 60, 95, 0.9);\n"
-"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
-""
-                        "    border-radius: 12px;\n"
+"    border: 1px solid rgba(79, 195, 247, 0.4)"
+                        ";\n"
+"    border-radius: 12px;\n"
 "    color: #e3f2fd;\n"
 "    padding: 10px 16px;\n"
 "    font-weight: 600;\n"
@@ -7093,9 +7295,9 @@ public:
 "    border: none;\n"
 "    border-radius: 14px;\n"
 "    padding: 12px 20px;\n"
-"    font-size: 14px;\n"
-""
-                        "    font-weight: 700;\n"
+"    font-size: 14"
+                        "px;\n"
+"    font-weight: 700;\n"
 "}\n"
 "\n"
 "/* Hover */\n"
@@ -7109,14 +7311,50 @@ public:
 "    background-color: #f57f17;            /* Jaune fonc\303\251 */\n"
 "    box-shadow: inset 0 3px 6px rgba(0,0,0,0.35);\n"
 "}\n"
+"/* ===== DROPDOWN LIST ===== */\n"
+"QComboBox QAbstractItemView {\n"
+"    background-color: #0A2236; /* fond solide */\n"
+"    color: #E3F2FD;\n"
+"    border: 1px solid #4FC3F7;\n"
+"    border-radius: 8px;\n"
+"    padding: 4px;\n"
+"    selection-background-color: #4FC3F7;\n"
+"    selection-color: #001018;\n"
+"}\n"
+"\n"
+"/* Hover item */\n"
+"QComboBox QAbstractItemView::item:hover {\n"
+"    background-color: rgba(79,195,247,0.25);\n"
+"}\n"
+"\n"
+"/* Selected item */\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background-color: #4FC3F7;\n"
+"    color: #001018;\n"
+"}\n"
+"QLabel {\n"
+"    font-size: "
+                        "16px;  /* Slightly smaller text /\n"
+"    font-weight: 900;\n"
+"    color: #66C2FF;  / Soft cyan color /\n"
+"    text-align: center;\n"
+"    padding: 5px 10px;  / Reduced padding to avoid cropping /\n"
+"    background: none;\n"
+"    border: none;\n"
+"    text-shadow: 0 0 8px #66C2FF, 0 0 15px #66C2FF, 0 0 20px #66C2FF;  / Glowing text effect /\n"
+"    word-wrap: break-word;  / Allows wrapping if needed /\n"
+"}\n"
+"\n"
+"QLabel:hover {\n"
+"    color: #FFD700;  / Yellow glow on hover */\n"
+"    text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FFD700;\n"
+"}\n"
 ""));
-        layoutWidget_8 = new QWidget(pageFishingZone);
-        layoutWidget_8->setObjectName("layoutWidget_8");
-        layoutWidget_8->setGeometry(QRect(0, 0, 1491, 761));
-        horizontalLayout_10 = new QHBoxLayout(layoutWidget_8);
+        horizontalLayout_17 = new QHBoxLayout(pageFishingZone);
+        horizontalLayout_17->setObjectName("horizontalLayout_17");
+        horizontalLayout_10 = new QHBoxLayout();
         horizontalLayout_10->setObjectName("horizontalLayout_10");
-        horizontalLayout_10->setContentsMargins(0, 0, 0, 0);
-        sidebarMenu_Z = new QFrame(layoutWidget_8);
+        sidebarMenu_Z = new QFrame(pageFishingZone);
         sidebarMenu_Z->setObjectName("sidebarMenu_Z");
         sidebarMenu_Z->setMinimumSize(QSize(200, 0));
         sidebarMenu_Z->setMaximumSize(QSize(200, 16777215));
@@ -7127,10 +7365,10 @@ public:
         groupBox_Z->setGeometry(QRect(10, 100, 200, 581));
         groupBox_Z->setMinimumSize(QSize(200, 0));
         groupBox_Z->setMaximumSize(QSize(200, 16777215));
-        staffmanagementBTNZ = new QPushButton(groupBox_Z);
-        staffmanagementBTNZ->setObjectName("staffmanagementBTNZ");
-        staffmanagementBTNZ->setGeometry(QRect(-30, 300, 221, 61));
-        staffmanagementBTNZ->setStyleSheet(QString::fromUtf8("QPushButton#fishingzonemanagementBTNZ {\n"
+        fishingzonemanagementBTNZ = new QPushButton(groupBox_Z);
+        fishingzonemanagementBTNZ->setObjectName("fishingzonemanagementBTNZ");
+        fishingzonemanagementBTNZ->setGeometry(QRect(-10, 300, 221, 61));
+        fishingzonemanagementBTNZ->setStyleSheet(QString::fromUtf8("QPushButton#fishingzonemanagementBTNZ {\n"
 "    background: transparent;\n"
 "    border: none;\n"
 "    color: rgba(234,240,255,0.80);\n"
@@ -7154,8 +7392,19 @@ public:
 "QPushButton#fishingzonemanagementBTNZ:pressed {\n"
 "    background-color: rgba(88,184,255,0.25);\n"
 "}\n"
-""));
-        staffmanagementBTNZ->setProperty("active", QVariant(true));
+"QPushButton[active=\"true\"] {\n"
+"    background-color: rgba(10, 102, 255, 0.28);\n"
+"    border: 1px solid rgba(10, 102, 255, 0.55);\n"
+"    color: #FFFFFF;\n"
+"    padding-left: 18px;\n"
+"}\n"
+"QPushButton#fishingzonemanagementBTNZ[active=\"true\"] {\n"
+"    background-color: rgba(10, 102, 255, 0.35);\n"
+"    border-left: 4px solid #4FC3F7;\n"
+"    color: white;\n"
+"    font-weight: 600;\n"
+"}"));
+        fishingzonemanagementBTNZ->setProperty("active", QVariant(true));
         clientsmanagementBTNZ = new QPushButton(groupBox_Z);
         clientsmanagementBTNZ->setObjectName("clientsmanagementBTNZ");
         clientsmanagementBTNZ->setGeometry(QRect(-10, 160, 191, 51));
@@ -7211,10 +7460,10 @@ public:
 "QPushButton#stockmanagementBTNZ:pressed {\n"
 "    background-color: rgba(88,184,255,0.25);\n"
 "}"));
-        fishingzonemanagementBTNZ = new QPushButton(groupBox_Z);
-        fishingzonemanagementBTNZ->setObjectName("fishingzonemanagementBTNZ");
-        fishingzonemanagementBTNZ->setGeometry(QRect(-10, 110, 221, 51));
-        fishingzonemanagementBTNZ->setStyleSheet(QString::fromUtf8("QPushButton#fishingzonemanagementBTNZ,\n"
+        staffmanagementBTNZ = new QPushButton(groupBox_Z);
+        staffmanagementBTNZ->setObjectName("staffmanagementBTNZ");
+        staffmanagementBTNZ->setGeometry(QRect(0, 110, 221, 51));
+        staffmanagementBTNZ->setStyleSheet(QString::fromUtf8("QPushButton#fishingzonemanagementBTNZ,\n"
 "QPushButton#staffmanagementBTN,Z\n"
 "QPushButton#stockmanagementBTNZ {\n"
 "    background: transparent;\n"
@@ -7300,7 +7549,7 @@ public:
 
         horizontalLayout_10->addWidget(sidebarMenu_Z);
 
-        contenumain_Z = new QFrame(layoutWidget_8);
+        contenumain_Z = new QFrame(pageFishingZone);
         contenumain_Z->setObjectName("contenumain_Z");
         contenumain_Z->setFrameShape(QFrame::Shape::StyledPanel);
         contenumain_Z->setFrameShadow(QFrame::Shadow::Raised);
@@ -7317,39 +7566,40 @@ public:
         header_Z->setFrameShadow(QFrame::Shadow::Raised);
         titreHeader_Z = new QLabel(header_Z);
         titreHeader_Z->setObjectName("titreHeader_Z");
-        titreHeader_Z->setGeometry(QRect(220, 20, 461, 61));
+        titreHeader_Z->setGeometry(QRect(210, 20, 461, 61));
         titreHeader_Z->setAlignment(Qt::AlignmentFlag::AlignCenter);
         userprofiledetails_Z = new QCommandLinkButton(header_Z);
         userprofiledetails_Z->setObjectName("userprofiledetails_Z");
-        userprofiledetails_Z->setGeometry(QRect(830, 20, 211, 51));
+        userprofiledetails_Z->setGeometry(QRect(1090, 20, 211, 51));
         avatar_Z = new QLabel(header_Z);
         avatar_Z->setObjectName("avatar_Z");
-        avatar_Z->setGeometry(QRect(990, 20, 46, 46));
+        avatar_Z->setGeometry(QRect(1250, 20, 46, 46));
         avatar_Z->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
 
         verticalLayout_8->addWidget(header_Z);
 
         layoutWidget_9 = new QWidget(contenumain_Z);
         layoutWidget_9->setObjectName("layoutWidget_9");
-        layoutWidget_9->setGeometry(QRect(-10, 100, 831, 621));
+        layoutWidget_9->setGeometry(QRect(-10, 100, 1282, 621));
         horizontalLayout_11 = new QHBoxLayout(layoutWidget_9);
         horizontalLayout_11->setObjectName("horizontalLayout_11");
         horizontalLayout_11->setContentsMargins(0, 0, 0, 0);
         liststaff_Z = new QFrame(layoutWidget_9);
         liststaff_Z->setObjectName("liststaff_Z");
+        liststaff_Z->setMinimumSize(QSize(1280, 0));
         liststaff_Z->setFrameShape(QFrame::Shape::StyledPanel);
         liststaff_Z->setFrameShadow(QFrame::Shadow::Raised);
         formAddStaff_Z = new QFrame(liststaff_Z);
         formAddStaff_Z->setObjectName("formAddStaff_Z");
-        formAddStaff_Z->setGeometry(QRect(10, 0, 411, 619));
+        formAddStaff_Z->setGeometry(QRect(10, 0, 491, 619));
         formAddStaff_Z->setFrameShape(QFrame::Shape::StyledPanel);
         formAddStaff_Z->setFrameShadow(QFrame::Shadow::Raised);
         listzonee = new QGroupBox(formAddStaff_Z);
         listzonee->setObjectName("listzonee");
-        listzonee->setGeometry(QRect(-10, 0, 421, 621));
+        listzonee->setGeometry(QRect(-10, 0, 501, 621));
         ZoneSearch = new QLineEdit(listzonee);
         ZoneSearch->setObjectName("ZoneSearch");
-        ZoneSearch->setGeometry(QRect(20, 20, 361, 58));
+        ZoneSearch->setGeometry(QRect(20, 20, 461, 58));
         Zonelistlabel = new QLabel(listzonee);
         Zonelistlabel->setObjectName("Zonelistlabel");
         Zonelistlabel->setGeometry(QRect(40, 90, 191, 51));
@@ -7359,28 +7609,28 @@ public:
         sortzone->addItem(QString());
         sortzone->addItem(QString());
         sortzone->setObjectName("sortzone");
-        sortzone->setGeometry(QRect(230, 90, 151, 54));
+        sortzone->setGeometry(QRect(230, 90, 251, 54));
         ZoneTable = new QTableWidget(listzonee);
         if (ZoneTable->columnCount() < 7)
             ZoneTable->setColumnCount(7);
-        QTableWidgetItem *__qtablewidgetitem39 = new QTableWidgetItem();
-        ZoneTable->setHorizontalHeaderItem(0, __qtablewidgetitem39);
-        QTableWidgetItem *__qtablewidgetitem40 = new QTableWidgetItem();
-        ZoneTable->setHorizontalHeaderItem(1, __qtablewidgetitem40);
-        QTableWidgetItem *__qtablewidgetitem41 = new QTableWidgetItem();
-        ZoneTable->setHorizontalHeaderItem(2, __qtablewidgetitem41);
-        QTableWidgetItem *__qtablewidgetitem42 = new QTableWidgetItem();
-        ZoneTable->setHorizontalHeaderItem(3, __qtablewidgetitem42);
-        QTableWidgetItem *__qtablewidgetitem43 = new QTableWidgetItem();
-        ZoneTable->setHorizontalHeaderItem(4, __qtablewidgetitem43);
         QTableWidgetItem *__qtablewidgetitem44 = new QTableWidgetItem();
-        ZoneTable->setHorizontalHeaderItem(5, __qtablewidgetitem44);
+        ZoneTable->setHorizontalHeaderItem(0, __qtablewidgetitem44);
         QTableWidgetItem *__qtablewidgetitem45 = new QTableWidgetItem();
-        ZoneTable->setHorizontalHeaderItem(6, __qtablewidgetitem45);
+        ZoneTable->setHorizontalHeaderItem(1, __qtablewidgetitem45);
+        QTableWidgetItem *__qtablewidgetitem46 = new QTableWidgetItem();
+        ZoneTable->setHorizontalHeaderItem(2, __qtablewidgetitem46);
+        QTableWidgetItem *__qtablewidgetitem47 = new QTableWidgetItem();
+        ZoneTable->setHorizontalHeaderItem(3, __qtablewidgetitem47);
+        QTableWidgetItem *__qtablewidgetitem48 = new QTableWidgetItem();
+        ZoneTable->setHorizontalHeaderItem(4, __qtablewidgetitem48);
+        QTableWidgetItem *__qtablewidgetitem49 = new QTableWidgetItem();
+        ZoneTable->setHorizontalHeaderItem(5, __qtablewidgetitem49);
+        QTableWidgetItem *__qtablewidgetitem50 = new QTableWidgetItem();
+        ZoneTable->setHorizontalHeaderItem(6, __qtablewidgetitem50);
         if (ZoneTable->rowCount() < 2)
             ZoneTable->setRowCount(2);
         ZoneTable->setObjectName("ZoneTable");
-        ZoneTable->setGeometry(QRect(20, 180, 401, 141));
+        ZoneTable->setGeometry(QRect(20, 180, 471, 141));
         ZoneTable->setStyleSheet(QString::fromUtf8("/* QScrollBar */\n"
 "QScrollBar {\n"
 "    background: #2e3b4e;\n"
@@ -7407,7 +7657,7 @@ public:
         ZoneTable->setColumnCount(7);
         EditZonebtn = new QPushButton(listzonee);
         EditZonebtn->setObjectName("EditZonebtn");
-        EditZonebtn->setGeometry(QRect(30, 350, 371, 41));
+        EditZonebtn->setGeometry(QRect(70, 350, 371, 41));
         EditZonebtn->setStyleSheet(QString::fromUtf8("/* ======================================= */\n"
 "/* ========= MODIFY STAFF BUTTON ========= */\n"
 "/* ======================================= */\n"
@@ -7436,7 +7686,7 @@ public:
 ""));
         DeleteZone = new QPushButton(listzonee);
         DeleteZone->setObjectName("DeleteZone");
-        DeleteZone->setGeometry(QRect(30, 400, 371, 41));
+        DeleteZone->setGeometry(QRect(70, 400, 371, 41));
         DeleteZone->setStyleSheet(QString::fromUtf8("#DeleteZone {\n"
 "    background-color: rgba(183, 28, 28, 0.9);\n"
 "    border: none;\n"
@@ -7452,7 +7702,7 @@ public:
 "}"));
         AnalyticsZone = new QPushButton(listzonee);
         AnalyticsZone->setObjectName("AnalyticsZone");
-        AnalyticsZone->setGeometry(QRect(30, 460, 171, 41));
+        AnalyticsZone->setGeometry(QRect(70, 460, 171, 41));
         AnalyticsZone->setStyleSheet(QString::fromUtf8("#AnalyticsZone {\n"
 "    background-color: rgba(20, 60, 95, 0.9);\n"
 "    border: 1px solid rgba(79, 195, 247, 0.4);\n"
@@ -7471,7 +7721,7 @@ public:
         AnalyticsZone->setIcon(icon);
         exportZone = new QPushButton(listzonee);
         exportZone->setObjectName("exportZone");
-        exportZone->setGeometry(QRect(230, 460, 171, 41));
+        exportZone->setGeometry(QRect(270, 460, 171, 41));
         exportZone->setStyleSheet(QString::fromUtf8("#exportZone {\n"
 "    background-color: rgba(20, 60, 95, 0.9);\n"
 "    border: 1px solid rgba(79, 195, 247, 0.4);\n"
@@ -7486,37 +7736,74 @@ public:
 "    background-color: rgba(79, 195, 247, 0.35);\n"
 "    color: white;\n"
 "}"));
+        RiskPrediction = new QPushButton(listzonee);
+        RiskPrediction->setObjectName("RiskPrediction");
+        RiskPrediction->setGeometry(QRect(70, 520, 171, 41));
+        RiskPrediction->setStyleSheet(QString::fromUtf8("#RiskPrediction{\n"
+"    background-color: rgba(20, 60, 95, 0.9);\n"
+"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
+"    border-radius: 12px;\n"
+"    color: #e3f2fd;\n"
+"    padding: 10px 16px;\n"
+"    font-weight: 600;\n"
+"}\n"
+"\n"
+"\n"
+"#RiskPrediction:hover {\n"
+"    background-color: rgba(79, 195, 247, 0.35);\n"
+"    color: white;\n"
+"}"));
+        QIcon icon1(QIcon::fromTheme(QIcon::ThemeIcon::ContactNew));
+        RiskPrediction->setIcon(icon1);
+        Regulations = new QPushButton(listzonee);
+        Regulations->setObjectName("Regulations");
+        Regulations->setGeometry(QRect(270, 520, 171, 41));
+        Regulations->setStyleSheet(QString::fromUtf8("#Regulations {\n"
+"    background-color: rgba(20, 60, 95, 0.9);\n"
+"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
+"    border-radius: 12px;\n"
+"    color: #e3f2fd;\n"
+"    padding: 10px 16px;\n"
+"    font-weight: 600;\n"
+"}\n"
+"\n"
+"\n"
+"#Regulations:hover {\n"
+"    background-color: rgba(79, 195, 247, 0.35);\n"
+"    color: white;\n"
+"}\n"
+""));
         formzone = new QGroupBox(liststaff_Z);
         formzone->setObjectName("formzone");
-        formzone->setGeometry(QRect(430, 0, 401, 601));
+        formzone->setGeometry(QRect(520, 0, 511, 601));
         labeladdzone = new QLabel(formzone);
         labeladdzone->setObjectName("labeladdzone");
-        labeladdzone->setGeometry(QRect(100, 0, 151, 41));
+        labeladdzone->setGeometry(QRect(170, 0, 151, 41));
         labeladdzone->setAlignment(Qt::AlignmentFlag::AlignCenter);
         zoneEdit = new QComboBox(formzone);
         zoneEdit->addItem(QString());
         zoneEdit->addItem(QString());
         zoneEdit->addItem(QString());
         zoneEdit->setObjectName("zoneEdit");
-        zoneEdit->setGeometry(QRect(150, 260, 221, 52));
+        zoneEdit->setGeometry(QRect(150, 260, 271, 52));
         ZoneNameLabel = new QLabel(formzone);
         ZoneNameLabel->setObjectName("ZoneNameLabel");
         ZoneNameLabel->setGeometry(QRect(10, 70, 131, 20));
         ZoneName = new QLineEdit(formzone);
         ZoneName->setObjectName("ZoneName");
-        ZoneName->setGeometry(QRect(150, 50, 221, 54));
+        ZoneName->setGeometry(QRect(150, 50, 271, 54));
         LongitudeLabel = new QLabel(formzone);
         LongitudeLabel->setObjectName("LongitudeLabel");
         LongitudeLabel->setGeometry(QRect(10, 140, 111, 20));
         Longitude = new QLineEdit(formzone);
         Longitude->setObjectName("Longitude");
-        Longitude->setGeometry(QRect(150, 120, 221, 54));
+        Longitude->setGeometry(QRect(150, 120, 271, 54));
         LatitudeLabel = new QLabel(formzone);
         LatitudeLabel->setObjectName("LatitudeLabel");
         LatitudeLabel->setGeometry(QRect(10, 210, 141, 20));
         Latitude = new QLineEdit(formzone);
         Latitude->setObjectName("Latitude");
-        Latitude->setGeometry(QRect(150, 190, 221, 54));
+        Latitude->setGeometry(QRect(150, 190, 271, 54));
         ZoneTypeLabel = new QLabel(formzone);
         ZoneTypeLabel->setObjectName("ZoneTypeLabel");
         ZoneTypeLabel->setGeometry(QRect(10, 270, 151, 20));
@@ -7526,13 +7813,13 @@ public:
         RiskLevel->addItem(QString());
         RiskLevel->addItem(QString());
         RiskLevel->setObjectName("RiskLevel");
-        RiskLevel->setGeometry(QRect(150, 320, 221, 52));
+        RiskLevel->setGeometry(QRect(150, 320, 271, 52));
         RiskLevelC = new QLabel(formzone);
         RiskLevelC->setObjectName("RiskLevelC");
         RiskLevelC->setGeometry(QRect(10, 340, 141, 20));
         addZonebtn = new QPushButton(formzone);
         addZonebtn->setObjectName("addZonebtn");
-        addZonebtn->setGeometry(QRect(150, 530, 141, 40));
+        addZonebtn->setGeometry(QRect(200, 520, 161, 40));
         addZonebtn->setStyleSheet(QString::fromUtf8("#addZonebtn {\n"
 "    background-color: #0288d1;\n"
 "    border: none;\n"
@@ -7549,7 +7836,7 @@ public:
         DescriptionLabel->setGeometry(QRect(10, 410, 81, 20));
         DescriptionEdit = new QTextEdit(formzone);
         DescriptionEdit->setObjectName("DescriptionEdit");
-        DescriptionEdit->setGeometry(QRect(150, 390, 221, 61));
+        DescriptionEdit->setGeometry(QRect(150, 390, 271, 61));
         DescriptionEdit->setStyleSheet(QString::fromUtf8("/* For QLineEdit */\n"
 "QLineEdit {\n"
 "    background-color: #1D2B46; /* Dark Blue background */\n"
@@ -7592,13 +7879,36 @@ public:
 ""));
         ZoneImage = new QLabel(formzone);
         ZoneImage->setObjectName("ZoneImage");
-        ZoneImage->setGeometry(QRect(20, 410, 220, 220));
+        ZoneImage->setGeometry(QRect(70, 400, 220, 220));
         ZoneImage->setPixmap(QPixmap(QString::fromUtf8(":/Images/zoneimage.png")));
+        waterLevelLabel = new QLabel(formzone);
+        waterLevelLabel->setObjectName("waterLevelLabel");
+        waterLevelLabel->setGeometry(QRect(250, 460, 241, 41));
+        waterLevelLabel->setStyleSheet(QString::fromUtf8("QLabel {\n"
+"    font-size: 16px;  /* Slightly smaller text /\n"
+"    font-weight: 900;\n"
+"    color: #66C2FF;  / Soft cyan color /\n"
+"    text-align: center;\n"
+"    padding: 5px 10px;  / Reduced padding to avoid cropping /\n"
+"    background: none;\n"
+"    border: none;\n"
+"    text-shadow: 0 0 8px #66C2FF, 0 0 15px #66C2FF, 0 0 20px #66C2FF;  / Glowing text effect /\n"
+"    word-wrap: break-word;  / Allows wrapping if needed /\n"
+"}\n"
+"\n"
+"QLabel:hover {\n"
+"    color: #FFD700;  / Yellow glow on hover */\n"
+"    text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FFD700;\n"
+"}\n"
+""));
 
         horizontalLayout_11->addWidget(liststaff_Z);
 
 
         horizontalLayout_10->addWidget(contenumain_Z);
+
+
+        horizontalLayout_17->addLayout(horizontalLayout_10);
 
         stackedWidget->addWidget(pageFishingZone);
         pageFishStock = new QWidget();
@@ -8024,7 +8334,7 @@ public:
 "}\n"
 "\n"
 "/* ===== DELETE BUTTON ===== */\n"
-"#deletespecies_stock {\n"
+"#delete_stock {\n"
 "    background-color: rgba(183, 28, 28, 0.9);\n"
 "    border: none;\n"
 "    border-radius: 12px;\n"
@@ -8033,16 +8343,16 @@ public:
 "    font-weight: 600;\n"
 "}\n"
 "\n"
-"#deletespecies_stock:hover {\n"
+"#delete_stock:hover {\n"
 "    background-color: #e53935;\n"
 "    box-shadow: 0 0 15px rgba(244, 67, 54, 0.6);\n"
 "}\n"
 "/* ======================================= */\n"
 "/* ========= MODIFY STAFF BUTTON ========= */\n"
-"/* ==========="
-                        "============================ */\n"
+"/* ========================="
+                        "============== */\n"
 "\n"
-"#Editstock {\n"
+"#edit_stock {\n"
 "    background-color: #f9a825;            /* Jaune principal */\n"
 "    color: #1a1a1a;\n"
 "    border: none;\n"
@@ -8053,13 +8363,13 @@ public:
 "}\n"
 "\n"
 "/* Hover */\n"
-"#Editstock:hover {\n"
+"#edit_stock:hover {\n"
 "    background-color: #fbc02d;            /* Jaune plus clair */\n"
 "    box-shadow: 0 0 15px rgba(251, 192, 45, 0.6);\n"
 "}\n"
 "\n"
 "/* Click (pressed) */\n"
-"#Editstock:pressed {\n"
+"#edit_stock:pressed {\n"
 "    background-color: #f57f17;            /* Jaune fonc\303\251 */\n"
 "    box-shadow: inset 0 3px 6px rgba(0,0,0,0.35);\n"
 "}\n"
@@ -8081,29 +8391,29 @@ public:
         groupBox_stock->setGeometry(QRect(10, 100, 200, 581));
         groupBox_stock->setMinimumSize(QSize(200, 0));
         groupBox_stock->setMaximumSize(QSize(200, 16777215));
-        staffmanagementBTN_stock = new QPushButton(groupBox_stock);
-        staffmanagementBTN_stock->setObjectName("staffmanagementBTN_stock");
-        staffmanagementBTN_stock->setGeometry(QRect(-10, 220, 181, 61));
-        staffmanagementBTN_stock->setProperty("active", QVariant(true));
+        stockmanagementBTN_stock_2 = new QPushButton(groupBox_stock);
+        stockmanagementBTN_stock_2->setObjectName("stockmanagementBTN_stock_2");
+        stockmanagementBTN_stock_2->setGeometry(QRect(-10, 220, 181, 61));
+        stockmanagementBTN_stock_2->setProperty("active", QVariant(true));
         clientsmanagementBTN_stock = new QPushButton(groupBox_stock);
         clientsmanagementBTN_stock->setObjectName("clientsmanagementBTN_stock");
         clientsmanagementBTN_stock->setGeometry(QRect(-10, 170, 191, 51));
-        stockmanagementBTN_stock = new QPushButton(groupBox_stock);
-        stockmanagementBTN_stock->setObjectName("stockmanagementBTN_stock");
-        stockmanagementBTN_stock->setGeometry(QRect(-10, 120, 171, 51));
+        staffmanagementBTN_stock = new QPushButton(groupBox_stock);
+        staffmanagementBTN_stock->setObjectName("staffmanagementBTN_stock");
+        staffmanagementBTN_stock->setGeometry(QRect(-10, 120, 171, 51));
         fishingzonemanagementBTN_stock = new QPushButton(groupBox_stock);
         fishingzonemanagementBTN_stock->setObjectName("fishingzonemanagementBTN_stock");
         fishingzonemanagementBTN_stock->setGeometry(QRect(-10, 320, 221, 51));
         equipmentmanagementBTN_stock = new QPushButton(groupBox_stock);
         equipmentmanagementBTN_stock->setObjectName("equipmentmanagementBTN_stock");
         equipmentmanagementBTN_stock->setGeometry(QRect(-10, 280, 201, 41));
+        logOutBTN_stock = new QPushButton(groupBox_stock);
+        logOutBTN_stock->setObjectName("logOutBTN_stock");
+        logOutBTN_stock->setGeometry(QRect(30, 510, 121, 61));
         logoheader_stock = new QLabel(sidebarMenu_stock);
         logoheader_stock->setObjectName("logoheader_stock");
         logoheader_stock->setGeometry(QRect(0, 10, 181, 151));
         logoheader_stock->setPixmap(QPixmap(QString::fromUtf8(":/Images/logoHeader1.png")));
-        logOutBTN_stock = new QPushButton(sidebarMenu_stock);
-        logOutBTN_stock->setObjectName("logOutBTN_stock");
-        logOutBTN_stock->setGeometry(QRect(40, 650, 121, 61));
 
         horizontalLayout_8->addWidget(sidebarMenu_stock);
 
@@ -8128,54 +8438,181 @@ public:
         titreHeader_stock->setAlignment(Qt::AlignmentFlag::AlignCenter);
         userprofiledetails_stock = new QCommandLinkButton(header_stock);
         userprofiledetails_stock->setObjectName("userprofiledetails_stock");
-        userprofiledetails_stock->setGeometry(QRect(830, 20, 211, 51));
+        userprofiledetails_stock->setGeometry(QRect(1100, 30, 211, 51));
         avatar_stock = new QLabel(header_stock);
         avatar_stock->setObjectName("avatar_stock");
-        avatar_stock->setGeometry(QRect(990, 20, 46, 46));
+        avatar_stock->setGeometry(QRect(1260, 30, 46, 46));
         avatar_stock->setPixmap(QPixmap(QString::fromUtf8(":/Images/avatar.png")));
 
         verticalLayout_7->addWidget(header_stock);
 
         layoutWidget_7 = new QWidget(contenumain_S);
         layoutWidget_7->setObjectName("layoutWidget_7");
-        layoutWidget_7->setGeometry(QRect(-10, 100, 831, 621));
+        layoutWidget_7->setGeometry(QRect(-10, 100, 1282, 10002));
         horizontalLayout_9 = new QHBoxLayout(layoutWidget_7);
         horizontalLayout_9->setObjectName("horizontalLayout_9");
         horizontalLayout_9->setContentsMargins(0, 0, 0, 0);
         listfish = new QFrame(layoutWidget_7);
         listfish->setObjectName("listfish");
+        listfish->setMinimumSize(QSize(1280, 0));
         listfish->setFrameShape(QFrame::Shape::StyledPanel);
         listfish->setFrameShadow(QFrame::Shadow::Raised);
         liststock = new QGroupBox(listfish);
         liststock->setObjectName("liststock");
-        liststock->setGeometry(QRect(0, 0, 821, 621));
-        search_stock = new QLineEdit(liststock);
-        search_stock->setObjectName("search_stock");
-        search_stock->setGeometry(QRect(30, 80, 361, 58));
-        sort_stock = new QComboBox(liststock);
+        liststock->setGeometry(QRect(0, -10, 1280, 621));
+        liststock->setMinimumSize(QSize(1280, 0));
+        formAddSpecies = new QFrame(liststock);
+        formAddSpecies->setObjectName("formAddSpecies");
+        formAddSpecies->setGeometry(QRect(30, 10, 491, 381));
+        formAddSpecies->setFrameShape(QFrame::Shape::StyledPanel);
+        formAddSpecies->setFrameShadow(QFrame::Shadow::Raised);
+        zone_stocklabel = new QLabel(formAddSpecies);
+        zone_stocklabel->setObjectName("zone_stocklabel");
+        zone_stocklabel->setGeometry(QRect(40, 220, 141, 20));
+        Specieslabel = new QLabel(formAddSpecies);
+        Specieslabel->setObjectName("Specieslabel");
+        Specieslabel->setGeometry(QRect(30, 80, 131, 20));
+        quantity_stocklabel = new QLabel(formAddSpecies);
+        quantity_stocklabel->setObjectName("quantity_stocklabel");
+        quantity_stocklabel->setGeometry(QRect(40, 140, 111, 20));
+        addspecies_stock = new QPushButton(formAddSpecies);
+        addspecies_stock->setObjectName("addspecies_stock");
+        addspecies_stock->setGeometry(QRect(140, 270, 261, 60));
+        addspecies_stock->setStyleSheet(QString::fromUtf8("#addspecies_stock {\n"
+"    background-color: #0288d1;\n"
+"    border: none;\n"
+"    color: white;\n"
+"    font-size: 14px;\n"
+"}\n"
+"\n"
+"#addspecies_stock:hover {\n"
+"    background-color: #039be5;\n"
+"    box-shadow: 0 0 20px rgba(79, 195, 247, 0.6);\n"
+"}"));
+        addspecies_stocklabel = new QLabel(formAddSpecies);
+        addspecies_stocklabel->setObjectName("addspecies_stocklabel");
+        addspecies_stocklabel->setGeometry(QRect(100, 20, 151, 41));
+        addspecies_stocklabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        speciesname_stock = new QLineEdit(formAddSpecies);
+        speciesname_stock->setObjectName("speciesname_stock");
+        speciesname_stock->setGeometry(QRect(130, 70, 301, 54));
+        quantity_stock = new QLineEdit(formAddSpecies);
+        quantity_stock->setObjectName("quantity_stock");
+        quantity_stock->setGeometry(QRect(130, 130, 301, 54));
+        status_stock = new QComboBox(formAddSpecies);
+        status_stock->addItem(QString());
+        status_stock->addItem(QString());
+        status_stock->addItem(QString());
+        status_stock->addItem(QString());
+        status_stock->setObjectName("status_stock");
+        status_stock->setGeometry(QRect(130, 200, 301, 54));
+        status_stock->setStyleSheet(QString::fromUtf8("/* ===== DROPDOWN LIST ===== */\n"
+"QComboBox QAbstractItemView {\n"
+"    background-color: #0A2236; /* fond solide */\n"
+"    color: #E3F2FD;\n"
+"    border: 1px solid #4FC3F7;\n"
+"    border-radius: 8px;\n"
+"    padding: 4px;\n"
+"    selection-background-color: #4FC3F7;\n"
+"    selection-color: #001018;\n"
+"}\n"
+"\n"
+"/* Hover item */\n"
+"QComboBox QAbstractItemView::item:hover {\n"
+"    background-color: rgba(79,195,247,0.25);\n"
+"}\n"
+"\n"
+"/* Selected item */\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background-color: #4FC3F7;\n"
+"    color: #001018;\n"
+"}"));
+        recognition_stock = new QPushButton(liststock);
+        recognition_stock->setObjectName("recognition_stock");
+        recognition_stock->setGeometry(QRect(140, 410, 251, 41));
+        recognition_stock->setStyleSheet(QString::fromUtf8("#recognition_stock {\n"
+"    background-color: rgba(20, 60, 95, 0.9);\n"
+"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
+"    border-radius: 12px;\n"
+"    color: #e3f2fd;\n"
+"    padding: 10px 16px;\n"
+"    font-weight: 600;\n"
+"}\n"
+"\n"
+"\n"
+"#recognition_stock:hover {\n"
+"    background-color: rgba(79, 195, 247, 0.35);\n"
+"    color: white;\n"
+"}"));
+        visual_stock = new QPushButton(liststock);
+        visual_stock->setObjectName("visual_stock");
+        visual_stock->setGeometry(QRect(40, 480, 191, 41));
+        visual_stock->setStyleSheet(QString::fromUtf8("#visual_stock {\n"
+"    background-color: rgba(20, 60, 95, 0.9);\n"
+"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
+"    border-radius: 12px;\n"
+"    color: #e3f2fd;\n"
+"    padding: 10px 16px;\n"
+"    font-weight: 600;\n"
+"}\n"
+"\n"
+"\n"
+"#visual_stock:hover {\n"
+"    background-color: rgba(79, 195, 247, 0.35);\n"
+"    color: white;\n"
+"}"));
+        exportpdf_stock = new QPushButton(liststock);
+        exportpdf_stock->setObjectName("exportpdf_stock");
+        exportpdf_stock->setGeometry(QRect(290, 480, 191, 41));
+        exportpdf_stock->setStyleSheet(QString::fromUtf8("#exportpdf_stock {\n"
+"    background-color: rgba(20, 60, 95, 0.9);\n"
+"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
+"    border-radius: 12px;\n"
+"    color: #e3f2fd;\n"
+"    padding: 10px 16px;\n"
+"    font-weight: 600;\n"
+"}\n"
+"\n"
+"\n"
+"#exportpdf_stock:hover {\n"
+"    background-color: rgba(79, 195, 247, 0.35);\n"
+"    color: white;\n"
+"}"));
+        form_stock = new QGroupBox(listfish);
+        form_stock->setObjectName("form_stock");
+        form_stock->setGeometry(QRect(440, 0, 1280, 601));
+        form_stock->setMinimumSize(QSize(1280, 0));
+        sort_stock = new QComboBox(form_stock);
         sort_stock->addItem(QString());
         sort_stock->addItem(QString());
         sort_stock->addItem(QString());
         sort_stock->addItem(QString());
         sort_stock->setObjectName("sort_stock");
-        sort_stock->setGeometry(QRect(240, 20, 151, 54));
-        fish_stock = new QLabel(liststock);
-        fish_stock->setObjectName("fish_stock");
-        fish_stock->setGeometry(QRect(-20, 20, 191, 51));
-        fish_stock->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        table_stock = new QTableWidget(liststock);
-        if (table_stock->columnCount() < 3)
-            table_stock->setColumnCount(3);
-        QTableWidgetItem *__qtablewidgetitem46 = new QTableWidgetItem();
-        table_stock->setHorizontalHeaderItem(0, __qtablewidgetitem46);
-        QTableWidgetItem *__qtablewidgetitem47 = new QTableWidgetItem();
-        table_stock->setHorizontalHeaderItem(1, __qtablewidgetitem47);
-        QTableWidgetItem *__qtablewidgetitem48 = new QTableWidgetItem();
-        table_stock->setHorizontalHeaderItem(2, __qtablewidgetitem48);
-        if (table_stock->rowCount() < 2)
-            table_stock->setRowCount(2);
+        sort_stock->setGeometry(QRect(360, 10, 191, 54));
+        sort_stock->setStyleSheet(QString::fromUtf8("/* ===== DROPDOWN LIST ===== */\n"
+"QComboBox QAbstractItemView {\n"
+"    background-color: #0A2236; /* fond solide */\n"
+"    color: #E3F2FD;\n"
+"    border: 1px solid #4FC3F7;\n"
+"    border-radius: 8px;\n"
+"    padding: 4px;\n"
+"    selection-background-color: #4FC3F7;\n"
+"    selection-color: #001018;\n"
+"}\n"
+"\n"
+"/* Hover item */\n"
+"QComboBox QAbstractItemView::item:hover {\n"
+"    background-color: rgba(79,195,247,0.25);\n"
+"}\n"
+"\n"
+"/* Selected item */\n"
+"QComboBox QAbstractItemView::item:selected {\n"
+"    background-color: #4FC3F7;\n"
+"    color: #001018;\n"
+"}"));
+        table_stock = new QTableView(form_stock);
         table_stock->setObjectName("table_stock");
-        table_stock->setGeometry(QRect(10, 150, 421, 271));
+        table_stock->setGeometry(QRect(130, 140, 421, 271));
         table_stock->setStyleSheet(QString::fromUtf8("/* QScrollBar */\n"
 "QScrollBar {\n"
 "    background: #2e3b4e;\n"
@@ -8246,106 +8683,53 @@ public:
 ""));
         table_stock->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
         table_stock->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
-        table_stock->setRowCount(2);
-        table_stock->setColumnCount(3);
-        deletespecies_stock = new QPushButton(liststock);
-        deletespecies_stock->setObjectName("deletespecies_stock");
-        deletespecies_stock->setGeometry(QRect(20, 490, 171, 41));
-        Editstock = new QPushButton(liststock);
-        Editstock->setObjectName("Editstock");
-        Editstock->setGeometry(QRect(220, 490, 161, 41));
-        form_stock = new QGroupBox(listfish);
-        form_stock->setObjectName("form_stock");
-        form_stock->setGeometry(QRect(440, 0, 401, 601));
-        formAddSpecies = new QFrame(form_stock);
-        formAddSpecies->setObjectName("formAddSpecies");
-        formAddSpecies->setGeometry(QRect(0, 0, 411, 381));
-        formAddSpecies->setFrameShape(QFrame::Shape::StyledPanel);
-        formAddSpecies->setFrameShadow(QFrame::Shadow::Raised);
-        zone_stocklabel = new QLabel(formAddSpecies);
-        zone_stocklabel->setObjectName("zone_stocklabel");
-        zone_stocklabel->setGeometry(QRect(40, 220, 141, 20));
-        Specieslabel = new QLabel(formAddSpecies);
-        Specieslabel->setObjectName("Specieslabel");
-        Specieslabel->setGeometry(QRect(30, 80, 131, 20));
-        quantity_stocklabel = new QLabel(formAddSpecies);
-        quantity_stocklabel->setObjectName("quantity_stocklabel");
-        quantity_stocklabel->setGeometry(QRect(40, 140, 111, 20));
-        addspecies_stock = new QPushButton(formAddSpecies);
-        addspecies_stock->setObjectName("addspecies_stock");
-        addspecies_stock->setGeometry(QRect(50, 280, 261, 60));
-        addspecies_stock->setStyleSheet(QString::fromUtf8("#addspecies_stock {\n"
-"    background-color: #0288d1;\n"
+        fish_stock = new QLabel(form_stock);
+        fish_stock->setObjectName("fish_stock");
+        fish_stock->setGeometry(QRect(100, 10, 191, 51));
+        fish_stock->setAlignment(Qt::AlignmentFlag::AlignCenter);
+        delete_stock = new QPushButton(form_stock);
+        delete_stock->setObjectName("delete_stock");
+        delete_stock->setGeometry(QRect(130, 430, 171, 41));
+        search_stock = new QLineEdit(form_stock);
+        search_stock->setObjectName("search_stock");
+        search_stock->setGeometry(QRect(130, 70, 421, 58));
+        edit_stock = new QPushButton(form_stock);
+        edit_stock->setObjectName("edit_stock");
+        edit_stock->setGeometry(QRect(350, 430, 161, 41));
+        charts_stock = new QPushButton(form_stock);
+        charts_stock->setObjectName("charts_stock");
+        charts_stock->setGeometry(QRect(160, 490, 344, 76));
+        charts_stock->setStyleSheet(QString::fromUtf8("QPushButton#charts_stock {\n"
+"    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,\n"
+"        stop:0 #00897b,\n"
+"        stop:0.5 #00695c,\n"
+"        stop:1 #004d40);\n"
+"    color: white;\n"
 "    border: none;\n"
-"    color: white;\n"
-"    font-size: 14px;\n"
+"    border-radius: 8px;\n"
+"    padding: 12px;\n"
+"    font-size: 13px;\n"
+"    font-weight: bold;\n"
+"    font-family: 'Segoe UI', Arial;\n"
+"    margin-top: 10px;\n"
+"    min-height: 42px;\n"
+"    max-height: 42px;\n"
+"    min-width: 280px;\n"
+"    max-width: 280px;\n"
+"    margin-left: 20px;\n"
+"    margin-right: 20px;\n"
 "}\n"
 "\n"
-"#addspecies_stock:hover {\n"
-"    background-color: #039be5;\n"
-"    box-shadow: 0 0 20px rgba(79, 195, 247, 0.6);\n"
-"}"));
-        addspecies_stocklabel = new QLabel(formAddSpecies);
-        addspecies_stocklabel->setObjectName("addspecies_stocklabel");
-        addspecies_stocklabel->setGeometry(QRect(100, 20, 151, 41));
-        addspecies_stocklabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
-        speciesname_stock = new QLineEdit(formAddSpecies);
-        speciesname_stock->setObjectName("speciesname_stock");
-        speciesname_stock->setGeometry(QRect(130, 70, 221, 54));
-        quantity_stock = new QLineEdit(formAddSpecies);
-        quantity_stock->setObjectName("quantity_stock");
-        quantity_stock->setGeometry(QRect(130, 130, 221, 54));
-        zone_stock = new QLineEdit(formAddSpecies);
-        zone_stock->setObjectName("zone_stock");
-        zone_stock->setGeometry(QRect(130, 200, 221, 54));
-        recognition_stock = new QPushButton(form_stock);
-        recognition_stock->setObjectName("recognition_stock");
-        recognition_stock->setGeometry(QRect(60, 410, 231, 41));
-        recognition_stock->setStyleSheet(QString::fromUtf8("#recognition_stock {\n"
-"    background-color: rgba(20, 60, 95, 0.9);\n"
-"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
-"    border-radius: 12px;\n"
-"    color: #e3f2fd;\n"
-"    padding: 10px 16px;\n"
-"    font-weight: 600;\n"
+"QPushButton#charts_stock:hover {\n"
+"    background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,\n"
+"        stop:0 #009688,\n"
+"        stop:0.5 #00796b,\n"
+"        stop:1 #005b4f);\n"
+"    border: 1px solid #4db6ac;\n"
+"    box-shadow: 0 0 10px rgba(77, 182, 172, 0.2);\n"
 "}\n"
 "\n"
-"\n"
-"#recognition_stock:hover {\n"
-"    background-color: rgba(79, 195, 247, 0.35);\n"
-"    color: white;\n"
-"}"));
-        exportpdf_stock = new QPushButton(form_stock);
-        exportpdf_stock->setObjectName("exportpdf_stock");
-        exportpdf_stock->setGeometry(QRect(180, 480, 191, 41));
-        exportpdf_stock->setStyleSheet(QString::fromUtf8("#exportpdf_stock {\n"
-"    background-color: rgba(20, 60, 95, 0.9);\n"
-"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
-"    border-radius: 12px;\n"
-"    color: #e3f2fd;\n"
-"    padding: 10px 16px;\n"
-"    font-weight: 600;\n"
-"}\n"
-"\n"
-"\n"
-"#exportpdf_stock:hover {\n"
-"    background-color: rgba(79, 195, 247, 0.35);\n"
-"    color: white;\n"
-"}"));
-        visual_stock = new QPushButton(form_stock);
-        visual_stock->setObjectName("visual_stock");
-        visual_stock->setGeometry(QRect(0, 480, 161, 41));
-        visual_stock->setStyleSheet(QString::fromUtf8("#visual_stock {\n"
-"    background-color: rgba(20, 60, 95, 0.9);\n"
-"    border: 1px solid rgba(79, 195, 247, 0.4);\n"
-"    border-radius: 12px;\n"
-"    color: #e3f2fd;\n"
-"    padding: 10px 16px;\n"
-"    font-weight: 600;\n"
-"}\n"
-"\n"
-"\n"
-"#visual_stock:hover {\n"
+"#charts_stock:hover {\n"
 "    background-color: rgba(79, 195, 247, 0.35);\n"
 "    color: white;\n"
 "}"));
@@ -8356,10 +8740,13 @@ public:
         horizontalLayout_8->addWidget(contenumain_S);
 
         stackedWidget->addWidget(pageFishStock);
+
+        verticalLayout->addWidget(stackedWidget);
+
         SignIn->setCentralWidget(centralwidget);
         menubar = new QMenuBar(SignIn);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 1017, 0));
+        menubar->setGeometry(QRect(0, 0, 1280, 0));
         SignIn->setMenuBar(menubar);
         statusbar = new QStatusBar(SignIn);
         statusbar->setObjectName("statusbar");
@@ -8367,7 +8754,7 @@ public:
 
         retranslateUi(SignIn);
 
-        stackedWidget->setCurrentIndex(10);
+        stackedWidget->setCurrentIndex(12);
 
 
         QMetaObject::connectSlotsByName(SignIn);
@@ -8385,6 +8772,7 @@ public:
         remembercheck->setText(QCoreApplication::translate("SignIn", "Remember me", nullptr));
         label_4->setText(QString());
         showPassCheck->setText(QCoreApplication::translate("SignIn", "Show Password", nullptr));
+        withvoicebtn->setText(QCoreApplication::translate("SignIn", "Sign In With Your Voice", nullptr));
         groupBoxAC->setTitle(QString());
         clientsmanagementBTNA->setText(QCoreApplication::translate("SignIn", "\360\237\222\260Clients Management", nullptr));
         stockmanagementBTNA->setText(QCoreApplication::translate("SignIn", "\360\237\220\237 Stock Management", nullptr));
@@ -8394,7 +8782,7 @@ public:
         logoheaderA->setText(QString());
         logOutBTNA->setText(QCoreApplication::translate("SignIn", "\342\217\273 Log Out", nullptr));
         titreHeaderC->setText(QCoreApplication::translate("SignIn", "BORT- Smart Fishing Port Application", nullptr));
-        userprofileC->setText(QCoreApplication::translate("SignIn", "Sana Saidi", nullptr));
+        userprofiledetailsC->setText(QCoreApplication::translate("SignIn", "Sana Saidi", nullptr));
         avatarC->setText(QString());
         clientaddform->setTitle(QString());
         quantitylable->setText(QCoreApplication::translate("SignIn", "Quantity", nullptr));
@@ -8411,20 +8799,24 @@ public:
         clientnamelable->setText(QCoreApplication::translate("SignIn", "Client's name", nullptr));
         clientformlable->setText(QCoreApplication::translate("SignIn", "Client's Form", nullptr));
         clientdatelable->setText(QCoreApplication::translate("SignIn", "Date of birth", nullptr));
+        vocalstuffbtn->setText(QCoreApplication::translate("SignIn", "Easy Input", nullptr));
+        pricelabel->setText(QCoreApplication::translate("SignIn", "Price", nullptr));
         clientlist->setTitle(QString());
         mainpagebtn->setText(QCoreApplication::translate("SignIn", "\342\206\251\357\270\217Back to main page", nullptr));
         clientlistlable->setText(QCoreApplication::translate("SignIn", "Clients list", nullptr));
-        aiclientbtn->setText(QCoreApplication::translate("SignIn", "\360\237\244\226AI Purchase Prediction", nullptr));
+        aiclientbtn->setText(QCoreApplication::translate("SignIn", "\360\237\244\226 Purchase Recommendation", nullptr));
         updateclientbtn->setText(QCoreApplication::translate("SignIn", "\360\237\233\240\357\270\217Update ", nullptr));
         deleteclientbtn->setText(QCoreApplication::translate("SignIn", "\360\237\232\257Delete ", nullptr));
         clientdashboardbtn->setText(QCoreApplication::translate("SignIn", "\360\237\223\210Go to dashboard", nullptr));
         clientsort->setItemText(0, QCoreApplication::translate("SignIn", "Sort with.....", nullptr));
-        clientsort->setItemText(1, QCoreApplication::translate("SignIn", "client's name", nullptr));
-        clientsort->setItemText(2, QCoreApplication::translate("SignIn", "date of birth", nullptr));
-        clientsort->setItemText(3, QCoreApplication::translate("SignIn", "payment type", nullptr));
-        clientsort->setItemText(4, QCoreApplication::translate("SignIn", "article", nullptr));
+        clientsort->setItemText(1, QCoreApplication::translate("SignIn", "client's name \342\206\221", nullptr));
+        clientsort->setItemText(2, QCoreApplication::translate("SignIn", "client's name \342\206\223", nullptr));
+        clientsort->setItemText(3, QCoreApplication::translate("SignIn", "article \342\206\221", nullptr));
+        clientsort->setItemText(4, QCoreApplication::translate("SignIn", "article \342\206\223", nullptr));
+        clientsort->setItemText(5, QCoreApplication::translate("SignIn", "quantity \342\206\221", nullptr));
+        clientsort->setItemText(6, QCoreApplication::translate("SignIn", "quantity \342\206\223", nullptr));
 
-        searchclient->setText(QCoreApplication::translate("SignIn", "\360\237\224\215Search", nullptr));
+        searchclient->setText(QString());
         QTableWidgetItem *___qtablewidgetitem = clienttable->horizontalHeaderItem(0);
         ___qtablewidgetitem->setText(QCoreApplication::translate("SignIn", "ID", nullptr));
         QTableWidgetItem *___qtablewidgetitem1 = clienttable->horizontalHeaderItem(1);
@@ -8432,33 +8824,35 @@ public:
         QTableWidgetItem *___qtablewidgetitem2 = clienttable->horizontalHeaderItem(2);
         ___qtablewidgetitem2->setText(QCoreApplication::translate("SignIn", "Date of birth", nullptr));
         QTableWidgetItem *___qtablewidgetitem3 = clienttable->horizontalHeaderItem(3);
-        ___qtablewidgetitem3->setText(QCoreApplication::translate("SignIn", "Phone Number", nullptr));
+        ___qtablewidgetitem3->setText(QCoreApplication::translate("SignIn", "Price", nullptr));
         QTableWidgetItem *___qtablewidgetitem4 = clienttable->horizontalHeaderItem(4);
-        ___qtablewidgetitem4->setText(QCoreApplication::translate("SignIn", "Article(s) bought", nullptr));
+        ___qtablewidgetitem4->setText(QCoreApplication::translate("SignIn", "Payment method", nullptr));
         QTableWidgetItem *___qtablewidgetitem5 = clienttable->horizontalHeaderItem(5);
-        ___qtablewidgetitem5->setText(QCoreApplication::translate("SignIn", "Quantity", nullptr));
+        ___qtablewidgetitem5->setText(QCoreApplication::translate("SignIn", "Status", nullptr));
         QTableWidgetItem *___qtablewidgetitem6 = clienttable->horizontalHeaderItem(6);
-        ___qtablewidgetitem6->setText(QCoreApplication::translate("SignIn", "Payment method", nullptr));
+        ___qtablewidgetitem6->setText(QCoreApplication::translate("SignIn", "Phone Number", nullptr));
         QTableWidgetItem *___qtablewidgetitem7 = clienttable->horizontalHeaderItem(7);
-        ___qtablewidgetitem7->setText(QCoreApplication::translate("SignIn", "\342\200\216 ", nullptr));
-        QTableWidgetItem *___qtablewidgetitem8 = clienttable->verticalHeaderItem(0);
-        ___qtablewidgetitem8->setText(QCoreApplication::translate("SignIn", "\342\200\216 ", nullptr));
-        QTableWidgetItem *___qtablewidgetitem9 = clienttable->verticalHeaderItem(1);
+        ___qtablewidgetitem7->setText(QCoreApplication::translate("SignIn", "Article(s) bought", nullptr));
+        QTableWidgetItem *___qtablewidgetitem8 = clienttable->horizontalHeaderItem(8);
+        ___qtablewidgetitem8->setText(QCoreApplication::translate("SignIn", "Quantity", nullptr));
+        QTableWidgetItem *___qtablewidgetitem9 = clienttable->verticalHeaderItem(0);
         ___qtablewidgetitem9->setText(QCoreApplication::translate("SignIn", "\342\200\216 ", nullptr));
-        QTableWidgetItem *___qtablewidgetitem10 = clienttable->verticalHeaderItem(2);
+        QTableWidgetItem *___qtablewidgetitem10 = clienttable->verticalHeaderItem(1);
         ___qtablewidgetitem10->setText(QCoreApplication::translate("SignIn", "\342\200\216 ", nullptr));
-        QTableWidgetItem *___qtablewidgetitem11 = clienttable->verticalHeaderItem(3);
+        QTableWidgetItem *___qtablewidgetitem11 = clienttable->verticalHeaderItem(2);
         ___qtablewidgetitem11->setText(QCoreApplication::translate("SignIn", "\342\200\216 ", nullptr));
-        QTableWidgetItem *___qtablewidgetitem12 = clienttable->verticalHeaderItem(4);
+        QTableWidgetItem *___qtablewidgetitem12 = clienttable->verticalHeaderItem(3);
         ___qtablewidgetitem12->setText(QCoreApplication::translate("SignIn", "\342\200\216 ", nullptr));
-        QTableWidgetItem *___qtablewidgetitem13 = clienttable->verticalHeaderItem(5);
+        QTableWidgetItem *___qtablewidgetitem13 = clienttable->verticalHeaderItem(4);
         ___qtablewidgetitem13->setText(QCoreApplication::translate("SignIn", "\342\200\216 ", nullptr));
-        QTableWidgetItem *___qtablewidgetitem14 = clienttable->verticalHeaderItem(6);
+        QTableWidgetItem *___qtablewidgetitem14 = clienttable->verticalHeaderItem(5);
         ___qtablewidgetitem14->setText(QCoreApplication::translate("SignIn", "\342\200\216 ", nullptr));
-        QTableWidgetItem *___qtablewidgetitem15 = clienttable->verticalHeaderItem(7);
+        QTableWidgetItem *___qtablewidgetitem15 = clienttable->verticalHeaderItem(6);
         ___qtablewidgetitem15->setText(QCoreApplication::translate("SignIn", "\342\200\216 ", nullptr));
-        QTableWidgetItem *___qtablewidgetitem16 = clienttable->verticalHeaderItem(8);
+        QTableWidgetItem *___qtablewidgetitem16 = clienttable->verticalHeaderItem(7);
         ___qtablewidgetitem16->setText(QCoreApplication::translate("SignIn", "\342\200\216 ", nullptr));
+        QTableWidgetItem *___qtablewidgetitem17 = clienttable->verticalHeaderItem(8);
+        ___qtablewidgetitem17->setText(QCoreApplication::translate("SignIn", "\342\200\216 ", nullptr));
         clientpdfbtn->setText(QCoreApplication::translate("SignIn", "\360\237\223\235Export as PDF", nullptr));
         groupBox_DC->setTitle(QString());
         staffclientsBTN_DC->setText(QCoreApplication::translate("SignIn", "\360\237\222\260Clients Management", nullptr));
@@ -8472,20 +8866,16 @@ public:
         userprofiledetails_DC->setText(QCoreApplication::translate("SignIn", "Sana Saidi", nullptr));
         avatar_DC->setText(QString());
         dashtitleC->setText(QCoreApplication::translate("SignIn", "Client Dashboard", nullptr));
-        stat1C->setTitle(QString());
-        statroleC->setText(QString());
         pdfitembtn->setText(QCoreApplication::translate("SignIn", "\360\237\223\235Export To Pdf", nullptr));
         backtoclientbtn->setText(QCoreApplication::translate("SignIn", "\342\206\251\357\270\217Back to Client Management", nullptr));
-        numbergains->setText(QCoreApplication::translate("SignIn", "1.67kDTN", nullptr));
+        monthsgainslabel->setText(QString());
         titlegains->setText(QCoreApplication::translate("SignIn", "\360\237\232\243This month's Gains", nullptr));
         titlebestC->setText(QCoreApplication::translate("SignIn", "Most Sold Item this month", nullptr));
         trophy_2->setText(QString());
-        browseC->setText(QCoreApplication::translate("SignIn", "Update item ", nullptr));
-        namebestC->setText(QCoreApplication::translate("SignIn", "Item: Hook", nullptr));
-        rolebestC->setText(QCoreApplication::translate("SignIn", "Quantity sold:200k", nullptr));
-        rewardbestC->setText(QCoreApplication::translate("SignIn", "+150% compared to last month", nullptr));
-        statcvstatusC->setTitle(QString());
-        stat2C->setText(QString());
+        mostsolditemlabel->setText(QString());
+        aipredictionbtndashboard->setText(QCoreApplication::translate("SignIn", "\360\237\244\226Smart Prediction", nullptr));
+        chart1->setText(QString());
+        chart2->setText(QString());
         ForgotTitle->setText(QCoreApplication::translate("SignIn", "Forgot Your Password?", nullptr));
         label->setText(QString());
         resetlabel->setText(QCoreApplication::translate("SignIn", "Enter your email  to reset your password", nullptr));
@@ -8523,8 +8913,15 @@ public:
         boatt->setText(QCoreApplication::translate("SignIn", "25", nullptr));
         weathertitle->setText(QCoreApplication::translate("SignIn", "\360\237\214\244\357\270\217Weather", nullptr));
         temp->setText(QCoreApplication::translate("SignIn", "13 C\302\260", nullptr));
-        portdash->setTitle(QString());
-        portconttt->setText(QString());
+        QTableWidgetItem *___qtablewidgetitem18 = historique->horizontalHeaderItem(0);
+        ___qtablewidgetitem18->setText(QCoreApplication::translate("SignIn", "Time", nullptr));
+        QTableWidgetItem *___qtablewidgetitem19 = historique->horizontalHeaderItem(1);
+        ___qtablewidgetitem19->setText(QCoreApplication::translate("SignIn", "User", nullptr));
+        QTableWidgetItem *___qtablewidgetitem20 = historique->horizontalHeaderItem(2);
+        ___qtablewidgetitem20->setText(QCoreApplication::translate("SignIn", "Status", nullptr));
+        QTableWidgetItem *___qtablewidgetitem21 = historique->horizontalHeaderItem(3);
+        ___qtablewidgetitem21->setText(QCoreApplication::translate("SignIn", "Method", nullptr));
+        titleh->setText(QCoreApplication::translate("SignIn", "Recent Access Activity", nullptr));
         groupBox->setTitle(QString());
         staffmanagementBTN->setText(QCoreApplication::translate("SignIn", "\360\237\221\251\360\237\217\273\342\200\215\360\237\222\274Staff Management", nullptr));
         clientsmanagementBTN->setText(QCoreApplication::translate("SignIn", "\360\237\222\260Clients Management", nullptr));
@@ -8545,7 +8942,6 @@ public:
         role->setItemText(4, QCoreApplication::translate("SignIn", "Regulatory manager", nullptr));
         role->setItemText(5, QCoreApplication::translate("SignIn", "Fisherman", nullptr));
         role->setItemText(6, QCoreApplication::translate("SignIn", "Security", nullptr));
-        role->setItemText(7, QString());
 
         staffnamelabel->setText(QCoreApplication::translate("SignIn", "Staff Full Name", nullptr));
         staffaddresslabel->setText(QCoreApplication::translate("SignIn", "Staff Address", nullptr));
@@ -8555,21 +8951,12 @@ public:
         cvstat->setItemText(1, QCoreApplication::translate("SignIn", "Accepted", nullptr));
         cvstat->setItemText(2, QCoreApplication::translate("SignIn", "Rejected", nullptr));
         cvstat->setItemText(3, QCoreApplication::translate("SignIn", "Pending", nullptr));
-        cvstat->setItemText(4, QString());
-        cvstat->setItemText(5, QString());
-        cvstat->setItemText(6, QString());
-        cvstat->setItemText(7, QString());
-        cvstat->setItemText(8, QString());
-        cvstat->setItemText(9, QString());
-        cvstat->setItemText(10, QString());
-        cvstat->setItemText(11, QString());
-        cvstat->setItemText(12, QString());
 
         passlab->setText(QCoreApplication::translate("SignIn", "Staff Password", nullptr));
         ubploacvbtn->setText(QCoreApplication::translate("SignIn", "Upload Cv", nullptr));
         addstaffbtn->setText(QCoreApplication::translate("SignIn", "\342\236\225Add Staff", nullptr));
         cvpathEdit->setText(QString());
-        ubploaAvatarbtn->setText(QCoreApplication::translate("SignIn", "Upload Avatar", nullptr));
+        ubploaAvatarbtn->setText(QCoreApplication::translate("SignIn", "Generate An Avatar", nullptr));
         avatarpathEdit->setText(QString());
         liststaffff->setTitle(QString());
         staffsearchbarre->setText(QString());
@@ -8579,24 +8966,24 @@ public:
         sortstaff->setItemText(3, QCoreApplication::translate("SignIn", "Staff CvStatus", nullptr));
 
         stafflistlabel->setText(QCoreApplication::translate("SignIn", "Staff List", nullptr));
-        QTableWidgetItem *___qtablewidgetitem17 = tablestaff->horizontalHeaderItem(0);
-        ___qtablewidgetitem17->setText(QCoreApplication::translate("SignIn", "Staff Full Name", nullptr));
-        QTableWidgetItem *___qtablewidgetitem18 = tablestaff->horizontalHeaderItem(1);
-        ___qtablewidgetitem18->setText(QCoreApplication::translate("SignIn", "Staff Address", nullptr));
-        QTableWidgetItem *___qtablewidgetitem19 = tablestaff->horizontalHeaderItem(2);
-        ___qtablewidgetitem19->setText(QCoreApplication::translate("SignIn", "Phone Number", nullptr));
-        QTableWidgetItem *___qtablewidgetitem20 = tablestaff->horizontalHeaderItem(3);
-        ___qtablewidgetitem20->setText(QCoreApplication::translate("SignIn", "Staff Mail", nullptr));
-        QTableWidgetItem *___qtablewidgetitem21 = tablestaff->horizontalHeaderItem(4);
-        ___qtablewidgetitem21->setText(QCoreApplication::translate("SignIn", "Staff Password", nullptr));
-        QTableWidgetItem *___qtablewidgetitem22 = tablestaff->horizontalHeaderItem(5);
-        ___qtablewidgetitem22->setText(QCoreApplication::translate("SignIn", "Staff Role", nullptr));
-        QTableWidgetItem *___qtablewidgetitem23 = tablestaff->horizontalHeaderItem(6);
-        ___qtablewidgetitem23->setText(QCoreApplication::translate("SignIn", "Cv Status", nullptr));
-        QTableWidgetItem *___qtablewidgetitem24 = tablestaff->horizontalHeaderItem(7);
-        ___qtablewidgetitem24->setText(QCoreApplication::translate("SignIn", "Cv", nullptr));
-        QTableWidgetItem *___qtablewidgetitem25 = tablestaff->horizontalHeaderItem(8);
-        ___qtablewidgetitem25->setText(QCoreApplication::translate("SignIn", "Avatar", nullptr));
+        QTableWidgetItem *___qtablewidgetitem22 = tablestaff->horizontalHeaderItem(0);
+        ___qtablewidgetitem22->setText(QCoreApplication::translate("SignIn", "Staff Full Name", nullptr));
+        QTableWidgetItem *___qtablewidgetitem23 = tablestaff->horizontalHeaderItem(1);
+        ___qtablewidgetitem23->setText(QCoreApplication::translate("SignIn", "Staff Address", nullptr));
+        QTableWidgetItem *___qtablewidgetitem24 = tablestaff->horizontalHeaderItem(2);
+        ___qtablewidgetitem24->setText(QCoreApplication::translate("SignIn", "Phone Number", nullptr));
+        QTableWidgetItem *___qtablewidgetitem25 = tablestaff->horizontalHeaderItem(3);
+        ___qtablewidgetitem25->setText(QCoreApplication::translate("SignIn", "Staff Mail", nullptr));
+        QTableWidgetItem *___qtablewidgetitem26 = tablestaff->horizontalHeaderItem(4);
+        ___qtablewidgetitem26->setText(QCoreApplication::translate("SignIn", "Staff Password", nullptr));
+        QTableWidgetItem *___qtablewidgetitem27 = tablestaff->horizontalHeaderItem(5);
+        ___qtablewidgetitem27->setText(QCoreApplication::translate("SignIn", "Staff Role", nullptr));
+        QTableWidgetItem *___qtablewidgetitem28 = tablestaff->horizontalHeaderItem(6);
+        ___qtablewidgetitem28->setText(QCoreApplication::translate("SignIn", "Cv Status", nullptr));
+        QTableWidgetItem *___qtablewidgetitem29 = tablestaff->horizontalHeaderItem(7);
+        ___qtablewidgetitem29->setText(QCoreApplication::translate("SignIn", "Cv", nullptr));
+        QTableWidgetItem *___qtablewidgetitem30 = tablestaff->horizontalHeaderItem(8);
+        ___qtablewidgetitem30->setText(QCoreApplication::translate("SignIn", "Avatar", nullptr));
         modifystaffbtn->setText(QCoreApplication::translate("SignIn", "\360\237\233\240\357\270\217Edit Staff", nullptr));
         deletestaffbtn->setText(QCoreApplication::translate("SignIn", "\360\237\232\257Delete Staff", nullptr));
         cvanalysebtn->setText(QCoreApplication::translate("SignIn", "\360\237\244\226AI agent CV analysis", nullptr));
@@ -8604,50 +8991,60 @@ public:
         exportpdfstaffbtn->setText(QCoreApplication::translate("SignIn", "\360\237\223\235Export As PDF", nullptr));
         backWbtn->setText(QCoreApplication::translate("SignIn", "\342\206\251\357\270\217Back to Welcome Page", nullptr));
         searchlabel->setText(QCoreApplication::translate("SignIn", "\360\237\224\215Search with staff full name,role,cvstatus....", nullptr));
-        groupBoxE->setTitle(QString());
-        staffmanagementBTNe->setText(QCoreApplication::translate("SignIn", "\360\237\221\251\360\237\217\273\342\200\215\360\237\222\274Staff Management", nullptr));
-        clientsmanagementBTNe->setText(QCoreApplication::translate("SignIn", "\360\237\222\260Clients Management", nullptr));
-        stockmanagementBTNe->setText(QCoreApplication::translate("SignIn", "\360\237\220\237 Stock Management", nullptr));
-        fishingzonemanagementBTNe->setText(QCoreApplication::translate("SignIn", "\360\237\227\272\357\270\217 FishingZone Management", nullptr));
-        equipmentmanagementBTNe->setText(QCoreApplication::translate("SignIn", "\342\232\223Equipment Management", nullptr));
-        logoheaderE->setText(QString());
-        logOutBTNe->setText(QCoreApplication::translate("SignIn", "\342\217\273 Log Out", nullptr));
-        titreHeaderE->setText(QCoreApplication::translate("SignIn", "BORT- Smart Fishing Port Application", nullptr));
-        userprofiledetailsE->setText(QCoreApplication::translate("SignIn", "Nour Ben Hmida", nullptr));
-        avatarE->setText(QString());
-        formcontEq->setTitle(QString());
-        labeladdeq->setText(QCoreApplication::translate("SignIn", "Form Add Equipments", nullptr));
-        Eqnamelabel->setText(QCoreApplication::translate("SignIn", "Equipment Name", nullptr));
-        Eqaddresslabel->setText(QCoreApplication::translate("SignIn", "Equipment Type", nullptr));
-        statelabel->setText(QCoreApplication::translate("SignIn", "State", nullptr));
-        quantitylabel->setText(QCoreApplication::translate("SignIn", "Quantity", nullptr));
-        capacitylab->setText(QCoreApplication::translate("SignIn", "Capacity", nullptr));
-        addEqbtn->setText(QCoreApplication::translate("SignIn", "\342\236\225Add Equipment ", nullptr));
-        backWbtnE->setText(QCoreApplication::translate("SignIn", "\342\206\251\357\270\217Back to Welcome Page", nullptr));
+        groupBoxE_L->setTitle(QString());
+        staffmanagementBTNe_L->setText(QCoreApplication::translate("SignIn", "\360\237\221\251\360\237\217\273\342\200\215\360\237\222\274Staff Management", nullptr));
+        clientsmanagementBTNe_L->setText(QCoreApplication::translate("SignIn", "\360\237\222\260Clients Management", nullptr));
+        stockmanagementBTNe_L->setText(QCoreApplication::translate("SignIn", "\360\237\220\237 Stock Management", nullptr));
+        fishingzonemanagementBTNe_L->setText(QCoreApplication::translate("SignIn", "\360\237\227\272\357\270\217 FishingZone Management", nullptr));
+        equipmentmanagementBTNe_L->setText(QCoreApplication::translate("SignIn", "\342\232\223Equipment Management", nullptr));
+        logoheaderE_L->setText(QString());
+        logOutBTNe_L->setText(QCoreApplication::translate("SignIn", "\342\217\273 Log Out", nullptr));
+        titreHeaderE_L->setText(QCoreApplication::translate("SignIn", "BORT- Smart Fishing Port Application", nullptr));
+        userprofiledetails_D_3->setText(QCoreApplication::translate("SignIn", "Nour Ben Hmida", nullptr));
+        avatarE_F_2->setText(QString());
         listequi->setTitle(QString());
-        searchbar->setText(QCoreApplication::translate("SignIn", "\360\237\224\215Search with Equipment name,state,type....", nullptr));
-        sortEq->setItemText(0, QCoreApplication::translate("SignIn", "Sort with.....", nullptr));
-        sortEq->setItemText(1, QCoreApplication::translate("SignIn", "equipment name", nullptr));
-        sortEq->setItemText(2, QCoreApplication::translate("SignIn", "equipment type", nullptr));
-        sortEq->setItemText(3, QCoreApplication::translate("SignIn", "equipment state", nullptr));
+        searchbar_L->setText(QCoreApplication::translate("SignIn", "\360\237\224\215Search with Equipment name,state,type....", nullptr));
+        sortEq_L->setItemText(0, QCoreApplication::translate("SignIn", "Sort with.....", nullptr));
+        sortEq_L->setItemText(1, QCoreApplication::translate("SignIn", "equipment name", nullptr));
+        sortEq_L->setItemText(2, QCoreApplication::translate("SignIn", "equipment type", nullptr));
+        sortEq_L->setItemText(3, QCoreApplication::translate("SignIn", "equipment state", nullptr));
 
-        equipmentlist->setText(QCoreApplication::translate("SignIn", "Equipment List", nullptr));
-        QTableWidgetItem *___qtablewidgetitem26 = tableeq->horizontalHeaderItem(0);
-        ___qtablewidgetitem26->setText(QCoreApplication::translate("SignIn", "Eq name", nullptr));
-        QTableWidgetItem *___qtablewidgetitem27 = tableeq->horizontalHeaderItem(1);
-        ___qtablewidgetitem27->setText(QCoreApplication::translate("SignIn", "Eq Type ", nullptr));
-        QTableWidgetItem *___qtablewidgetitem28 = tableeq->horizontalHeaderItem(2);
-        ___qtablewidgetitem28->setText(QCoreApplication::translate("SignIn", "State", nullptr));
-        QTableWidgetItem *___qtablewidgetitem29 = tableeq->horizontalHeaderItem(3);
-        ___qtablewidgetitem29->setText(QCoreApplication::translate("SignIn", "Quantity", nullptr));
-        QTableWidgetItem *___qtablewidgetitem30 = tableeq->horizontalHeaderItem(4);
-        ___qtablewidgetitem30->setText(QCoreApplication::translate("SignIn", "Capacity", nullptr));
-        modifybtn->setText(QCoreApplication::translate("SignIn", "\360\237\233\240\357\270\217Modify ", nullptr));
-        deletebtnE->setText(QCoreApplication::translate("SignIn", "\360\237\232\257Delete ", nullptr));
-        chatbotbtn->setText(QCoreApplication::translate("SignIn", "\360\237\244\226 ChatBot", nullptr));
-        staticbtnE->setText(QCoreApplication::translate("SignIn", "\360\237\223\210Go To Dashboard", nullptr));
-        exportpdfbtnE->setText(QCoreApplication::translate("SignIn", "\360\237\223\235Export as PDF", nullptr));
-        chatbotbtn_2->setText(QCoreApplication::translate("SignIn", "\360\237\244\226 AI agent prediction", nullptr));
+        equipmentlist_L->setText(QCoreApplication::translate("SignIn", "Equipment List", nullptr));
+        QTableWidgetItem *___qtablewidgetitem31 = tableeq_L->horizontalHeaderItem(0);
+        ___qtablewidgetitem31->setText(QCoreApplication::translate("SignIn", "Eq name", nullptr));
+        QTableWidgetItem *___qtablewidgetitem32 = tableeq_L->horizontalHeaderItem(1);
+        ___qtablewidgetitem32->setText(QCoreApplication::translate("SignIn", "Eq Type ", nullptr));
+        QTableWidgetItem *___qtablewidgetitem33 = tableeq_L->horizontalHeaderItem(2);
+        ___qtablewidgetitem33->setText(QCoreApplication::translate("SignIn", "State", nullptr));
+        QTableWidgetItem *___qtablewidgetitem34 = tableeq_L->horizontalHeaderItem(3);
+        ___qtablewidgetitem34->setText(QCoreApplication::translate("SignIn", "Quantity", nullptr));
+        QTableWidgetItem *___qtablewidgetitem35 = tableeq_L->horizontalHeaderItem(4);
+        ___qtablewidgetitem35->setText(QCoreApplication::translate("SignIn", "Capacity", nullptr));
+        chatbotbtn_L->setText(QCoreApplication::translate("SignIn", "\360\237\244\226 ChatBot", nullptr));
+        staticbtnE_L->setText(QCoreApplication::translate("SignIn", "\360\237\223\210Go To Dashboard", nullptr));
+        exportpdfbtnE_L->setText(QCoreApplication::translate("SignIn", "\360\237\223\235Export as PDF", nullptr));
+        chatbotbtn_2_L->setText(QCoreApplication::translate("SignIn", "\360\237\244\226 AI agent prediction", nullptr));
+        goToFormBtnE->setText(QCoreApplication::translate("SignIn", "\342\236\225 Add Equipment", nullptr));
+        groupBoxE_F->setTitle(QString());
+        staffmanagementBTNe_F->setText(QCoreApplication::translate("SignIn", "\360\237\221\251\360\237\217\273\342\200\215\360\237\222\274Staff Management", nullptr));
+        clientsmanagementBTNe_F->setText(QCoreApplication::translate("SignIn", "\360\237\222\260Clients Management", nullptr));
+        stockmanagementBTNe_F->setText(QCoreApplication::translate("SignIn", "\360\237\220\237 Stock Management", nullptr));
+        fishingzonemanagementBTNe_F->setText(QCoreApplication::translate("SignIn", "\360\237\227\272\357\270\217 FishingZone Management", nullptr));
+        equipmentmanagementBTNe_F->setText(QCoreApplication::translate("SignIn", "\342\232\223Equipment Management", nullptr));
+        logoheaderE_F->setText(QString());
+        logOutBTNe_F->setText(QCoreApplication::translate("SignIn", "\342\217\273 Log Out", nullptr));
+        titreHeaderE_F->setText(QCoreApplication::translate("SignIn", "BORT- Smart Fishing Port Application", nullptr));
+        avatarE_F->setText(QString());
+        userprofiledetails_D_2->setText(QCoreApplication::translate("SignIn", "Nour Ben Hmida", nullptr));
+        formcontEq_F->setTitle(QString());
+        Eqnamelabel_F->setText(QCoreApplication::translate("SignIn", "Equipment Name", nullptr));
+        Eqaddresslabel_F->setText(QCoreApplication::translate("SignIn", "Equipment Type", nullptr));
+        statelabel_F->setText(QCoreApplication::translate("SignIn", "State", nullptr));
+        quantitylabel_F->setText(QCoreApplication::translate("SignIn", "Quantity", nullptr));
+        capacitylab_F->setText(QCoreApplication::translate("SignIn", "Capacity", nullptr));
+        addEqbtn_F->setText(QCoreApplication::translate("SignIn", "\342\236\225Add Equipment ", nullptr));
+        goToListBtnE->setText(QCoreApplication::translate("SignIn", "\360\237\223\213 View Equipment List", nullptr));
+        labeladdeq_F->setText(QCoreApplication::translate("SignIn", "Form Add Equipments", nullptr));
         groupBox_U->setTitle(QString());
         staffmanagementBTN_U->setText(QCoreApplication::translate("SignIn", "\360\237\221\251\360\237\217\273\342\200\215\360\237\222\274Staff Management", nullptr));
         clientsmanagementBTN_U->setText(QCoreApplication::translate("SignIn", "\360\237\222\260Clients Management", nullptr));
@@ -8668,7 +9065,6 @@ public:
         role_U->setItemText(4, QCoreApplication::translate("SignIn", "Regulatory manager", nullptr));
         role_U->setItemText(5, QCoreApplication::translate("SignIn", "Fisherman", nullptr));
         role_U->setItemText(6, QCoreApplication::translate("SignIn", "Security", nullptr));
-        role_U->setItemText(7, QString());
 
         staffnamelabel_U->setText(QCoreApplication::translate("SignIn", "Staff Full Name", nullptr));
         staffaddresslabel_U->setText(QCoreApplication::translate("SignIn", "Staff Address", nullptr));
@@ -8678,17 +9074,12 @@ public:
         cvstat_U->setItemText(1, QCoreApplication::translate("SignIn", "Rejected", nullptr));
         cvstat_U->setItemText(2, QCoreApplication::translate("SignIn", "Accepted", nullptr));
         cvstat_U->setItemText(3, QCoreApplication::translate("SignIn", "Pending", nullptr));
-        cvstat_U->setItemText(4, QString());
-        cvstat_U->setItemText(5, QString());
-        cvstat_U->setItemText(6, QString());
-        cvstat_U->setItemText(7, QString());
-        cvstat_U->setItemText(8, QString());
 
         passlab_U->setText(QCoreApplication::translate("SignIn", "Staff Password", nullptr));
         ubploacvbtn_U->setText(QCoreApplication::translate("SignIn", "Upload Cv", nullptr));
         addstaffbtn_U->setText(QCoreApplication::translate("SignIn", "\342\234\224\357\270\217Confirm ", nullptr));
         cvpathEdit_U->setText(QString());
-        ubploavatarbtn_U->setText(QCoreApplication::translate("SignIn", "Upload Avatar", nullptr));
+        ubploavatarbtn_U->setText(QCoreApplication::translate("SignIn", "Generate An Avatar", nullptr));
         avatarpathEdit_U->setText(QString());
         liststaffff_U->setTitle(QString());
         staffsearchbarre_U->setText(QString());
@@ -8698,22 +9089,22 @@ public:
         sortstaff_U->setItemText(3, QCoreApplication::translate("SignIn", "Staff CvStatus", nullptr));
 
         stafflistlabel_U->setText(QCoreApplication::translate("SignIn", "Staff List", nullptr));
-        QTableWidgetItem *___qtablewidgetitem31 = tablestaff_U->horizontalHeaderItem(0);
-        ___qtablewidgetitem31->setText(QCoreApplication::translate("SignIn", "Staff Full Name", nullptr));
-        QTableWidgetItem *___qtablewidgetitem32 = tablestaff_U->horizontalHeaderItem(1);
-        ___qtablewidgetitem32->setText(QCoreApplication::translate("SignIn", "Staff Address", nullptr));
-        QTableWidgetItem *___qtablewidgetitem33 = tablestaff_U->horizontalHeaderItem(2);
-        ___qtablewidgetitem33->setText(QCoreApplication::translate("SignIn", "Phone Number", nullptr));
-        QTableWidgetItem *___qtablewidgetitem34 = tablestaff_U->horizontalHeaderItem(3);
-        ___qtablewidgetitem34->setText(QCoreApplication::translate("SignIn", "Staff Mail", nullptr));
-        QTableWidgetItem *___qtablewidgetitem35 = tablestaff_U->horizontalHeaderItem(4);
-        ___qtablewidgetitem35->setText(QCoreApplication::translate("SignIn", "Staff Password", nullptr));
-        QTableWidgetItem *___qtablewidgetitem36 = tablestaff_U->horizontalHeaderItem(5);
-        ___qtablewidgetitem36->setText(QCoreApplication::translate("SignIn", "Staff Role", nullptr));
-        QTableWidgetItem *___qtablewidgetitem37 = tablestaff_U->horizontalHeaderItem(6);
-        ___qtablewidgetitem37->setText(QCoreApplication::translate("SignIn", "Cv Status", nullptr));
-        QTableWidgetItem *___qtablewidgetitem38 = tablestaff_U->horizontalHeaderItem(7);
-        ___qtablewidgetitem38->setText(QCoreApplication::translate("SignIn", "Cv", nullptr));
+        QTableWidgetItem *___qtablewidgetitem36 = tablestaff_U->horizontalHeaderItem(0);
+        ___qtablewidgetitem36->setText(QCoreApplication::translate("SignIn", "Staff Full Name", nullptr));
+        QTableWidgetItem *___qtablewidgetitem37 = tablestaff_U->horizontalHeaderItem(1);
+        ___qtablewidgetitem37->setText(QCoreApplication::translate("SignIn", "Staff Address", nullptr));
+        QTableWidgetItem *___qtablewidgetitem38 = tablestaff_U->horizontalHeaderItem(2);
+        ___qtablewidgetitem38->setText(QCoreApplication::translate("SignIn", "Phone Number", nullptr));
+        QTableWidgetItem *___qtablewidgetitem39 = tablestaff_U->horizontalHeaderItem(3);
+        ___qtablewidgetitem39->setText(QCoreApplication::translate("SignIn", "Staff Mail", nullptr));
+        QTableWidgetItem *___qtablewidgetitem40 = tablestaff_U->horizontalHeaderItem(4);
+        ___qtablewidgetitem40->setText(QCoreApplication::translate("SignIn", "Staff Password", nullptr));
+        QTableWidgetItem *___qtablewidgetitem41 = tablestaff_U->horizontalHeaderItem(5);
+        ___qtablewidgetitem41->setText(QCoreApplication::translate("SignIn", "Staff Role", nullptr));
+        QTableWidgetItem *___qtablewidgetitem42 = tablestaff_U->horizontalHeaderItem(6);
+        ___qtablewidgetitem42->setText(QCoreApplication::translate("SignIn", "Cv Status", nullptr));
+        QTableWidgetItem *___qtablewidgetitem43 = tablestaff_U->horizontalHeaderItem(7);
+        ___qtablewidgetitem43->setText(QCoreApplication::translate("SignIn", "Cv", nullptr));
         deletestaffbtn_U->setText(QCoreApplication::translate("SignIn", "\360\237\232\257Delete Staff", nullptr));
         cvanalysebtn_U->setText(QCoreApplication::translate("SignIn", "\360\237\244\226AI agent CV analysis", nullptr));
         staticbtn_U->setText(QCoreApplication::translate("SignIn", "\360\237\223\210Go To Dashboard", nullptr));
@@ -8734,10 +9125,10 @@ public:
         numberemp->setText(QCoreApplication::translate("SignIn", "150", nullptr));
         titlebest->setText(QCoreApplication::translate("SignIn", "Best Employee of this month", nullptr));
         trophy->setText(QString());
-        browse->setText(QCoreApplication::translate("SignIn", "Browse To Put Image ", nullptr));
         namebest->setText(QCoreApplication::translate("SignIn", "Full Name: Dhia Sellini", nullptr));
         rolebest->setText(QCoreApplication::translate("SignIn", "Role: Humain Ressource", nullptr));
         rewardbest->setText(QCoreApplication::translate("SignIn", "Reward:100dt", nullptr));
+        bestEmployeeAvatar->setText(QString());
         groupBox_D->setTitle(QString());
         staffmanagementBTN_D->setText(QCoreApplication::translate("SignIn", "\360\237\221\251\360\237\217\273\342\200\215\360\237\222\274Staff Management", nullptr));
         clientsmanagementBTN_D->setText(QCoreApplication::translate("SignIn", "\360\237\222\260Clients Management", nullptr));
@@ -8758,25 +9149,27 @@ public:
         userprofiledetails_A->setText(QCoreApplication::translate("SignIn", "Fatma El Mili", nullptr));
         avatar_A->setText(QString());
         formcontdd_A->setTitle(QString());
+        formcontdd_A_2->setTitle(QString());
         labeladdstaff_A->setText(QCoreApplication::translate("SignIn", "Update Your Account", nullptr));
         staffnamelabel_A->setText(QCoreApplication::translate("SignIn", "User Name", nullptr));
         staffaddresslabel_A->setText(QCoreApplication::translate("SignIn", "Your Adress", nullptr));
         tellabel_A->setText(QCoreApplication::translate("SignIn", "Your Phone Number", nullptr));
         maillabel_A->setText(QCoreApplication::translate("SignIn", "Your Mail", nullptr));
         passlab_A_2->setText(QCoreApplication::translate("SignIn", "Your Password", nullptr));
-        cvpathEdit_2->setText(QString());
-        profile_A->setText(QCoreApplication::translate("SignIn", "Your Avatar", nullptr));
-        browbtn->setText(QCoreApplication::translate("SignIn", "Browse To choose your photo ", nullptr));
+        profile_A->setText(QString());
+        browbtn->setText(QCoreApplication::translate("SignIn", "Choose your Avatar", nullptr));
         backWbtn_A->setText(QCoreApplication::translate("SignIn", "Register Face ID", nullptr));
         facebtn->setText(QCoreApplication::translate("SignIn", "Reset Face ID", nullptr));
         registerlabel->setText(QString());
+        Voicebtn->setText(QCoreApplication::translate("SignIn", "Register Voice", nullptr));
+        voicelabel->setText(QString());
         addstaffbtn_A->setText(QCoreApplication::translate("SignIn", "\342\234\224\357\270\217Confirm Your Modification", nullptr));
         imgcover->setText(QString());
         groupBox_Z->setTitle(QString());
-        staffmanagementBTNZ->setText(QCoreApplication::translate("SignIn", "\360\237\227\272\357\270\217 FishingZone Management", nullptr));
+        fishingzonemanagementBTNZ->setText(QCoreApplication::translate("SignIn", "\360\237\227\272\357\270\217FishingZone Management", nullptr));
         clientsmanagementBTNZ->setText(QCoreApplication::translate("SignIn", "\360\237\222\260Clients Management", nullptr));
         stockmanagementBTNZ->setText(QCoreApplication::translate("SignIn", "\360\237\220\237 Stock Management", nullptr));
-        fishingzonemanagementBTNZ->setText(QCoreApplication::translate("SignIn", "\360\237\221\251\360\237\217\273\342\200\215\360\237\222\274Staff Management", nullptr));
+        staffmanagementBTNZ->setText(QCoreApplication::translate("SignIn", "\360\237\221\251\360\237\217\273\342\200\215\360\237\222\274Staff Management", nullptr));
         equipmentmanagementBTNZ->setText(QCoreApplication::translate("SignIn", "\342\232\223Equipment Management", nullptr));
         logoheader_Z->setText(QString());
         logOutBTNZ->setText(QCoreApplication::translate("SignIn", "\342\217\273 Log Out", nullptr));
@@ -8784,30 +9177,30 @@ public:
         userprofiledetails_Z->setText(QCoreApplication::translate("SignIn", "Moudir", nullptr));
         avatar_Z->setText(QString());
         listzonee->setTitle(QString());
-        ZoneSearch->setText(QCoreApplication::translate("SignIn", "\360\237\224\215Search...", nullptr));
+        ZoneSearch->setText(QString());
         Zonelistlabel->setText(QCoreApplication::translate("SignIn", "Zone List", nullptr));
-        sortzone->setItemText(0, QCoreApplication::translate("SignIn", "Sort...", nullptr));
-        sortzone->setItemText(1, QCoreApplication::translate("SignIn", "Zone Name", nullptr));
-        sortzone->setItemText(2, QCoreApplication::translate("SignIn", "Longitude", nullptr));
+        sortzone->setItemText(0, QCoreApplication::translate("SignIn", "Default", nullptr));
+        sortzone->setItemText(1, QCoreApplication::translate("SignIn", "Name", nullptr));
+        sortzone->setItemText(2, QCoreApplication::translate("SignIn", "Risk", nullptr));
 
-        QTableWidgetItem *___qtablewidgetitem39 = ZoneTable->horizontalHeaderItem(0);
-        ___qtablewidgetitem39->setText(QCoreApplication::translate("SignIn", "Name", nullptr));
-        QTableWidgetItem *___qtablewidgetitem40 = ZoneTable->horizontalHeaderItem(1);
-        ___qtablewidgetitem40->setText(QCoreApplication::translate("SignIn", "Latitude", nullptr));
-        QTableWidgetItem *___qtablewidgetitem41 = ZoneTable->horizontalHeaderItem(2);
-        ___qtablewidgetitem41->setText(QCoreApplication::translate("SignIn", "Longitude", nullptr));
-        QTableWidgetItem *___qtablewidgetitem42 = ZoneTable->horizontalHeaderItem(3);
-        ___qtablewidgetitem42->setText(QCoreApplication::translate("SignIn", "Zone Type", nullptr));
-        QTableWidgetItem *___qtablewidgetitem43 = ZoneTable->horizontalHeaderItem(4);
-        ___qtablewidgetitem43->setText(QCoreApplication::translate("SignIn", "Period", nullptr));
-        QTableWidgetItem *___qtablewidgetitem44 = ZoneTable->horizontalHeaderItem(5);
-        ___qtablewidgetitem44->setText(QCoreApplication::translate("SignIn", "Risk Level", nullptr));
-        QTableWidgetItem *___qtablewidgetitem45 = ZoneTable->horizontalHeaderItem(6);
-        ___qtablewidgetitem45->setText(QCoreApplication::translate("SignIn", "Description", nullptr));
+        QTableWidgetItem *___qtablewidgetitem44 = ZoneTable->horizontalHeaderItem(1);
+        ___qtablewidgetitem44->setText(QCoreApplication::translate("SignIn", "Name", nullptr));
+        QTableWidgetItem *___qtablewidgetitem45 = ZoneTable->horizontalHeaderItem(2);
+        ___qtablewidgetitem45->setText(QCoreApplication::translate("SignIn", "Latitude", nullptr));
+        QTableWidgetItem *___qtablewidgetitem46 = ZoneTable->horizontalHeaderItem(3);
+        ___qtablewidgetitem46->setText(QCoreApplication::translate("SignIn", "Longitude", nullptr));
+        QTableWidgetItem *___qtablewidgetitem47 = ZoneTable->horizontalHeaderItem(4);
+        ___qtablewidgetitem47->setText(QCoreApplication::translate("SignIn", "Zone Type", nullptr));
+        QTableWidgetItem *___qtablewidgetitem48 = ZoneTable->horizontalHeaderItem(5);
+        ___qtablewidgetitem48->setText(QCoreApplication::translate("SignIn", "Risk Level", nullptr));
+        QTableWidgetItem *___qtablewidgetitem49 = ZoneTable->horizontalHeaderItem(6);
+        ___qtablewidgetitem49->setText(QCoreApplication::translate("SignIn", "Description", nullptr));
         EditZonebtn->setText(QCoreApplication::translate("SignIn", "Edit", nullptr));
         DeleteZone->setText(QCoreApplication::translate("SignIn", "Delete", nullptr));
         AnalyticsZone->setText(QCoreApplication::translate("SignIn", "Analytics", nullptr));
         exportZone->setText(QCoreApplication::translate("SignIn", "\360\237\223\235Export As PDF", nullptr));
+        RiskPrediction->setText(QCoreApplication::translate("SignIn", "Risk Prediction", nullptr));
+        Regulations->setText(QCoreApplication::translate("SignIn", "\342\232\226\357\270\217Regulations", nullptr));
         formzone->setTitle(QString());
         labeladdzone->setText(QCoreApplication::translate("SignIn", "ADD Zone", nullptr));
         zoneEdit->setItemText(0, QString());
@@ -8836,42 +9229,43 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt; font-style:italic;\">Write a description about this zone...</span></p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt; font-style:italic;\"><br /></p></body></html>", nullptr));
         ZoneImage->setText(QString());
+        waterLevelLabel->setText(QString());
         groupBox_stock->setTitle(QString());
-        staffmanagementBTN_stock->setText(QCoreApplication::translate("SignIn", "\360\237\220\237 Stock Management", nullptr));
+        stockmanagementBTN_stock_2->setText(QCoreApplication::translate("SignIn", "\360\237\220\237 Stock Management", nullptr));
         clientsmanagementBTN_stock->setText(QCoreApplication::translate("SignIn", "\360\237\222\260Clients Management", nullptr));
-        stockmanagementBTN_stock->setText(QCoreApplication::translate("SignIn", "\360\237\221\251\360\237\217\273\342\200\215\360\237\222\274Staff Management", nullptr));
+        staffmanagementBTN_stock->setText(QCoreApplication::translate("SignIn", "\360\237\221\251\360\237\217\273\342\200\215\360\237\222\274Staff Management", nullptr));
         fishingzonemanagementBTN_stock->setText(QCoreApplication::translate("SignIn", "\360\237\227\272\357\270\217 Fishing Zone Management", nullptr));
         equipmentmanagementBTN_stock->setText(QCoreApplication::translate("SignIn", "\342\232\223Equipment Management", nullptr));
-        logoheader_stock->setText(QString());
         logOutBTN_stock->setText(QCoreApplication::translate("SignIn", "\342\217\273 Log Out", nullptr));
+        logoheader_stock->setText(QString());
         titreHeader_stock->setText(QCoreApplication::translate("SignIn", "BORT- Smart Fishing Port Application", nullptr));
         userprofiledetails_stock->setText(QCoreApplication::translate("SignIn", "Despacito", nullptr));
         avatar_stock->setText(QString());
         liststock->setTitle(QString());
-        search_stock->setText(QCoreApplication::translate("SignIn", "\360\237\224\215Search", nullptr));
-        sort_stock->setItemText(0, QCoreApplication::translate("SignIn", "Sort with:", nullptr));
-        sort_stock->setItemText(1, QCoreApplication::translate("SignIn", "Fish species", nullptr));
-        sort_stock->setItemText(2, QCoreApplication::translate("SignIn", "Quantity", nullptr));
-        sort_stock->setItemText(3, QCoreApplication::translate("SignIn", "Zone", nullptr));
-
-        fish_stock->setText(QCoreApplication::translate("SignIn", "Fish Stock", nullptr));
-        QTableWidgetItem *___qtablewidgetitem46 = table_stock->horizontalHeaderItem(0);
-        ___qtablewidgetitem46->setText(QCoreApplication::translate("SignIn", "Species", nullptr));
-        QTableWidgetItem *___qtablewidgetitem47 = table_stock->horizontalHeaderItem(1);
-        ___qtablewidgetitem47->setText(QCoreApplication::translate("SignIn", "Quantity", nullptr));
-        QTableWidgetItem *___qtablewidgetitem48 = table_stock->horizontalHeaderItem(2);
-        ___qtablewidgetitem48->setText(QCoreApplication::translate("SignIn", "Zone", nullptr));
-        deletespecies_stock->setText(QCoreApplication::translate("SignIn", "Delete Species", nullptr));
-        Editstock->setText(QCoreApplication::translate("SignIn", "Edit Species", nullptr));
-        form_stock->setTitle(QString());
-        zone_stocklabel->setText(QCoreApplication::translate("SignIn", "Zone", nullptr));
+        zone_stocklabel->setText(QCoreApplication::translate("SignIn", "Status", nullptr));
         Specieslabel->setText(QCoreApplication::translate("SignIn", "Species name", nullptr));
         quantity_stocklabel->setText(QCoreApplication::translate("SignIn", "Quantity", nullptr));
         addspecies_stock->setText(QCoreApplication::translate("SignIn", "\342\236\225Add Species", nullptr));
-        addspecies_stocklabel->setText(QCoreApplication::translate("SignIn", "Add Species", nullptr));
+        addspecies_stocklabel->setText(QCoreApplication::translate("SignIn", "Species", nullptr));
+        status_stock->setItemText(0, QCoreApplication::translate("SignIn", "Fish status", nullptr));
+        status_stock->setItemText(1, QCoreApplication::translate("SignIn", "Bad", nullptr));
+        status_stock->setItemText(2, QCoreApplication::translate("SignIn", "Passable", nullptr));
+        status_stock->setItemText(3, QCoreApplication::translate("SignIn", "Perfect", nullptr));
+
         recognition_stock->setText(QCoreApplication::translate("SignIn", "Object recognition", nullptr));
-        exportpdf_stock->setText(QCoreApplication::translate("SignIn", "Export To PDF", nullptr));
         visual_stock->setText(QCoreApplication::translate("SignIn", "3D Visualization", nullptr));
+        exportpdf_stock->setText(QCoreApplication::translate("SignIn", "Export To PDF", nullptr));
+        form_stock->setTitle(QString());
+        sort_stock->setItemText(0, QCoreApplication::translate("SignIn", "Sort with:", nullptr));
+        sort_stock->setItemText(1, QCoreApplication::translate("SignIn", "Fish species", nullptr));
+        sort_stock->setItemText(2, QCoreApplication::translate("SignIn", "Quantity", nullptr));
+        sort_stock->setItemText(3, QCoreApplication::translate("SignIn", "Status", nullptr));
+
+        fish_stock->setText(QCoreApplication::translate("SignIn", "Fish Stock", nullptr));
+        delete_stock->setText(QCoreApplication::translate("SignIn", "Delete Species", nullptr));
+        search_stock->setText(QString());
+        edit_stock->setText(QCoreApplication::translate("SignIn", "Edit Species", nullptr));
+        charts_stock->setText(QCoreApplication::translate("SignIn", "Charts visualization", nullptr));
     } // retranslateUi
 
 };
