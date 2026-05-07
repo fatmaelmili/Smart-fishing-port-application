@@ -16,8 +16,8 @@ bool connection::createconnect()
 {bool test=false;
 
     db.setDatabaseName("BORT");//inserer le nom de la source de données
-    db.setUserName("fatma");//inserer nom de l'utilisateur
-    db.setPassword("perlo2005");//inserer mot de passe de cet utilisateur
+    db.setUserName("malik");//inserer nom de l'utilisateur
+    db.setPassword("malik");//inserer mot de passe de cet utilisateur
 
     if (db.open())
         test=true;

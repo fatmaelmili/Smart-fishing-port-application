@@ -7,28 +7,11 @@
 #include <QTableWidget>
 #include <QPdfWriter>
 #include <QPainter>
-#ifdef USE_OPENCV
 #include <opencv2/opencv.hpp>
-#endif
-//APRESINTEGRATION
-#include <QColor>
-#include <QPixmap>
-#include <QAudioSource>
-#include <QAudioFormat>
-#include <QAudioDevice>
-#include <QMediaDevices>
-#include <QBuffer>
-#include <QTimer>
-#include <QEventLoop>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QtMath>
-#include <QLabel>
-//MALIK
+//malik
 #include <QSortFilterProxyModel>
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/Qt3DWindow>
-#include "arduino.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -46,7 +29,6 @@ public:
 
 private slots:
     //fatma
-private slots:
     void on_btnForgetmdp_clicked();
 
     void on_backsigninBTN_clicked();
@@ -260,14 +242,9 @@ private slots:
 
     void on_staffmanagementBTN_stock_clicked();
 
+    void on_visual_stock_clicked();
 
     void on_staffmanagementBTNZ_clicked();
-
-    void on_Voicebtn_clicked();
-
-    void on_withvoicebtn_clicked();
-    void onArduinoReadyRead();
-
     //dhia
     void on_addZonebtn_clicked();
     void loadZonesToTable();
@@ -275,12 +252,6 @@ private slots:
     void on_EditZonebtn_clicked();
     void on_DeleteZone_clicked();
     void on_exportZone_clicked();
-    void showPieChart();
-
-    void on_RiskPrediction_clicked();
-
-    void on_Regulations_clicked();
-
     //sana
     void on_clientaddbtn_clicked();
     void on_deleteclientbtn_clicked();
@@ -305,6 +276,7 @@ private slots:
     void on_charts_stock_clicked();
     void on_search_stock_textChanged(const QString &text);
     void on_recognition_stock_clicked();
+
     //nour
 
     void refreshEquipmentTable();
@@ -313,12 +285,6 @@ private slots:
     void on_tableeq_itemSelectionChanged();
     void on_modifybtn_clicked();
     void on_deletebtnE_clicked();
-
-
-
-    void on_AnalyticsZone_clicked();
-
-    void on_visual_stock_clicked();
 
 private:
     //fatma
@@ -334,9 +300,7 @@ private:
     Ui::SignIn *ui;
     QByteArray captureFaceFromCamera();
     QString ensureFaceCascadeFile();
-#ifdef USE_OPENCV
     cv::Mat detectAndCropFace(const cv::Mat& frame);
-#endif
     QByteArray m_cvBlob;
     QByteArray m_avatarBlob;
     QString m_currentRole;
@@ -350,13 +314,10 @@ private:
     QByteArray m_currentAccountAvatar;
     int m_faceAuthFailureCount = 0;
     const int m_faceFraudThreshold = 3;
-    QAudioFormat m_lastVoiceFormat;
-    int m_voiceAuthFailureCount = 0;
-    const int m_voiceFraudThreshold = 3;
     void registerFaceAuthFailure(const QString& reason);
     void resetFaceAuthFailureCounter();
     void showFaceFraudAlert(const QString& reason);
-    void updateUserProfileUI(const QString& fullName, const QString& role, const QByteArray& avatarBytes);
+    void updateUserProfileUI(const QString& fullName, const QByteArray& avatarBytes);
     void applyRolePermissions(const QString& role);
     void setModuleAccess(const QString& prefix, bool allowed, bool hide = true);
     bool showCaptchaPuzzle();
@@ -373,9 +334,7 @@ private:
     bool loadCurrentUserAccountData();
     void loadEmployeeCount();
     void updateFaceIdStatusLabel();
-#ifdef USE_OPENCV
     double compareFacesDistance(const cv::Mat& face1, const cv::Mat& face2);
-#endif
     bool authenticateWithFaceId();
     void runCvAnalysisForSelectedRow(QTableWidget *table);
     QString extractTextFromPdfBlob(const QByteArray& pdfBlob) const;
@@ -389,57 +348,20 @@ private:
     void saveRememberedUser();
     void loadRememberedUser();
     void loadEmployeeOfMonth();
-    QString extractAvatarInitials(const QString& fullName) const;
-    QColor avatarColorFromName(const QString& fullName) const;
-    QByteArray generateInitialsAvatar(const QString& fullName, int size = 160) const;
-    void generateAvatarForAddStaff();
-    void generateAvatarForUpdateStaff();
-    QByteArray captureVoiceFromMicrophone(int durationMs = 3000);
-    QVector<double> pcm16ToSamples(const QByteArray& audioBytes, const QAudioFormat& format) const;
-    QVector<double> extractVoiceFeatures(const QByteArray& audioBytes, const QAudioFormat& format) const;
-    QString voiceFeaturesToJson(const QVector<double>& features) const;
-    QVector<double> jsonToVoiceFeatures(const QString& json) const;
-    double compareVoiceFeatures(const QVector<double>& a, const QVector<double>& b) const;
-    bool authenticateWithVoiceId();
-    void updateVoiceIdStatusLabel();
-    bool beginSessionForCurrentUser();
-    void performLogoutFlow();
-    void showStyledSessionLogoutMessage(const QString& fullName, qint64 sessionSeconds);
-    QString formatDurationEnglish(qint64 totalSeconds) const;
-    QLabel* ensureBestEmployeeHoursLabel();
-    Arduino A;
-    QByteArray m_arduinoBuffer;
-
-    void initArduinoConnection();
-    void processArduinoLine(const QByteArray& line);
-    void processRfidUid(const QString& uid);
-    QString formatMonthlyHoursForRfid(qint64 totalSeconds) const;
-    void setupAccessHistoryTable();
-    void addAccessHistoryEntry(const QString& user,const QString& status,const QString& method);
-    void logRfidAccess(const QString& user, const QString& status);
     //dhia
     int selectedZoneId = -1;
-    int predictSuitability(const QString& zoneType, const QString& riskLevel, double longitude, double latitude);
-    QString suitabilityMessage(int score);
-    QString suitabilityColor(int score);
-    QString suitabilityLevel(int score);
-    QString currentSeason();
-    int environmentalWeatherModifier(double longitude, double latitude);
-    QString generateRegulationsAI(const QString& zoneType, const QString& riskLevel, double longitude, double latitude);
-    double calculateSimilarity(const QString& zoneType1, const QString& riskLevel1, double lon1, double lat1,
-                               const QString& zoneType2, const QString& riskLevel2, double lon2, double lat2);
     //sana
     void loadClients(QString search = "", QString sort = "");
-
     //nour
     QString m_selectedEquipmentName;
-    //MALIK
+    //malik
     QSortFilterProxyModel *proxyModel;
     Qt3DExtras::Qt3DWindow *view;
     Qt3DCore::QEntity *rootEntity;
     Qt3DCore::QEntity *currentEntity;
     void init3DView();
     Qt3DCore::QEntity* loadModel(QString path);
+
 };
 
 #endif // BORT_H

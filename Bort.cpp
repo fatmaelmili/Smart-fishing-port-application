@@ -6,73 +6,7 @@
 #include "editclientdialog.h"
 #include "stock.h"
 #include "equipment.h"
-#ifdef USE_OPENCV
 #include <opencv2/opencv.hpp>
-#endif
-#include <QSerialPort>
-#include <QRegularExpression>
-#include <cstring>
-#include <cmath>
-#include <QBuffer>
-#include<QStyle>
-#include <QFileDialog>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QTableWidgetItem>
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QRandomGenerator>
-#include <QDateTime>
-#include <QSslSocket>
-#include <QVBoxLayout>
-#include <QChartView>
-#include <QChart>
-#include <QPieSeries>
-#include <QPieSlice>
-#include <QBarSet>
-#include <QHorizontalBarSeries>
-#include <QBarCategoryAxis>
-#include <QValueAxis>
-#include <QLegend>
-#include <QPdfWriter>
-#include <QPainter>
-#include <QTextDocument>
-#include <QPageSize>
-#include <QStandardPaths>
-#include <QDir>
-#include <QDateTime>
-#include <QApplication>
-#include <QPageLayout>
-#include <QTableWidget>
-#include <QHeaderView>
-#include <QFontMetrics>
-#include <QTextOption>
-#include <QSet>
-#include <QTemporaryFile>
-#include <QRegularExpression>
-#include <QSet>
-#include <QPdfDocument>
-#include <QPainterPath>
-#include <QGraphicsDropShadowEffect>
-#include <QSettings>
-#include <QSqlError>
-#include <QSortFilterProxyModel>
-#include <Qt3DExtras/Qt3DWindow>
-#include <Qt3DCore/QEntity>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QMesh>
-#include <Qt3DRender/QPointLight>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DCore/QTransform>
-#include <QWidget>
-#include <QUrl>
-#include <QCoreApplication>
-#include <QDebug>
-#include <QtCore/QBuffer>
-#include <QtCore/QIODevice>
 #include <QBuffer>
 #include<QStyle>
 #include <QFileDialog>
@@ -154,6 +88,19 @@
 #include <QAbstractItemModel>
 #include <QTableView>
 #include <QHeaderView>
+//malik
+#include <QSortFilterProxyModel>
+#include <Qt3DExtras/Qt3DWindow>
+#include <Qt3DCore/QEntity>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QMesh>
+#include <Qt3DRender/QPointLight>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DCore/QTransform>
+#include <QWidget>
+#include <QUrl>
+#include <QCoreApplication>
+#include <QDebug>
 
 SignIn::SignIn(QWidget *parent)
     : QMainWindow(parent)
@@ -161,13 +108,11 @@ SignIn::SignIn(QWidget *parent)
 {
     //fatma
     ui->setupUi(this);
-    initArduinoConnection();
-    setupAccessHistoryTable();
+    this->setFixedSize(1280, 720);
     ui->statrole->hide();
     ui->statcv->hide();
     refreshStaffTable();
     refreshStaffTable_U();
-
     //dhia
     loadZonesToTable();
     //fatma
@@ -244,317 +189,7 @@ SignIn::SignIn(QWidget *parent)
     ui->table_stock->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui->table_stock->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->table_stock->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    //nour
-    refreshEquipmentTable();
 
-
-}
-//APRESINTEGRATION
-QString SignIn::extractAvatarInitials(const QString& fullName) const
-{
-    QString cleaned = fullName.trimmed();
-    if (cleaned.isEmpty()) {
-        return "";
-    }
-
-    QStringList parts = cleaned.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
-    if (parts.isEmpty()) {
-        return "";
-    }
-
-    QString initials;
-
-    if (parts.size() >= 2) {
-        initials += parts.first().left(1).toUpper();
-        initials += parts.last().left(1).toUpper();
-    } else {
-        QString one = parts.first().trimmed();
-        initials = one.left(2).toUpper();
-    }
-
-    return initials;
-}
-
-QColor SignIn::avatarColorFromName(const QString& fullName) const
-{
-    const QString name = fullName.trimmed().toUpper();
-
-    if (name.isEmpty()) {
-        return QColor("#1E3A8A");
-    }
-
-    uint hash = 0;
-    for (QChar ch : name) {
-        hash = (hash * 31u) + ch.unicode();
-    }
-
-    QList<QColor> palette = {
-        QColor("#0F4C81"),
-        QColor("#1565C0"),
-        QColor("#1D4ED8"),
-        QColor("#0EA5E9"),
-        QColor("#0891B2"),
-        QColor("#0284C7"),
-        QColor("#0369A1"),
-        QColor("#1E40AF")
-    };
-
-    return palette[int(hash % uint(palette.size()))];
-}
-
-QByteArray SignIn::generateInitialsAvatar(const QString& fullName, int size) const
-{
-    const QString initials = extractAvatarInitials(fullName);
-    if (initials.isEmpty()) {
-        return QByteArray();
-    }
-
-    QPixmap pixmap(size, size);
-    pixmap.fill(Qt::transparent);
-
-    QPainter painter(&pixmap);
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setRenderHint(QPainter::TextAntialiasing, true);
-    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-
-    QRect rect(0, 0, size, size);
-
-    QColor baseColor = avatarColorFromName(fullName);
-
-    QLinearGradient gradient(0, 0, size, size);
-    gradient.setColorAt(0.0, baseColor.lighter(120));
-    gradient.setColorAt(1.0, baseColor.darker(125));
-
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(gradient);
-    painter.drawEllipse(rect.adjusted(6, 6, -6, -6));
-
-    QPen borderPen(QColor("#38BDF8"));
-    borderPen.setWidth(4);
-    painter.setPen(borderPen);
-    painter.setBrush(Qt::NoBrush);
-    painter.drawEllipse(rect.adjusted(6, 6, -6, -6));
-
-    QFont font("Segoe UI", size / 3, QFont::Bold);
-    font.setLetterSpacing(QFont::AbsoluteSpacing, 1.5);
-    painter.setFont(font);
-    painter.setPen(Qt::white);
-    painter.drawText(rect, Qt::AlignCenter, initials);
-
-    painter.end();
-
-    QByteArray bytes;
-    QBuffer buffer(&bytes);
-    if (!buffer.open(QIODevice::WriteOnly)) {
-        return QByteArray();
-    }
-
-    pixmap.save(&buffer, "PNG");
-    return bytes;
-}
-
-void SignIn::generateAvatarForAddStaff()
-{
-    const QString fullName = ui->staffnameedit->text().trimmed();
-
-    if (fullName.isEmpty()) {
-        QMessageBox::warning(this, "Avatar", "Please enter the full name first.");
-        ui->staffnameedit->setFocus();
-        return;
-    }
-
-    const QByteArray avatarBytes = generateInitialsAvatar(fullName);
-    if (avatarBytes.isEmpty()) {
-        QMessageBox::warning(this, "Avatar", "Avatar generation failed.");
-        return;
-    }
-
-    m_avatarBlob = avatarBytes;
-    ui->avatarpathEdit->setText("Generated avatar: " + extractAvatarInitials(fullName));
-}
-
-void SignIn::generateAvatarForUpdateStaff()
-{
-    const QString fullName = ui->staffnameedit_U->text().trimmed();
-
-    if (fullName.isEmpty()) {
-        QMessageBox::warning(this, "Avatar", "Please enter the full name first.");
-        ui->staffnameedit_U->setFocus();
-        return;
-    }
-
-    const QByteArray avatarBytes = generateInitialsAvatar(fullName);
-    if (avatarBytes.isEmpty()) {
-        QMessageBox::warning(this, "Avatar", "Avatar generation failed.");
-        return;
-    }
-
-    m_avatarBlob = avatarBytes;
-    ui->avatarpathEdit_U->setText("Generated avatar: " + extractAvatarInitials(fullName));
-}
-QLabel* SignIn::ensureBestEmployeeHoursLabel()
-{
-    QLabel *hoursLabel = ui->staffdash->findChild<QLabel*>("hoursbest");
-    if (hoursLabel) {
-        return hoursLabel;
-    }
-
-    QWidget *parentCard = ui->beststaff ? ui->beststaff : ui->staffdash;
-    if (!parentCard) {
-        return nullptr;
-    }
-
-    hoursLabel = new QLabel(parentCard);
-    hoursLabel->setObjectName("hoursbest");
-    hoursLabel->setGeometry(230, 122, 300, 28);
-    hoursLabel->setText("Worked Time: 0h 00m");
-    hoursLabel->setStyleSheet(R"(
-        QLabel {
-            color: #CFEFFF;
-            font-size: 15px;
-            font-weight: 600;
-            background: transparent;
-        }
-    )");
-    hoursLabel->show();
-    return hoursLabel;
-}
-
-QString SignIn::formatDurationEnglish(qint64 totalSeconds) const
-{
-    if (totalSeconds < 0) {
-        totalSeconds = 0;
-    }
-
-    const qint64 hours = totalSeconds / 3600;
-    const qint64 minutes = (totalSeconds % 3600) / 60;
-    const qint64 seconds = totalSeconds % 60;
-
-    if (hours > 0) {
-        return QString("%1h %2m %3s")
-        .arg(hours)
-            .arg(minutes, 2, 10, QChar('0'))
-            .arg(seconds, 2, 10, QChar('0'));
-    }
-
-    return QString("%1m %2s")
-        .arg(minutes)
-        .arg(seconds, 2, 10, QChar('0'));
-}
-
-bool SignIn::beginSessionForCurrentUser()
-{
-    qDebug() << "beginSessionForCurrentUser m_currentUserMail =" << m_currentUserMail;
-
-    if (m_currentUserMail.trimmed().isEmpty()) {
-        return false;
-    }
-
-    if (!Personnel::startUserSessionByMail(m_currentUserMail)) {
-        QMessageBox::warning(this,
-                             "Session",
-                             "Connected successfully, but the work session could not be started.");
-        return false;
-    }
-
-    return true;
-}
-
-void SignIn::showStyledSessionLogoutMessage(const QString& fullName, qint64 sessionSeconds)
-{
-    QMessageBox box(this);
-    box.setIcon(QMessageBox::Information);
-    box.setWindowTitle("Session Summary");
-    box.setTextFormat(Qt::RichText);
-    box.setStandardButtons(QMessageBox::Ok);
-    box.setDefaultButton(QMessageBox::Ok);
-
-    const QString displayName = fullName.trimmed().isEmpty() ? "User" : fullName.trimmed();
-    const QString formattedDuration = formatDurationEnglish(sessionSeconds);
-
-    box.setText(
-        "<div style='color:#EAF7FF; font-size:18px; font-weight:700; margin-bottom:6px;'>"
-        "Goodbye, " + displayName.toHtmlEscaped() + "!"
-                                        "</div>"
-                                        "<div style='color:#BFE7FF; font-size:14px; margin-bottom:10px;'>"
-                                        "See you next time."
-                                        "</div>"
-                                        "<div style='color:#FFFFFF; font-size:13px;'>"
-                                        "You spent <span style='color:#22C55E; font-weight:700;'>" + formattedDuration.toHtmlEscaped() + "</span> "
-                                              "in your account during this session."
-                                              "</div>"
-        );
-
-    box.setStyleSheet(R"(
-        QMessageBox {
-            background-color: #08233C;
-        }
-        QMessageBox QLabel {
-            color: white;
-            min-width: 360px;
-        }
-        QMessageBox QPushButton {
-            background-color: #0EA5E9;
-            color: white;
-            border: 1px solid #38BDF8;
-            border-radius: 10px;
-            padding: 8px 18px;
-            min-width: 90px;
-            font-weight: 700;
-        }
-        QMessageBox QPushButton:hover {
-            background-color: #38BDF8;
-        }
-    )");
-
-    box.exec();
-}
-
-void SignIn::performLogoutFlow()
-{
-    QString fullName = "User";
-
-    if (!m_currentUserMail.trimmed().isEmpty()) {
-        Personnel::UserProfile profile;
-        if (Personnel::fetchProfileByMail(m_currentUserMail, &profile)) {
-            fullName = (profile.prenom + " " + profile.nom).trimmed();
-            if (fullName.isEmpty()) {
-                fullName = profile.nom.trimmed();
-            }
-        }
-    }
-
-    qDebug() << "performLogoutFlow m_currentUserMail =" << m_currentUserMail;
-
-    qint64 sessionSeconds = 0;
-    qint64 monthlyTotal = 0;
-    qDebug() << "performLogoutFlow m_currentUserMail =" << m_currentUserMail;
-
-    const bool ok = Personnel::closeUserSessionByMail(
-        m_currentUserMail,
-        &sessionSeconds,
-        &monthlyTotal
-        );
-
-    qDebug() << "close session ok =" << ok;
-    qDebug() << "sessionSeconds =" << sessionSeconds;
-    qDebug() << "monthlyTotal =" << monthlyTotal;
-
-    if (ok) {
-        showStyledSessionLogoutMessage(fullName, sessionSeconds);
-    } else {
-        QMessageBox::warning(this,
-                             "Logout",
-                             "The session could not be closed correctly.");
-    }
-
-    m_currentUserMail.clear();
-    m_currentRole.clear();
-    m_currentUserId = -1;
-    m_currentAccountAvatar.clear();
-    loadRememberedUser();
-    loadEmployeeOfMonth();
-    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 void SignIn::on_showPassCheck_toggled(bool checked)
 {
@@ -602,7 +237,6 @@ void SignIn::refreshStaffTable()
 
 SignIn::~SignIn()
 {
-    A.close_arduino();
     delete ui;
 }
 
@@ -611,10 +245,7 @@ SignIn::~SignIn()
 
 void SignIn::on_btnForgetmdp_clicked()
 {
-    ui->resetlineEdit->clear();
-    ui->resetlabel->clear();
     ui->stackedWidget->setCurrentWidget(ui->pageForgetpass);
-    ui->resetlineEdit->setFocus();
 }
 
 
@@ -649,6 +280,7 @@ void SignIn::on_resetbtn_clicked()
         ui->resetlabel->setText("Captcha failed. Please try again.");
         return;
     }
+
 
     const QString token = Personnel::generateResetToken();
 
@@ -837,7 +469,26 @@ void SignIn::on_ubploacvbtn_clicked()
 }
 void SignIn::on_ubploaAvatarbtn_clicked()
 {
-    generateAvatarForAddStaff();
+    QString filePath = QFileDialog::getOpenFileName(
+        this,
+        "Select an avatar",
+        QDir::homePath(),
+        "Images (*.jpg *.jpeg *.png *.webp);;Tous les fichiers (*.*)"
+        );
+
+    if (filePath.isEmpty())
+        return;
+
+    QFile f(filePath);
+    if (!f.open(QIODevice::ReadOnly)) {
+        QMessageBox::critical(this, "Error", "Cannot open avatar file.");
+        return;
+    }
+
+    m_avatarBlob = f.readAll();
+    f.close();
+
+    ui->avatarpathEdit->setText(QFileInfo(filePath).fileName());
 }
 
 void SignIn::on_signinbtn_clicked()
@@ -896,9 +547,7 @@ void SignIn::on_signinbtn_clicked()
         m_currentUserMail = mail;
         m_currentUserId = prof.idPers;
         m_currentAccountAvatar = prof.avatar;
-        updateUserProfileUI(fullName, role, prof.avatar);
-        beginSessionForCurrentUser();
-
+        updateUserProfileUI(fullName, prof.avatar);
     }
     saveRememberedUser();
     ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
@@ -959,31 +608,56 @@ void SignIn::on_modifystaffbtn_clicked()
 
 void SignIn::on_logOutBTN_W_clicked()
 {
-    performLogoutFlow();
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
 void SignIn::on_logOutBTN_U_clicked()
 {
-    performLogoutFlow();
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
 void SignIn::on_logOutBTN_D_clicked()
 {
-    performLogoutFlow();
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
 void SignIn::on_logOutBTN_clicked()
 {
-    performLogoutFlow();
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
 void SignIn::on_logOutBTN_A_clicked()
 {
-    performLogoutFlow();
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
@@ -1062,7 +736,12 @@ void SignIn::on_staffmanagementBTN_A_clicked()
 
 void SignIn::on_logOutBTNZ_clicked()
 {
-    performLogoutFlow();
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
@@ -1129,7 +808,12 @@ void SignIn::on_fishingzonemanagementBTN_stock_clicked()
 
 void SignIn::on_logOutBTN_stock_clicked()
 {
-    performLogoutFlow();
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
@@ -1178,13 +862,18 @@ void SignIn::on_stockmanagementBTN_clicked()
 
 void SignIn::on_logOutBTNe_clicked()
 {
-    performLogoutFlow();
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
 void SignIn::on_fishingzonemanagementBTNe_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageFishingZone);
+   ui->stackedWidget->setCurrentWidget(ui->pageFishingZone);
 }
 
 
@@ -1269,7 +958,7 @@ void SignIn::on_stockmanagementBTNA_clicked()
 
 void SignIn::on_equipmentmanagementBTNA_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageEquipment);
+  ui->stackedWidget->setCurrentWidget(ui->pageEquipment);
 }
 
 
@@ -1281,13 +970,18 @@ void SignIn::on_fishingzonemanagementBTNA_clicked()
 
 void SignIn::on_logOutBTNA_clicked()
 {
-    performLogoutFlow();
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
 void SignIn::on_userprofileC_clicked()
 {
-    ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
+   ui->stackedWidget->setCurrentWidget(ui->pageupdateaccount);
 }
 
 
@@ -1330,7 +1024,12 @@ void SignIn::on_fishingzonemanagementBTN_DC_clicked()
 
 void SignIn::on_logOutBTN_DC_clicked()
 {
-    performLogoutFlow();
+    m_currentUserMail.clear();
+    m_currentRole.clear();
+    m_currentUserId = -1;
+    m_currentAccountAvatar.clear();
+    loadRememberedUser();
+    ui->stackedWidget->setCurrentWidget(ui->pageSignIn);
 }
 
 
@@ -1495,7 +1194,7 @@ void SignIn::on_addstaffbtn_clicked()
     if (m_avatarBlob.isEmpty()) {
         QMessageBox::warning(this,
                              "Avatar required",
-                             "Please generate an avatar image before adding staff.");
+                             "Please upload an avatar image before adding staff.");
         ui->avatarpathEdit->setFocus();
         return;
     }
@@ -1511,7 +1210,7 @@ void SignIn::on_addstaffbtn_clicked()
     }
 
 
-    Personnel p(nom, prenom, adresse, tel, mail, role, mdp, cvStatus, m_cvBlob, m_avatarBlob);
+     Personnel p(nom, prenom, adresse, tel, mail, role, mdp, cvStatus, m_cvBlob, m_avatarBlob);
     if (p.ajouterStaff()) {
         QMessageBox::information(this, "Success", "Staff added successfully!");
 
@@ -1773,7 +1472,7 @@ void SignIn::on_addstaffbtn_U_clicked()
     if (m_avatarBlob.isEmpty() && hasAv != "Yes") {
         QMessageBox::warning(this,
                              "Avatar required",
-                             "Please generate an avatar image before updating staff.");
+                             "Please upload an avatar image before updating staff.");
         ui->avatarpathEdit_U->setFocus();
         return;
     }
@@ -1893,7 +1592,26 @@ void SignIn::on_ubploacvbtn_U_clicked()
 
 void SignIn::on_ubploavatarbtn_U_clicked()
 {
-    generateAvatarForUpdateStaff();
+    QString filePath = QFileDialog::getOpenFileName(
+        this,
+        "Select an avatar",
+        QDir::homePath(),
+        "Images (*.jpg *.jpeg *.png *.webp);;Tous les fichiers (*.*)"
+        );
+
+    if (filePath.isEmpty())
+        return;
+
+    QFile f(filePath);
+    if (!f.open(QIODevice::ReadOnly)) {
+        QMessageBox::critical(this, "Error", "Cannot open avatar file.");
+        return;
+    }
+
+    m_avatarBlob = f.readAll();
+    f.close();
+
+    ui->avatarpathEdit_U->setText(QFileInfo(filePath).fileName());
 
 }
 
@@ -1941,31 +1659,14 @@ void SignIn::applyRolePermissions(const QString& role)
         setModuleAccess("equipmentmanagementBTN", true);
     }
 }
-void SignIn::updateUserProfileUI(const QString& fullName, const QString& role, const QByteArray& avatarBytes)
+void SignIn::updateUserProfileUI(const QString& fullName, const QByteArray& avatarBytes)
 {
+
     const auto profileBtns = this->findChildren<QCommandLinkButton*>();
     for (QCommandLinkButton* btn : profileBtns) {
         if (!btn) continue;
-
         if (btn->objectName().startsWith("userprofiledetails")) {
             btn->setText(fullName);
-            btn->setDescription(role);
-
-            btn->setStyleSheet(R"(
-                QCommandLinkButton {
-                    color: white;
-                    font-size: 10px;
-                    font-weight: 700;
-                    text-align: left;
-                    background: transparent;
-                    border: none;
-                }
-                QCommandLinkButton::description {
-                    color: #9CCBFF;
-                    font-size: 7px;
-                    font-weight: 500;
-                }
-            )");
         }
     }
 
@@ -2742,12 +2443,12 @@ void SignIn::exportStaffTableToPdf(QTableWidget *table,
     };
 
     QList<ExportColumn> columns = {
-        {1, "Staff Full Name", 0.21},
-        {2, "Staff Address",   0.22},
-        {3, "Phone Number",    0.12},
-        {4, "Staff Mail",      0.25},
-        {6, "Staff Role",      0.11},
-        {7, "CV Status",       0.09}
+                                   {1, "Staff Full Name", 0.21},
+                                   {2, "Staff Address",   0.22},
+                                   {3, "Phone Number",    0.12},
+                                   {4, "Staff Mail",      0.25},
+                                   {6, "Staff Role",      0.11},
+                                   {7, "CV Status",       0.09}
 
     };
 
@@ -2888,7 +2589,6 @@ bool SignIn::loadCurrentUserAccountData()
 
     m_currentUserId = acc.idPers;
     m_currentUserMail = acc.mail;
-    m_currentRole = acc.role;
     m_currentAccountAvatar = acc.avatar;
 
     ui->staffnameedit_A->setText((acc.prenom + " " + acc.nom).trimmed());
@@ -3036,7 +2736,7 @@ void SignIn::on_addstaffbtn_A_clicked()
     }
 
     QString refreshedFullName = ui->staffnameedit_A->text().trimmed();
-    updateUserProfileUI(refreshedFullName, m_currentRole, m_currentAccountAvatar);
+    updateUserProfileUI(refreshedFullName, m_currentAccountAvatar);
 
     refreshStaffTable();
     refreshStaffTable_U();
@@ -3126,69 +2826,61 @@ void SignIn::on_facebtn_clicked()
 }
 QByteArray SignIn::captureFaceFromCamera()
 {
-#ifndef USE_OPENCV
-    QMessageBox::warning(this, "Face ID", "OpenCV is not enabled in this build.");
-    return QByteArray();
-#else
-    try {
-        cv::VideoCapture cap(0, cv::CAP_DSHOW);
+    cv::VideoCapture cap(0);
 
-        if (!cap.isOpened()) {
-            QMessageBox::warning(this, "Camera", "Unable to open the camera.");
-            return QByteArray();
-        }
-
-        QMessageBox::information(this, "Face ID",
-                                 "Look at the camera. Capture will be automatic.");
-
-        cv::Mat frame;
-        cv::Mat capturedFrame;
-
-        for (int i = 0; i < 20; ++i) {
-            if (!cap.read(frame)) {
-                QMessageBox::warning(this, "Camera", "Failed to read frame from camera.");
-                cap.release();
-                return QByteArray();
-            }
-            cv::waitKey(30);
-        }
-
-        capturedFrame = frame.clone();
-        cap.release();
-
-        if (capturedFrame.empty()) {
-            QMessageBox::warning(this, "Camera", "Captured frame is empty.");
-            return QByteArray();
-        }
-
-        cv::Mat face = detectAndCropFace(capturedFrame);
-
-        if (face.empty()) {
-            QMessageBox::warning(this, "Face ID",
-                                 "No person or no clear face was detected. Please look directly at the camera.");
-            return QByteArray();
-        }
-
-        std::vector<uchar> buffer;
-        if (!cv::imencode(".jpg", face, buffer)) {
-            QMessageBox::warning(this, "Camera", "Failed to encode detected face.");
-            return QByteArray();
-        }
-
-        QByteArray result;
-        result.resize(static_cast<int>(buffer.size()));
-        memcpy(result.data(), buffer.data(), static_cast<size_t>(buffer.size()));
-        return result;
-    }
-    catch (const cv::Exception& e) {
-        QMessageBox::critical(this, "OpenCV Exception", e.what());
+    if (!cap.isOpened()) {
+        QMessageBox::warning(this, "Camera", "Unable to open the camera.");
         return QByteArray();
     }
-    catch (...) {
-        QMessageBox::critical(this, "Camera", "Unexpected crash during camera capture.");
+
+    cv::Mat frame;
+    cv::Mat capturedFrame;
+
+    while (true) {
+        cap >> frame;
+
+        if (frame.empty()) {
+            QMessageBox::warning(this, "Camera", "Failed to read frame from camera.");
+            cap.release();
+            cv::destroyAllWindows();
+            return QByteArray();
+        }
+
+        cv::imshow("Face ID Camera - Press SPACE to capture / ESC to cancel", frame);
+
+        int key = cv::waitKey(30);
+
+        if (key == 32) {
+            capturedFrame = frame.clone();
+            break;
+        } else if (key == 27) {
+            cap.release();
+            cv::destroyAllWindows();
+            return QByteArray();
+        }
+    }
+
+    cap.release();
+    cv::destroyAllWindows();
+
+    if (capturedFrame.empty()) {
+        QMessageBox::warning(this, "Camera", "No image was captured.");
         return QByteArray();
     }
-#endif
+
+    cv::Mat face = detectAndCropFace(capturedFrame);
+    if (face.empty()) {
+        return QByteArray();
+    }
+
+    std::vector<uchar> buffer;
+    if (!cv::imencode(".jpg", face, buffer)) {
+        QMessageBox::warning(this, "Camera", "Failed to encode detected face.");
+        return QByteArray();
+    }
+
+    return QByteArray(reinterpret_cast<const char*>(buffer.data()),
+                      static_cast<int>(buffer.size()));
 }
 QString SignIn::ensureFaceCascadeFile()
 {
@@ -3218,7 +2910,6 @@ QString SignIn::ensureFaceCascadeFile()
     return tempPath;
 }
 
-#ifdef USE_OPENCV
 cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
 {
     QString cascadePath = ensureFaceCascadeFile();
@@ -3252,6 +2943,7 @@ cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
         return cv::Mat();
     }
 
+
     cv::Rect bestFace = faces[0];
     for (const auto& r : faces) {
         if (r.area() > bestFace.area()) {
@@ -3264,53 +2956,6 @@ cv::Mat SignIn::detectAndCropFace(const cv::Mat& frame)
 
     return face;
 }
-#endif
-#ifdef USE_OPENCV
-static cv::Mat makeGray200(const cv::Mat& src)
-{
-    if (src.empty())
-        return cv::Mat();
-
-    cv::Mat resized;
-    cv::resize(src, resized, cv::Size(200, 200));
-
-    cv::Mat gray;
-    if (resized.channels() == 3) {
-        cv::cvtColor(resized, gray, cv::COLOR_BGR2GRAY);
-    } else if (resized.channels() == 4) {
-        cv::cvtColor(resized, gray, cv::COLOR_BGRA2GRAY);
-    } else if (resized.channels() == 1) {
-        gray = resized.clone();
-    } else {
-        return cv::Mat();
-    }
-
-    return gray;
-}
-
-static double computeFaceDistanceSafe(const cv::Mat& a, const cv::Mat& b)
-{
-    cv::Mat g1 = makeGray200(a);
-    cv::Mat g2 = makeGray200(b);
-
-    if (g1.empty() || g2.empty())
-        return 1e12;
-
-    double sum = 0.0;
-
-    for (int y = 0; y < g1.rows; ++y) {
-        const uchar* p1 = g1.ptr<uchar>(y);
-        const uchar* p2 = g2.ptr<uchar>(y);
-
-        for (int x = 0; x < g1.cols; ++x) {
-            sum += std::abs(int(p1[x]) - int(p2[x]));
-        }
-    }
-
-    return sum / (g1.rows * g1.cols);
-}
-#endif
-#ifdef USE_OPENCV
 double SignIn::compareFacesDistance(const cv::Mat& face1, const cv::Mat& face2)
 {
     if (face1.empty() || face2.empty()) {
@@ -3330,17 +2975,10 @@ double SignIn::compareFacesDistance(const cv::Mat& face1, const cv::Mat& face2)
 
     return cv::norm(gray1, gray2, cv::NORM_L2);
 }
-#endif
 
 
 bool SignIn::authenticateWithFaceId()
 {
-#ifndef USE_OPENCV
-    QMessageBox::warning(this, "Face ID", "OpenCV is not enabled in this build.");
-    return false;
-#else
-    cv::setUseOptimized(false);
-
     QByteArray capturedData = captureFaceFromCamera();
     if (capturedData.isEmpty()) {
         registerFaceAuthFailure("No face captured");
@@ -3366,6 +3004,7 @@ bool SignIn::authenticateWithFaceId()
     double bestDistance = 1e12;
     Personnel::FaceRecord bestRecord;
     bool foundCandidate = false;
+
     for (const auto& rec : faces) {
         std::vector<uchar> dbBuffer(rec.faceData.begin(), rec.faceData.end());
         cv::Mat dbFace = cv::imdecode(dbBuffer, cv::IMREAD_COLOR);
@@ -3373,7 +3012,8 @@ bool SignIn::authenticateWithFaceId()
         if (dbFace.empty())
             continue;
 
-        double distance = computeFaceDistanceSafe(capturedFace, dbFace);
+        double distance = compareFacesDistance(capturedFace, dbFace);
+
         qDebug() << "Face ID compare with" << rec.mail << "distance =" << distance;
 
         if (distance < bestDistance) {
@@ -3392,7 +3032,7 @@ bool SignIn::authenticateWithFaceId()
     qDebug() << "Best Face ID match =" << bestRecord.mail
              << "| distance =" << bestDistance;
 
-    // seuil plus strict
+
     if (bestDistance > 30000.0) {
         registerFaceAuthFailure("Face not recognized");
         QMessageBox::warning(this, "Face ID", "Face ID not recognized.");
@@ -3417,11 +3057,10 @@ bool SignIn::authenticateWithFaceId()
         if (Personnel::fetchProfileByMail(authMail, &profile)) {
             m_currentUserId = profile.idPers;
             m_currentAccountAvatar = profile.avatar;
-            updateUserProfileUI((profile.prenom + " " + profile.nom).trimmed(), authRole, profile.avatar);
+            updateUserProfileUI((profile.prenom + " " + profile.nom).trimmed(), profile.avatar);
         }
 
         applyRolePermissions(m_currentRole);
-        beginSessionForCurrentUser();
         loadCurrentUserAccountData();
         loadStaffDashboardStats();
         loadEmployeeCount();
@@ -3462,7 +3101,6 @@ bool SignIn::authenticateWithFaceId()
     }
 
     return false;
-#endif
 }
 
 void SignIn::on_withfacebtn_clicked()
@@ -3868,15 +3506,12 @@ void SignIn::on_staffmanagementBTNZ_clicked()
 void SignIn::loadEmployeeOfMonth()
 {
     Personnel::EmployeeOfMonth emp;
-    QLabel *hoursLabel = ensureBestEmployeeHoursLabel();
 
     if (!Personnel::getEmployeeOfMonth(&emp)) {
         if (ui->namebest)
             ui->namebest->setText("No employee available");
         if (ui->rolebest)
             ui->rolebest->setText("Role: -");
-        if (hoursLabel)
-            hoursLabel->setText("Worked Time: -");
         if (ui->rewardbest)
             ui->rewardbest->setText("Reward: -");
         if (ui->bestEmployeeAvatar)
@@ -3885,608 +3520,42 @@ void SignIn::loadEmployeeOfMonth()
         return;
     }
 
-    if (ui->beststaff) {
-        ui->beststaff->setStyleSheet(R"(
-            QFrame#beststaff {
-                background:qlineargradient(x1:0,y1:0,x2:1,y2:1,
-                    stop:0 rgba(5,28,51,0.96),
-                    stop:1 rgba(8,50,88,0.90));
-                border:1px solid rgba(56,189,248,0.55);
-                border-radius:22px;
-            }
-        )");
-    }
-
     if (ui->titlebest) {
-        ui->titlebest->setText("Best Employee of this Month");
-        ui->titlebest->setStyleSheet("color:#F8FAFC; font-size:17px; font-weight:600; background:transparent;");
+        ui->titlebest->setText("Best Employee of this month");
     }
 
     if (ui->namebest) {
         ui->namebest->setText("Full Name: " + emp.fullName);
-        ui->namebest->setStyleSheet("color:#FFFFFF; font-size:12px; font-weight:400; background:transparent;");
     }
 
     if (ui->rolebest) {
         ui->rolebest->setText("Role: " + emp.role);
-        ui->rolebest->setStyleSheet("color:#CDEBFF; font-size:10px; font-weight:400; background:transparent;");
-    }
-
-    if (hoursLabel) {
-        hoursLabel->setText("Worked Time: " + formatDurationEnglish(emp.monthlyWorkSeconds));
     }
 
     if (ui->rewardbest) {
         ui->rewardbest->setText("Reward: 100dt");
-        ui->rewardbest->setStyleSheet("color:#22C55E; font-size:10px; font-weight:400; background:transparent;");
     }
 
     if (ui->bestEmployeeAvatar) {
-        ui->bestEmployeeAvatar->setStyleSheet(R"(
-        QLabel {
-            background-color: rgba(255,255,255,0.05);
-            border: 2px solid #38BDF8;
-            border-radius: 40px;
-            padding: 0px;
-        }
-    )");
-
         QPixmap px;
         px.loadFromData(emp.avatar);
 
         if (!px.isNull()) {
-            const QSize labelSize = ui->bestEmployeeAvatar->size();
-            QPixmap scaled = px.scaled(labelSize,
-                                       Qt::KeepAspectRatioByExpanding,
-                                       Qt::SmoothTransformation);
-
-            QPixmap rounded(labelSize);
-            rounded.fill(Qt::transparent);
-
-            QPainter painter(&rounded);
-            painter.setRenderHint(QPainter::Antialiasing, true);
-            painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-
-            QPainterPath path;
-            path.addRoundedRect(rounded.rect(), 40, 40);
-            painter.setClipPath(path);
-
-            const int x = (labelSize.width() - scaled.width()) / 2;
-            const int y = (labelSize.height() - scaled.height()) / 2;
-            painter.drawPixmap(x, y, scaled);
-
-            ui->bestEmployeeAvatar->setPixmap(rounded);
+            ui->bestEmployeeAvatar->setPixmap(
+                px.scaled(ui->bestEmployeeAvatar->size(),
+                          Qt::KeepAspectRatio,
+                          Qt::SmoothTransformation)
+                );
             ui->bestEmployeeAvatar->setAlignment(Qt::AlignCenter);
         } else {
             ui->bestEmployeeAvatar->clear();
         }
     }
 }
-QByteArray SignIn::captureVoiceFromMicrophone(int durationMs)
-{
-    QAudioDevice inputDevice = QMediaDevices::defaultAudioInput();
-    if (inputDevice.isNull()) {
-        QMessageBox::warning(this, "Voice ID", "No microphone detected.");
-        return QByteArray();
-    }
 
-    QAudioFormat format;
-    format.setSampleRate(16000);
-    format.setChannelCount(1);
-    format.setSampleFormat(QAudioFormat::Int16);
 
-    if (!inputDevice.isFormatSupported(format)) {
-        format = inputDevice.preferredFormat();
-    }
 
-    m_lastVoiceFormat = format;
 
-    QByteArray recorded;
-    QBuffer buffer(&recorded);
-    buffer.open(QIODevice::WriteOnly);
-
-    QAudioSource audioSource(inputDevice, format, this);
-
-    QEventLoop loop;
-    QTimer timer;
-    timer.setSingleShot(true);
-
-    connect(&timer, &QTimer::timeout, &loop, &QEventLoop::quit);
-
-    audioSource.start(&buffer);
-    timer.start(durationMs);
-    loop.exec();
-
-    audioSource.stop();
-    buffer.close();
-
-    if (recorded.isEmpty()) {
-        QMessageBox::warning(this, "Voice ID", "No voice captured.");
-        return QByteArray();
-    }
-
-    return recorded;
-}
-QVector<double> SignIn::pcm16ToSamples(const QByteArray& audioBytes, const QAudioFormat& format) const
-{
-    QVector<double> samples;
-
-    if (audioBytes.isEmpty()) {
-        return samples;
-    }
-
-    if (format.sampleFormat() == QAudioFormat::Int16) {
-        const qint16* data = reinterpret_cast<const qint16*>(audioBytes.constData());
-        const int count = audioBytes.size() / int(sizeof(qint16));
-        samples.reserve(count);
-
-        for (int i = 0; i < count; ++i) {
-            samples.push_back(double(data[i]) / 32768.0);
-        }
-    }
-    else if (format.sampleFormat() == QAudioFormat::Float) {
-        const float* data = reinterpret_cast<const float*>(audioBytes.constData());
-        const int count = audioBytes.size() / int(sizeof(float));
-        samples.reserve(count);
-
-        for (int i = 0; i < count; ++i) {
-            samples.push_back(double(data[i]));
-        }
-    }
-
-    return samples;
-}
-
-QVector<double> SignIn::extractVoiceFeatures(const QByteArray& audioBytes, const QAudioFormat& format) const
-{
-    QVector<double> samples = pcm16ToSamples(audioBytes, format);
-    QVector<double> features;
-
-    if (samples.isEmpty()) {
-        return features;
-    }
-
-
-    double mean = 0.0;
-    for (double s : samples) mean += s;
-    mean /= samples.size();
-    for (double& s : samples) s -= mean;
-
-
-    QVector<double> trimmed;
-    for (double s : samples) {
-        if (qAbs(s) > 0.02) {
-            trimmed.push_back(s);
-        }
-    }
-    if (trimmed.size() > 4000) {
-        samples = trimmed;
-    }
-
-
-    double rms = 0.0;
-    for (double s : samples) rms += s * s;
-    rms = qSqrt(rms / qMax(1, samples.size()));
-
-    if (rms > 1e-9) {
-        for (double& s : samples) s /= rms;
-    }
-
-
-    const int bins = 64;
-    features.reserve(80);
-
-    for (int b = 0; b < bins; ++b) {
-        int start = (b * samples.size()) / bins;
-        int end   = ((b + 1) * samples.size()) / bins;
-        if (end <= start) end = start + 1;
-        if (end > samples.size()) end = samples.size();
-
-        double acc = 0.0;
-        for (int i = start; i < end; ++i) {
-            acc += qAbs(samples[i]);
-        }
-        acc /= qMax(1, end - start);
-        features.push_back(acc);
-    }
-
-
-    double zcr = 0.0;
-    for (int i = 1; i < samples.size(); ++i) {
-        if ((samples[i - 1] >= 0.0 && samples[i] < 0.0) ||
-            (samples[i - 1] < 0.0 && samples[i] >= 0.0)) {
-            zcr += 1.0;
-        }
-    }
-    zcr /= qMax(1, samples.size() - 1);
-    features.push_back(zcr);
-
-
-    QList<int> lags = {40, 60, 80, 100, 120, 140, 160, 180};
-    for (int lag : lags) {
-        if (samples.size() <= lag + 1) {
-            features.push_back(0.0);
-            continue;
-        }
-
-        double num = 0.0;
-        double den1 = 0.0;
-        double den2 = 0.0;
-
-        for (int i = 0; i < samples.size() - lag; ++i) {
-            num  += samples[i] * samples[i + lag];
-            den1 += samples[i] * samples[i];
-            den2 += samples[i + lag] * samples[i + lag];
-        }
-
-        double corr = 0.0;
-        if (den1 > 1e-9 && den2 > 1e-9) {
-            corr = num / qSqrt(den1 * den2);
-        }
-
-        features.push_back(corr);
-    }
-
-    return features;
-}
-
-QString SignIn::voiceFeaturesToJson(const QVector<double>& features) const
-{
-    QJsonArray arr;
-    for (double v : features) {
-        arr.append(v);
-    }
-    return QString::fromUtf8(QJsonDocument(arr).toJson(QJsonDocument::Compact));
-}
-
-QVector<double> SignIn::jsonToVoiceFeatures(const QString& json) const
-{
-    QVector<double> out;
-    const QJsonDocument doc = QJsonDocument::fromJson(json.toUtf8());
-    if (!doc.isArray()) {
-        return out;
-    }
-
-    const QJsonArray arr = doc.array();
-    out.reserve(arr.size());
-    for (const auto& v : arr) {
-        out.push_back(v.toDouble());
-    }
-
-    return out;
-}
-
-double SignIn::compareVoiceFeatures(const QVector<double>& a, const QVector<double>& b) const
-{
-    if (a.isEmpty() || b.isEmpty() || a.size() != b.size()) {
-        return 0.0;
-    }
-
-    double dot = 0.0;
-    double na = 0.0;
-    double nb = 0.0;
-
-    for (int i = 0; i < a.size(); ++i) {
-        dot += a[i] * b[i];
-        na += a[i] * a[i];
-        nb += b[i] * b[i];
-    }
-
-    if (na <= 1e-12 || nb <= 1e-12) {
-        return 0.0;
-    }
-
-    return dot / qSqrt(na * nb);
-}
-
-void SignIn::on_Voicebtn_clicked()
-{
-    if (m_currentUserMail.trimmed().isEmpty()) {
-        QMessageBox::warning(this, "Voice ID", "No connected user found.");
-        return;
-    }
-
-    Personnel::AccountProfile profile;
-    if (!Personnel::fetchAccountProfileByMail(m_currentUserMail, &profile)) {
-        QMessageBox::warning(this, "Voice ID", "Unable to load current user profile.");
-        return;
-    }
-
-    if (profile.cvStatus.trimmed().compare("Accepted", Qt::CaseInsensitive) != 0) {
-        QMessageBox::warning(this, "Voice ID", "Only users with an accepted CV can register Voice ID.");
-        return;
-    }
-
-    const QString phrase = "BORT smart fishing port";
-    QMessageBox::information(this, "Voice ID",
-                             "Please say clearly:\n\n" + phrase + "\n\nfor about 3 seconds.");
-
-    QByteArray voiceData = captureVoiceFromMicrophone(3000);
-    if (voiceData.isEmpty()) {
-        return;
-    }
-
-    QVector<double> features = extractVoiceFeatures(voiceData, m_lastVoiceFormat);
-    if (features.isEmpty()) {
-        QMessageBox::warning(this, "Voice ID", "Voice features extraction failed.");
-        return;
-    }
-
-    if (!Personnel::saveVoiceIdByMail(
-            m_currentUserMail,
-            voiceData,
-            voiceFeaturesToJson(features),
-            phrase)) {
-        QMessageBox::critical(this, "Voice ID", "Failed to save Voice ID.");
-        return;
-    }
-    ui->voicelabel->setText("Voice ID status: Registered");
-
-    QMessageBox::information(this, "Voice ID", "Voice ID registered successfully.");
-
-}
-
-
-bool SignIn::authenticateWithVoiceId()
-{
-    const QString phrase = "BORT smart fishing port";
-    QMessageBox::information(this, "Voice Sign In",
-                             "Please say clearly:\n\n" + phrase + "\n\nfor about 3 seconds.");
-
-    QByteArray capturedData = captureVoiceFromMicrophone(3000);
-    if (capturedData.isEmpty()) {
-        QMessageBox::warning(this, "Voice Sign In", "No voice captured.");
-        return false;
-    }
-
-    QVector<double> capturedFeatures = extractVoiceFeatures(capturedData, m_lastVoiceFormat);
-    if (capturedFeatures.isEmpty()) {
-        QMessageBox::warning(this, "Voice Sign In", "Unable to extract voice features.");
-        return false;
-    }
-
-    auto voices = Personnel::getAllRegisteredVoiceIds();
-    if (voices.isEmpty()) {
-        QMessageBox::warning(this, "Voice Sign In", "No registered Voice ID found in database.");
-        return false;
-    }
-
-    double bestScore = -1.0;
-    Personnel::VoiceRecord bestRecord;
-    bool found = false;
-
-    for (const auto& rec : voices) {
-        QVector<double> dbFeatures = jsonToVoiceFeatures(rec.voiceFeatures);
-        if (dbFeatures.isEmpty()) {
-            continue;
-        }
-
-        double score = compareVoiceFeatures(capturedFeatures, dbFeatures);
-        qDebug() << "Voice compare with" << rec.mail << "| score =" << score;
-
-        if (score > bestScore) {
-            bestScore = score;
-            bestRecord = rec;
-            found = true;
-        }
-    }
-
-    if (!found) {
-        QMessageBox::warning(this, "Voice Sign In", "No valid registered voice found.");
-        return false;
-    }
-
-    qDebug() << "Best voice match =" << bestRecord.mail << "| score =" << bestScore;
-
-
-    if (bestScore < 0.88) {
-        QMessageBox::warning(this, "Voice Sign In", "Voice not recognized.");
-        return false;
-    }
-
-    QString authMail, authRole, authCvStatus;
-    Personnel::FaceLoginResult result =
-        Personnel::authenticateByVoiceIdMail(bestRecord.mail, &authMail, &authRole, &authCvStatus);
-
-    switch (result) {
-    case Personnel::FaceLoginResult::Ok: {
-        m_currentUserMail = authMail;
-        m_currentRole = authRole;
-
-        Personnel::UserProfile profile;
-        if (Personnel::fetchProfileByMail(authMail, &profile)) {
-            m_currentUserId = profile.idPers;
-            m_currentAccountAvatar = profile.avatar;
-            updateUserProfileUI((profile.prenom + " " + profile.nom).trimmed(), authRole, profile.avatar);
-        }
-
-        applyRolePermissions(m_currentRole);
-        beginSessionForCurrentUser();
-        loadCurrentUserAccountData();
-        loadStaffDashboardStats();
-        loadEmployeeCount();
-        ui->stackedWidget->setCurrentWidget(ui->pageWelcome);
-
-        QMessageBox::information(this, "Voice Sign In", "Voice recognized successfully.");
-        return true;
-    }
-
-    case Personnel::FaceLoginResult::AccountBlocked:
-        QMessageBox::critical(this, "Voice Sign In", "This account is temporarily blocked.");
-        return false;
-
-    case Personnel::FaceLoginResult::FaceNotEnabled:
-        QMessageBox::warning(this, "Voice Sign In", "Voice ID is disabled for this account.");
-        return false;
-
-    case Personnel::FaceLoginResult::CvNotAccepted:
-        QMessageBox::warning(this, "Voice Sign In", "Your CV is not accepted. Access denied.");
-        return false;
-
-    case Personnel::FaceLoginResult::SuspiciousActivity:
-        QMessageBox::warning(this, "Voice Sign In", "Suspicious voice activity detected.");
-        return false;
-
-    case Personnel::FaceLoginResult::FaceNotRecognized:
-        QMessageBox::warning(this, "Voice Sign In", "Voice not recognized.");
-        return false;
-
-    case Personnel::FaceLoginResult::DbError:
-    default:
-        QMessageBox::critical(this, "Voice Sign In", "Database error during voice authentication.");
-        return false;
-    }
-}
-
-void SignIn::on_withvoicebtn_clicked()
-{
-    authenticateWithVoiceId();
-}
-
-void SignIn::initArduinoConnection()
-{
-    const int result = A.connect_arduino();
-
-    if (result == 0) {
-        qDebug() << "Arduino connected on port:" << A.getarduino_port_name();
-
-        connect(A.getserial(), &QSerialPort::readyRead,
-                this, &SignIn::onArduinoReadyRead,
-                Qt::UniqueConnection);
-    } else {
-        qDebug() << "Arduino connection failed, code =" << result;
-    }
-}
-QString SignIn::formatMonthlyHoursForRfid(qint64 totalSeconds) const
-{
-    if (totalSeconds < 0) totalSeconds = 0;
-
-    const qint64 hours = totalSeconds / 3600;
-    const qint64 minutes = (totalSeconds % 3600) / 60;
-
-    return QString("%1h%2")
-        .arg(hours)
-        .arg(minutes, 2, 10, QChar('0'));
-}
-void SignIn::onArduinoReadyRead()
-{
-    m_arduinoBuffer += A.read_from_arduino();
-
-    int newlineIndex = -1;
-    while ((newlineIndex = m_arduinoBuffer.indexOf('\n')) != -1) {
-        QByteArray line = m_arduinoBuffer.left(newlineIndex);
-        m_arduinoBuffer.remove(0, newlineIndex + 1);
-        processArduinoLine(line);
-    }
-}
-void SignIn::processArduinoLine(const QByteArray& line)
-{
-    const QString msg = QString::fromUtf8(line).trimmed();
-
-    if (msg.isEmpty()) {
-        return;
-    }
-
-    qDebug() << "Arduino -> Qt:" << msg;
-
-    if (msg.startsWith("UID:", Qt::CaseInsensitive)) {
-        QString uid = msg.mid(4).trimmed();
-        processRfidUid(uid);
-    }
-}
-void SignIn::processRfidUid(const QString& uid)
-{
-    QString cleanUid = uid.trimmed().toUpper();
-    cleanUid.replace(QRegularExpression("\\s+"), " ");
-
-    qDebug() << "processRfidUid reached with:" << cleanUid;
-
-    Personnel::RfidUserInfo info;
-    if (!Personnel::fetchRfidUserByUid(cleanUid, &info)) {
-        qDebug() << "Unknown RFID detected:" << cleanUid;
-        logRfidAccess("Unknown card", "Access denied");
-        A.write_to_arduino("DENIED\n");
-        return;
-    }
-
-    QString accountStatus = info.accountStatus.trimmed();
-
-    QString fullName = (info.prenom.trimmed() + " " + info.nom.trimmed()).trimmed();
-    if (fullName.isEmpty())
-        fullName = info.mail.trimmed();
-
-    if (accountStatus.compare("BLOCKED", Qt::CaseInsensitive) == 0) {
-        const QString reply = QString("BLOCKED|%1\n").arg(fullName);
-        A.write_to_arduino(reply.toUtf8());
-        logRfidAccess(fullName, "Account blocked");
-        return;
-    }
-
-    Personnel::resetAuthRiskByMail(info.mail, "RFID");
-
-    const QString hoursText = formatMonthlyHoursForRfid(info.monthlyWorkSeconds);
-    const QString reply = QString("GRANTED|%1|%2\n").arg(fullName, hoursText);
-
-    A.write_to_arduino(reply.toUtf8());
-    logRfidAccess(fullName, "Access granted");
-}
-void SignIn::logRfidAccess(const QString& user, const QString& status)
-{
-    addAccessHistoryEntry(user, status, "RFID");
-    qDebug() << "RFID history added:" << user << status;
-}
-void SignIn::setupAccessHistoryTable()
-{
-    ui->historique->clearContents();
-    ui->historique->setRowCount(0);
-    ui->historique->setColumnCount(4);
-
-    QStringList headers;
-    headers << "Time" << "User" << "Status" << "Method";
-    ui->historique->setHorizontalHeaderLabels(headers);
-
-    ui->historique->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->historique->setSelectionBehavior(QAbstractItemView::SelectRows);
-    ui->historique->setSelectionMode(QAbstractItemView::SingleSelection);
-    ui->historique->setShowGrid(false);
-    ui->historique->verticalHeader()->setVisible(false);
-    ui->historique->horizontalHeader()->setHighlightSections(false);
-    ui->historique->horizontalHeader()->setStretchLastSection(true);
-
-    ui->historique->setColumnWidth(0, 95);
-    ui->historique->setColumnWidth(1, 220);
-    ui->historique->setColumnWidth(2, 170);
-
-    ui->historique->verticalHeader()->setDefaultSectionSize(38);
-}
-void SignIn::addAccessHistoryEntry(const QString& user,
-                                   const QString& status,
-                                   const QString& method)
-{
-    const QString timeText = QDateTime::currentDateTime().toString("HH:mm:ss");
-
-    ui->historique->insertRow(0);
-
-    QTableWidgetItem* timeItem   = new QTableWidgetItem(timeText);
-    QTableWidgetItem* userItem   = new QTableWidgetItem(user);
-    QTableWidgetItem* statusItem = new QTableWidgetItem(status);
-    QTableWidgetItem* methodItem = new QTableWidgetItem(method);
-
-    timeItem->setTextAlignment(Qt::AlignCenter);
-    userItem->setTextAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-    statusItem->setTextAlignment(Qt::AlignCenter);
-    methodItem->setTextAlignment(Qt::AlignCenter);
-
-    ui->historique->setItem(0, 0, timeItem);
-    ui->historique->setItem(0, 1, userItem);
-    ui->historique->setItem(0, 2, statusItem);
-    ui->historique->setItem(0, 3, methodItem);
-
-    // limiter l'historique à 20 lignes
-    while (ui->historique->rowCount() > 20) {
-        ui->historique->removeRow(ui->historique->rowCount() - 1);
-    }
-}
 
 
 
@@ -4671,10 +3740,6 @@ void SignIn::on_ZoneTable_cellClicked(int row, int)
     if (typeItem) ui->zoneEdit->setCurrentText(typeItem->text());
     if (riskItem) ui->RiskLevel->setCurrentText(riskItem->text());
     if (descItem) ui->DescriptionEdit->setPlainText(descItem->text());
-}
-void SignIn::on_AnalyticsZone_clicked()
-{
-    showPieChart();
 }
 QVector<QStringList> ZonePech::getZoneRows(QString sort, QString search)
 {
@@ -4979,551 +4044,6 @@ void SignIn::on_exportZone_clicked()
 
 
 }
-void SignIn::showPieChart()
-{
-    // Create the dialog for the pie chart
-    QDialog *chartDialog = new QDialog(this);
-    chartDialog->setWindowTitle("Analytics: Risk Levels");
-
-    chartDialog->resize(600, 400);
-
-    // Create the chart view
-    QChartView *chartView = new QChartView(chartDialog);
-    QPieSeries *series = new QPieSeries();
-
-    // Fetch data for risk levels from the database
-    QSqlQuery query;
-    query.exec("SELECT NIVEAURISQUE, COUNT(*) FROM ZONEPECHES GROUP BY NIVEAURISQUE");
-
-    // Define colors for the risk levels
-    QColor riskyColor("#FF4C4C");  // Red for Risky
-    QColor mildColor("#F9A826");   // Yellow for Mild
-    QColor safeColor("#4BBF6E");   // Green for Safe
-
-    // Add slices based on data from the query
-    while (query.next()) {
-        QString riskLevel = query.value(0).toString();
-        int count = query.value(1).toInt();
-
-        QPieSlice *slice = series->append(riskLevel, count);
-        slice->setLabelVisible(true);
-
-        // Apply custom colors
-        if (riskLevel == "Risky") {
-            slice->setBrush(riskyColor);
-        } else if (riskLevel == "Mild") {
-            slice->setBrush(mildColor);
-        } else {
-            slice->setBrush(safeColor);
-        }
-
-        slice->setPen(QPen(QColor("#0B2D4A")));  // Border color for slices
-    }
-
-    // Create and configure the chart
-    QChart *chart = new QChart();
-    chart->addSeries(series);
-    chart->setTitle("Risk Level Distribution");
-    chart->legend()->setVisible(true);
-    chart->setAnimationOptions(QChart::AllAnimations);
-
-    // Apply QSS styling to match UI theme
-    chart->setBackgroundBrush(QBrush(QColor("#071a2c"))); // Set dark background for chart
-    chartView->setChart(chart);  // Apply the chart to the view
-
-    // Layout for the dialog
-    chartDialog->setLayout(new QVBoxLayout());
-    chartDialog->layout()->addWidget(chartView);
-    chartDialog->exec();
-}
-
-
-
-int SignIn::predictSuitability(const QString& zoneType, const QString& riskLevel, double longitude, double latitude)
-{
-    int score = 50;
-
-    QString type = zoneType.trimmed().toLower();
-    QString risk = riskLevel.trimmed().toLower();
-
-    // zone type effect
-    if (type == "open")
-        score += 20;
-    else if (type == "crowded")
-        score -= 15;
-
-    // current stored risk level effect
-    if (risk == "safe")
-        score += 25;
-    else if (risk == "mild")
-        score += 5;
-    else if (risk == "risky")
-        score -= 25;
-
-    // simulated seasonal/environment effect
-    score += environmentalWeatherModifier(longitude, latitude);
-
-    if (score < 0) score = 0;
-    if (score > 100) score = 100;
-
-    return score;
-}
-QString SignIn::suitabilityLevel(int score)
-{
-    if (score >= 80)
-        return "EXCELLENT";
-    else if (score >= 60)
-        return "GOOD";
-    else if (score >= 40)
-        return "LIMITED";
-    else
-        return "NOT RECOMMENDED";
-}
-QString SignIn::suitabilityMessage(int score)
-{
-    QString season = currentSeason();
-
-    if (score >= 80)
-        return "The zone shows strong fishing suitability under the current seasonal and environmental conditions. Operations may proceed normally.";
-    else if (score >= 60)
-        return "The zone is generally suitable for fishing activity. Current " + season + " conditions suggest moderate environmental stability.";
-    else if (score >= 40)
-        return "Fishing activity is possible but limited. The current " + season + " environmental pattern suggests extra caution and monitoring.";
-    else
-        return "Fishing activity is not recommended at this time. Simulated " + season + " conditions and zone characteristics reduce operational suitability.";
-}
-QString SignIn::suitabilityColor(int score)
-{
-    if (score >= 80)
-        return "#35c46a";
-    else if (score >= 60)
-        return "#58b8ff";
-    else if (score >= 40)
-        return "#f5a623";
-    else
-        return "#ff4d5a";
-}
-void SignIn::on_RiskPrediction_clicked()
-{
-    int row = ui->ZoneTable->currentRow();
-    if (row == -1) {
-        QMessageBox::warning(this, "Select Zone", "Please select a zone from the table first.");
-        return;
-    }
-
-    QString zoneName = ui->ZoneTable->item(row, 1)->text();
-    QString latitudeText = ui->ZoneTable->item(row, 2)->text();
-    QString longitudeText = ui->ZoneTable->item(row, 3)->text();
-    QString zoneType = ui->ZoneTable->item(row, 4)->text();
-    QString riskLevel = ui->ZoneTable->item(row, 6)->text();
-
-    double longitude = longitudeText.toDouble();
-    double latitude = latitudeText.toDouble();
-
-    int score = predictSuitability(zoneType, riskLevel, longitude, latitude);
-    QString message = suitabilityMessage(score);
-    QString color = suitabilityColor(score);
-    QString level = suitabilityLevel(score);
-    QString season = currentSeason();
-
-    QDialog *dialog = new QDialog(this);
-    dialog->setWindowTitle("Fishing Activity Suitability");
-    dialog->resize(520, 320);
-    dialog->setModal(true);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout(dialog);
-    mainLayout->setContentsMargins(24, 24, 24, 24);
-    mainLayout->setSpacing(16);
-
-    QWidget *card = new QWidget(dialog);
-    card->setObjectName("predictionCard");
-    QVBoxLayout *cardLayout = new QVBoxLayout(card);
-    cardLayout->setContentsMargins(22, 22, 22, 22);
-    cardLayout->setSpacing(14);
-
-    QLabel *titleLabel = new QLabel("Fishing Activity Suitability", card);
-    titleLabel->setObjectName("predictionTitle");
-
-    QLabel *zoneLabel = new QLabel("Zone: " + zoneName, card);
-    zoneLabel->setObjectName("predictionInfo");
-
-    QLabel *detailsLabel = new QLabel(
-        "Type: " + zoneType + "   |   Current Level: " + riskLevel +
-            "   |   Season: " + season +
-            "   |   Lat: " + latitudeText + "   |   Lon: " + longitudeText,
-        card
-        );
-    detailsLabel->setWordWrap(true);
-    detailsLabel->setObjectName("predictionDetails");
-
-    QLabel *percentLabel = new QLabel(QString::number(score) + "%", card);
-    percentLabel->setAlignment(Qt::AlignCenter);
-    percentLabel->setObjectName("predictionPercent");
-    percentLabel->setStyleSheet(
-        "QLabel#predictionPercent {"
-        "background-color: " + color + ";"
-                  "color: white;"
-                  "border-radius: 28px;"
-                  "font-size: 26px;"
-                  "font-weight: 800;"
-                  "padding: 14px 24px;"
-                  "min-width: 120px;"
-                  "max-width: 120px;"
-                  "}"
-        );
-
-    QLabel *levelLabel = new QLabel(level, card);
-    levelLabel->setAlignment(Qt::AlignCenter);
-    levelLabel->setObjectName("predictionLevel");
-
-    QLabel *messageLabel = new QLabel(message, card);
-    messageLabel->setWordWrap(true);
-    messageLabel->setObjectName("predictionMessage");
-
-    QPushButton *closeBtn = new QPushButton("Close", card);
-    closeBtn->setObjectName("predictionCloseBtn");
-    connect(closeBtn, &QPushButton::clicked, dialog, &QDialog::accept);
-
-    cardLayout->addWidget(titleLabel);
-    cardLayout->addWidget(zoneLabel);
-    cardLayout->addWidget(detailsLabel, 0, Qt::AlignLeft);
-    cardLayout->addSpacing(6);
-    cardLayout->addWidget(percentLabel, 0, Qt::AlignHCenter);
-    cardLayout->addWidget(levelLabel, 0, Qt::AlignHCenter);
-    cardLayout->addWidget(messageLabel);
-    cardLayout->addSpacing(8);
-    cardLayout->addWidget(closeBtn, 0, Qt::AlignRight);
-
-    mainLayout->addWidget(card);
-
-    dialog->setStyleSheet(
-        "QDialog {"
-        "background: qlineargradient(x1:0, y1:0, x2:1, y2:1,"
-        "stop:0 #071a2c, stop:0.35 #082136, stop:0.7 #071c2d, stop:1 #040f1a);"
-        "font-family: 'Segoe UI';"
-        "color: #EAF0FF;"
-        "}"
-        "QWidget#predictionCard {"
-        "background-color: rgba(8, 30, 55, 0.92);"
-        "border: 1px solid rgba(88,184,255,0.35);"
-        "border-radius: 18px;"
-        "}"
-        "QLabel#predictionTitle {"
-        "font-size: 22px;"
-        "font-weight: 800;"
-        "color: #EAF0FF;"
-        "}"
-        "QLabel#predictionInfo {"
-        "font-size: 15px;"
-        "font-weight: 700;"
-        "color: #9fd8ff;"
-        "}"
-        "QLabel#predictionDetails {"
-        "font-size: 12px;"
-        "color: rgba(234,240,255,0.80);"
-        "}"
-        "QLabel#predictionLevel {"
-        "font-size: 15px;"
-        "font-weight: 800;"
-        "color: #EAF0FF;"
-        "letter-spacing: 1px;"
-        "}"
-        "QLabel#predictionMessage {"
-        "font-size: 14px;"
-        "color: #EAF0FF;"
-        "background-color: rgba(255,255,255,0.04);"
-        "border: 1px solid rgba(255,255,255,0.10);"
-        "border-radius: 12px;"
-        "padding: 12px;"
-        "}"
-        "QPushButton#predictionCloseBtn {"
-        "background-color: rgba(88,184,255,0.18);"
-        "border: 1px solid rgba(88,184,255,0.45);"
-        "border-radius: 12px;"
-        "padding: 10px 18px;"
-        "color: #EAF0FF;"
-        "font-weight: 700;"
-        "min-width: 90px;"
-        "}"
-        "QPushButton#predictionCloseBtn:hover {"
-        "background-color: rgba(88,184,255,0.28);"
-        "}"
-        "QPushButton#predictionCloseBtn:pressed {"
-        "background-color: rgba(88,184,255,0.38);"
-        "}"
-        );
-
-    dialog->exec();
-}
-QString SignIn::currentSeason()
-{
-    int month = QDate::currentDate().month();
-
-    if (month == 12 || month == 1 || month == 2)
-        return "winter";
-    else if (month >= 3 && month <= 5)
-        return "spring";
-    else if (month >= 6 && month <= 8)
-        return "summer";
-    else
-        return "autumn";
-}
-int SignIn::environmentalWeatherModifier(double longitude, double latitude)
-{
-    int modifier = 0;
-    QString season = currentSeason();
-
-    // seasonal effect
-    if (season == "winter")
-        modifier -= 15;
-    else if (season == "spring")
-        modifier += 5;
-    else if (season == "summer")
-        modifier += 10;
-    else if (season == "autumn")
-        modifier -= 5;
-
-    // simulated geographic exposure
-    // larger abs values = slightly harsher environment
-    int latEffect = static_cast<int>(qAbs(latitude)) % 12;
-    int lonEffect = static_cast<int>(qAbs(longitude)) % 12;
-
-    modifier -= latEffect / 2;
-    modifier -= lonEffect / 3;
-
-    return modifier;
-}
-
-struct RegulationCase
-{
-    QString zoneType;
-    QString riskLevel;
-    double longitude;
-    double latitude;
-    QString staffRule;
-    QString equipmentRule;
-    QString cautionRule;
-    QString accessRule;
-};
-double SignIn::calculateSimilarity(const QString& zoneType1, const QString& riskLevel1, double lon1, double lat1,
-                                   const QString& zoneType2, const QString& riskLevel2, double lon2, double lat2)
-{
-    double score = 0.0;
-
-    if (zoneType1.trimmed().toLower() == zoneType2.trimmed().toLower())
-        score += 30.0;
-
-    if (riskLevel1.trimmed().toLower() == riskLevel2.trimmed().toLower())
-        score += 40.0;
-
-    double lonDiff = qAbs(lon1 - lon2);
-    double latDiff = qAbs(lat1 - lat2);
-
-    double lonScore = qMax(0.0, 15.0 - lonDiff);
-    double latScore = qMax(0.0, 15.0 - latDiff);
-
-    score += lonScore;
-    score += latScore;
-
-    return score;
-}
-QString SignIn::generateRegulationsAI(const QString& zoneType, const QString& riskLevel, double longitude, double latitude)
-{
-    QVector<RegulationCase> cases = {
-        {"open", "safe", 10, 10, "1 staff supervisor required.", "Basic fishing equipment allowed.", "Standard monitoring is sufficient.", "Zone remains fully accessible."},
-        {"open", "mild", 12, 14, "2 staff members required.", "Safety kit and communication radio required.", "Weather and movement checks every 2 hours.", "Partial supervision required during activity."},
-        {"open", "risky", 15, 20, "3 trained staff members required.", "Protective gear and emergency flotation devices required.", "High-alert monitoring must be active.", "Restricted access for inexperienced personnel."},
-
-        {"crowded", "safe", 9, 11, "2 staff supervisors required.", "Equipment issue must be logged before use.", "Crowd flow must be monitored.", "Access allowed with supervision."},
-        {"crowded", "mild", 18, 16, "3 staff members required.", "Protective equipment and signaling tools required.", "Continuous observation of crowd density is required.", "Entry must be regulated by staff approval."},
-        {"crowded", "risky", 25, 25, "4 experienced staff members required.", "Full protective equipment mandatory.", "Emergency readiness protocol must remain active.", "Zone access restricted to authorized personnel only."},
-
-        {"open", "safe", 30, 8, "1 staff supervisor required.", "Routine equipment inspection required.", "Low-risk monitoring mode.", "Open access permitted."},
-        {"crowded", "risky", 28, 13, "4 staff members required.", "Emergency and protective equipment mandatory.", "Maximum caution protocol enforced.", "Temporary access limitation required."},
-        {"open", "mild", 22, 6, "2 staff members required.", "Inspection of hooks, nets, and radio required.", "Moderate caution protocol.", "Access controlled during peak periods."},
-        {"crowded", "mild", 35, 18, "3 staff supervisors required.", "Protective and communication equipment required.", "Environmental and density checks required.", "Supervised access only."}
-    };
-
-    QVector<QPair<double, RegulationCase>> scoredCases;
-
-    for (const RegulationCase& c : cases) {
-        double similarity = calculateSimilarity(zoneType, riskLevel, longitude, latitude,
-                                                c.zoneType, c.riskLevel, c.longitude, c.latitude);
-        scoredCases.append(qMakePair(similarity, c));
-    }
-
-    std::sort(scoredCases.begin(), scoredCases.end(),
-              [](const QPair<double, RegulationCase>& a, const QPair<double, RegulationCase>& b) {
-                  return a.first > b.first;
-              });
-
-    QString result;
-    result += "AI-based regulation synthesis generated from similar fishing zone cases.\n\n";
-
-    if (!scoredCases.isEmpty()) {
-        const RegulationCase& best = scoredCases[0].second;
-
-        result += "Recommended Staff Regulation\n";
-        result += "• " + best.staffRule + "\n\n";
-
-        result += "Recommended Equipment Regulation\n";
-        result += "• " + best.equipmentRule + "\n\n";
-
-        result += "Operational Caution\n";
-        result += "• " + best.cautionRule + "\n\n";
-
-        result += "Access Control\n";
-        result += "• " + best.accessRule + "\n\n";
-    }
-
-    if (latitude >= 20)
-        result += "Geographic Note\n• Northern-position zone: reinforce wildlife and environmental observation.\n\n";
-    else
-        result += "Geographic Note\n• Lower-latitude zone: standard marine surveillance remains sufficient.\n\n";
-
-    if (longitude >= 15)
-        result += "Location Advisory\n• Offshore-style position detected: require stronger communication preparedness.\n";
-    else
-        result += "Location Advisory\n• Near-access position detected: standard response logistics apply.\n";
-
-    return result;
-}
-void SignIn::on_Regulations_clicked()
-{
-    int row = ui->ZoneTable->currentRow();
-    if (row == -1) {
-        QMessageBox::warning(this, "Select Zone", "Please select a zone from the table first.");
-        return;
-    }
-
-    QString zoneName = ui->ZoneTable->item(row, 1)->text();
-    QString latitudeText = ui->ZoneTable->item(row, 2)->text();
-    QString longitudeText = ui->ZoneTable->item(row, 3)->text();
-    QString zoneType = ui->ZoneTable->item(row, 4)->text();
-    QString riskLevel = ui->ZoneTable->item(row, 6)->text();
-
-    double longitude = longitudeText.toDouble();
-    double latitude = latitudeText.toDouble();
-
-    QString regulations = generateRegulationsAI(zoneType, riskLevel, longitude, latitude);
-
-    QDialog *dialog = new QDialog(this);
-    dialog->setWindowTitle("Fishing Zone Regulations");
-    dialog->resize(650, 460);
-    dialog->setModal(true);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout(dialog);
-    mainLayout->setContentsMargins(24, 24, 24, 24);
-    mainLayout->setSpacing(16);
-
-    QWidget *card = new QWidget(dialog);
-    card->setObjectName("regulationsCard");
-
-    QVBoxLayout *cardLayout = new QVBoxLayout(card);
-    cardLayout->setContentsMargins(22, 22, 22, 22);
-    cardLayout->setSpacing(14);
-
-    QLabel *titleLabel = new QLabel("AI Zone Regulations", card);
-    titleLabel->setObjectName("regulationsTitle");
-
-    QLabel *zoneLabel = new QLabel("Zone: " + zoneName, card);
-    zoneLabel->setObjectName("regulationsInfo");
-
-    QLabel *detailsLabel = new QLabel(
-        "Type: " + zoneType + "   |   Current Level: " + riskLevel +
-            "   |   Lat: " + latitudeText + "   |   Lon: " + longitudeText,
-        card
-        );
-    detailsLabel->setWordWrap(true);
-    detailsLabel->setObjectName("regulationsDetails");
-
-    QLabel *badgeLabel = new QLabel("AI GENERATED", card);
-    badgeLabel->setAlignment(Qt::AlignCenter);
-    badgeLabel->setObjectName("regulationsBadge");
-
-    QLabel *regulationsLabel = new QLabel(regulations, card);
-    regulationsLabel->setWordWrap(true);
-    regulationsLabel->setObjectName("regulationsText");
-
-    QPushButton *closeBtn = new QPushButton("Close", card);
-    closeBtn->setObjectName("regulationsCloseBtn");
-    connect(closeBtn, &QPushButton::clicked, dialog, &QDialog::accept);
-
-    cardLayout->addWidget(titleLabel);
-    cardLayout->addWidget(zoneLabel);
-    cardLayout->addWidget(detailsLabel);
-    cardLayout->addSpacing(4);
-    cardLayout->addWidget(badgeLabel, 0, Qt::AlignHCenter);
-    cardLayout->addWidget(regulationsLabel);
-    cardLayout->addSpacing(8);
-    cardLayout->addWidget(closeBtn, 0, Qt::AlignRight);
-
-    mainLayout->addWidget(card);
-
-    dialog->setStyleSheet(
-        "QDialog {"
-        "background: qlineargradient(x1:0, y1:0, x2:1, y2:1,"
-        "stop:0 #071a2c, stop:0.35 #082136, stop:0.7 #071c2d, stop:1 #040f1a);"
-        "font-family: 'Segoe UI';"
-        "color: #EAF0FF;"
-        "}"
-        "QWidget#regulationsCard {"
-        "background-color: rgba(8, 30, 55, 0.92);"
-        "border: 1px solid rgba(88,184,255,0.35);"
-        "border-radius: 18px;"
-        "}"
-        "QLabel#regulationsTitle {"
-        "font-size: 22px;"
-        "font-weight: 800;"
-        "color: #EAF0FF;"
-        "}"
-        "QLabel#regulationsInfo {"
-        "font-size: 15px;"
-        "font-weight: 700;"
-        "color: #9fd8ff;"
-        "}"
-        "QLabel#regulationsDetails {"
-        "font-size: 12px;"
-        "color: rgba(234,240,255,0.80);"
-        "}"
-        "QLabel#regulationsBadge {"
-        "background-color: rgba(88,184,255,0.20);"
-        "border: 1px solid rgba(88,184,255,0.45);"
-        "border-radius: 16px;"
-        "padding: 8px 16px;"
-        "font-size: 13px;"
-        "font-weight: 800;"
-        "color: #EAF0FF;"
-        "max-width: 140px;"
-        "}"
-        "QLabel#regulationsText {"
-        "font-size: 14px;"
-        "color: #EAF0FF;"
-        "background-color: rgba(255,255,255,0.04);"
-        "border: 1px solid rgba(255,255,255,0.10);"
-        "border-radius: 12px;"
-        "padding: 14px;"
-        "}"
-        "QPushButton#regulationsCloseBtn {"
-        "background-color: rgba(88,184,255,0.18);"
-        "border: 1px solid rgba(88,184,255,0.45);"
-        "border-radius: 12px;"
-        "padding: 10px 18px;"
-        "color: #EAF0FF;"
-        "font-weight: 700;"
-        "min-width: 90px;"
-        "}"
-        "QPushButton#regulationsCloseBtn:hover {"
-        "background-color: rgba(88,184,255,0.28);"
-        "}"
-        "QPushButton#regulationsCloseBtn:pressed {"
-        "background-color: rgba(88,184,255,0.38);"
-        "}"
-        );
-
-    dialog->exec();
-}
-
 
 
 
@@ -5783,175 +4303,7 @@ void SignIn::on_itemsinput_currentTextChanged(const QString &text)
 
 
 
-
 //malik
-
-void SignIn::on_visual_stock_clicked()
-{
-    QModelIndex index = ui->table_stock->currentIndex();
-    if (!index.isValid())
-        return;
-
-    QString typePoisson = ui->table_stock->model()->data(
-                                                      ui->table_stock->model()->index(index.row(), 2)
-                                                      ).toString().toLower();
-
-    int qte = ui->table_stock->model()->data(
-                                          ui->table_stock->model()->index(index.row(), 1)
-                                          ).toInt();
-
-    QString etat = ui->table_stock->model()->data(
-                                               ui->table_stock->model()->index(index.row(), 3)
-                                               ).toString();
-
-    QString basePath = QCoreApplication::applicationDirPath() + "/Images/";
-
-    QString filePath;
-
-    if(typePoisson == "octopus")
-    {
-        filePath = "C:/Users/Fatma/Desktop/projetbort/integrationCRUD/Images/octo.OBJ";
-    }
-    else if(typePoisson == "fish")
-    {
-        filePath = "C:/Users/Fatma/Desktop/projetbort/integrationCRUD/Images/fish.obj";
-    }
-    else if(typePoisson == "squid")
-    {
-        filePath = "C:/Users/Fatma/Desktop/projetbort/integrationCRUD/Images/squid.obj";
-    }
-    else if(typePoisson == "humpback whale")
-    {
-        filePath = "C:/Users/Fatma/Desktop/projetbort/integrationCRUD/Images/humpback.OBJ";
-    }
-    else if(typePoisson == "salmon")
-    {
-        filePath = "C:/Users/Fatma/Desktop/projetbort/integrationCRUD/Images/SALMON.OBJ";
-    }
-    else if(typePoisson == "tuna")
-    {
-        filePath = "C:/Users/Fatma/Desktop/projetbort/integrationCRUD/Images/TUNA.OBJ";
-    }
-    else if(typePoisson == "alien") //
-    {
-        filePath = "C:/Users/Fatma/Desktop/projetbort/integrationCRUD/Images/alien.obj";
-    }
-
-    if(filePath.isEmpty())
-        return;
-
-    // ---------------- CREATE WINDOW ----------------
-    QDialog *viewer = new QDialog(this);
-    viewer->setWindowTitle("3D Viewer");
-    viewer->resize(900, 600);
-    viewer->setStyleSheet("background-color: #1e1e1e; color: white;");
-
-    QHBoxLayout *mainLayout = new QHBoxLayout(viewer);
-
-    // ---------------- 3D VIEW ----------------
-    Qt3DExtras::Qt3DWindow *view = new Qt3DExtras::Qt3DWindow();
-    view->defaultFrameGraph()->setClearColor(QColor(Qt::black));
-
-    QWidget *container = QWidget::createWindowContainer(view);
-    container->setMinimumSize(500, 500);
-
-    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
-    view->setRootEntity(rootEntity);
-
-    // Camera
-    Qt3DRender::QCamera *camera = view->camera();
-    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    camera->setPosition(QVector3D(0, 0, 300));
-    camera->setViewCenter(QVector3D(0, 0, 0));
-
-    Qt3DExtras::QOrbitCameraController *camController =
-        new Qt3DExtras::QOrbitCameraController(rootEntity);
-    camController->setCamera(camera);
-    camController->setLinearSpeed(400.0f);
-    camController->setLookSpeed(200.0f);
-    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 2000.0f);
-
-    // Light
-    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity(rootEntity);
-    Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight(lightEntity);
-    light->setColor(Qt::white);
-    light->setIntensity(1.0f);
-    lightEntity->addComponent(light);
-
-    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform();
-    lightTransform->setTranslation(QVector3D(0, 0, 100));
-    lightEntity->addComponent(lightTransform);
-
-    // ---------------- MODEL ----------------
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity(rootEntity);
-
-    Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh();
-    mesh->setSource(QUrl::fromLocalFile(filePath));
-
-    Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial();
-    material->setDiffuse(QColor(200, 100, 100));
-    material->setSpecular(QColor(50, 50, 50));
-    material->setShininess(1.0f);
-
-    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
-    transform->setScale(50.0f);
-    transform->setRotation(QQuaternion::fromEulerAngles(30, 180, 0));
-
-    entity->addComponent(mesh);
-    entity->addComponent(material);
-    entity->addComponent(transform);
-
-    // ---------------- STATS PANEL ----------------
-    QWidget *statsPanel = new QWidget();
-    statsPanel->setMinimumWidth(250);
-
-    QString bgColor;
-
-    if (etat == "Perfect")
-    {
-        bgColor = "#2ecc71"; // 🟢 green
-    }
-    else if (etat == "Passable")
-    {
-        bgColor = "#f1c40f"; // 🟡 yellow
-    }
-    else if (etat == "Bad")
-    {
-        bgColor = "#e74c3c"; // 🔴 red
-    }
-    else
-    {
-        bgColor = "#7f8c8d"; // ⚪ fallback (unknown)
-    }
-
-    statsPanel->setStyleSheet(QString(
-                                  "background-color:%1; border-radius:10px; padding:15px;"
-                                  ).arg(bgColor));
-
-    QVBoxLayout *statsLayout = new QVBoxLayout(statsPanel);
-
-    QLabel *title = new QLabel(typePoisson.toUpper());
-    title->setStyleSheet("font-size:20px; font-weight:bold; color:white;");
-
-    QLabel *quantity = new QLabel("Quantity: " + QString::number(qte));
-    QLabel *status = new QLabel("Status: " + etat);
-
-    quantity->setStyleSheet("font-size:16px;");
-    status->setStyleSheet("font-size:16px;");
-
-    statsLayout->addWidget(title);
-    statsLayout->addSpacing(20);
-    statsLayout->addWidget(quantity);
-    statsLayout->addWidget(status);
-    statsLayout->addStretch();
-
-    // ---------------- ADD TO WINDOW ----------------
-    mainLayout->addWidget(container, 3);
-    mainLayout->addWidget(statsPanel, 1);
-
-    viewer->exec();
-
-}
 void SignIn::on_addspecies_stock_clicked()
 {
     qDebug() << "BUTTON CLICKED";
@@ -6108,7 +4460,171 @@ void SignIn::on_exportpdf_stock_clicked()
     QMessageBox::information(this, "Export PDF", "Export done.");
 }
 
+void SignIn::on_visual_stock_clicked()
+{
+    QModelIndex index = ui->table_stock->currentIndex();
+    if (!index.isValid())
+        return;
 
+    QString typePoisson = ui->table_stock->model()->data(
+                                                      ui->table_stock->model()->index(index.row(), 2)
+                                                      ).toString().toLower();
+
+    int qte = ui->table_stock->model()->data(
+                                          ui->table_stock->model()->index(index.row(), 1)
+                                          ).toInt();
+
+    QString etat = ui->table_stock->model()->data(
+                                               ui->table_stock->model()->index(index.row(), 3)
+                                               ).toString();
+
+    QString basePath = QCoreApplication::applicationDirPath() + "/Images/";
+
+    QString filePath;
+
+    if(typePoisson == "octopus")
+    {
+        filePath = "C:/Users/shiro/OneDrive/Desktop/Smart-fishing-port-application-main/Images/octo.OBJ";
+    }
+    else if(typePoisson == "fish")
+    {
+        filePath = "C:/Users/shiro/OneDrive/Desktop/Smart-fishing-port-application-main/Images/fish.obj";
+    }
+    else if(typePoisson == "squid")
+    {
+        filePath = "C:/Users/shiro/OneDrive/Desktop/Smart-fishing-port-application-main/Images/squid.obj";
+    }
+    else if(typePoisson == "humpback whale")
+    {
+        filePath = "C:/Users/shiro/OneDrive/Desktop/Smart-fishing-port-application-main/Images/humpback.OBJ";
+    }
+    else if(typePoisson == "salmon")
+    {
+        filePath = "C:/Users/shiro/OneDrive/Desktop/Smart-fishing-port-application-main/Images/SALMON.OBJ";
+    }
+    else if(typePoisson == "tuna")
+    {
+        filePath = "C:/Users/shiro/OneDrive/Desktop/Smart-fishing-port-application-main/Images/TUNA.OBJ";
+    }
+    else if(typePoisson == "alien") //
+    {
+        filePath = "C:/Users/shiro/OneDrive/Desktop/Smart-fishing-port-application-main/Images/alien.obj";
+    }
+
+    if(filePath.isEmpty())
+        return;
+
+    // ---------------- CREATE WINDOW ----------------
+    QDialog *viewer = new QDialog(this);
+    viewer->setWindowTitle("3D Viewer");
+    viewer->resize(900, 600);
+    viewer->setStyleSheet("background-color: #1e1e1e; color: white;");
+
+    QHBoxLayout *mainLayout = new QHBoxLayout(viewer);
+
+    // ---------------- 3D VIEW ----------------
+    Qt3DExtras::Qt3DWindow *view = new Qt3DExtras::Qt3DWindow();
+    view->defaultFrameGraph()->setClearColor(QColor(Qt::black));
+
+    QWidget *container = QWidget::createWindowContainer(view);
+    container->setMinimumSize(500, 500);
+
+    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
+    view->setRootEntity(rootEntity);
+
+    // Camera
+    Qt3DRender::QCamera *camera = view->camera();
+    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
+    camera->setPosition(QVector3D(0, 0, 300));
+    camera->setViewCenter(QVector3D(0, 0, 0));
+
+    Qt3DExtras::QOrbitCameraController *camController =
+        new Qt3DExtras::QOrbitCameraController(rootEntity);
+    camController->setCamera(camera);
+    camController->setLinearSpeed(400.0f);
+    camController->setLookSpeed(200.0f);
+    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 2000.0f);
+
+    // Light
+    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity(rootEntity);
+    Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight(lightEntity);
+    light->setColor(Qt::white);
+    light->setIntensity(1.0f);
+    lightEntity->addComponent(light);
+
+    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform();
+    lightTransform->setTranslation(QVector3D(0, 0, 100));
+    lightEntity->addComponent(lightTransform);
+
+    // ---------------- MODEL ----------------
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity(rootEntity);
+
+    Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh();
+    mesh->setSource(QUrl::fromLocalFile(filePath));
+
+    Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial();
+    material->setDiffuse(QColor(200, 100, 100));
+    material->setSpecular(QColor(50, 50, 50));
+    material->setShininess(1.0f);
+
+    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
+    transform->setScale(50.0f);
+    transform->setRotation(QQuaternion::fromEulerAngles(30, 180, 0));
+
+    entity->addComponent(mesh);
+    entity->addComponent(material);
+    entity->addComponent(transform);
+
+    // ---------------- STATS PANEL ----------------
+    QWidget *statsPanel = new QWidget();
+    statsPanel->setMinimumWidth(250);
+
+    QString bgColor;
+
+    if (etat == "Perfect")
+    {
+        bgColor = "#2ecc71"; // 🟢 green
+    }
+    else if (etat == "Passable")
+    {
+        bgColor = "#f1c40f"; // 🟡 yellow
+    }
+    else if (etat == "Bad")
+    {
+        bgColor = "#e74c3c"; // 🔴 red
+    }
+    else
+    {
+        bgColor = "#7f8c8d"; // ⚪ fallback (unknown)
+    }
+
+    statsPanel->setStyleSheet(QString(
+                                  "background-color:%1; border-radius:10px; padding:15px;"
+                                  ).arg(bgColor));
+
+    QVBoxLayout *statsLayout = new QVBoxLayout(statsPanel);
+
+    QLabel *title = new QLabel(typePoisson.toUpper());
+    title->setStyleSheet("font-size:20px; font-weight:bold; color:white;");
+
+    QLabel *quantity = new QLabel("Quantity: " + QString::number(qte));
+    QLabel *status = new QLabel("Status: " + etat);
+
+    quantity->setStyleSheet("font-size:16px;");
+    status->setStyleSheet("font-size:16px;");
+
+    statsLayout->addWidget(title);
+    statsLayout->addSpacing(20);
+    statsLayout->addWidget(quantity);
+    statsLayout->addWidget(status);
+    statsLayout->addStretch();
+
+    // ---------------- ADD TO WINDOW ----------------
+    mainLayout->addWidget(container, 3);
+    mainLayout->addWidget(statsPanel, 1);
+
+    viewer->exec();
+}
 
 void SignIn::on_recognition_stock_clicked()
 {
@@ -6172,7 +4688,7 @@ void SignIn::on_recognition_stock_clicked()
     layout->addWidget(objectLabel);
     layout->addWidget(correctButton);
 
-    QString basePath = "C:/Users/Fatma/Desktop/projetbort/integrationCRUD/Images/dataset/";
+    QString basePath = "C:/Users/shiro/OneDrive/Desktop/Smart-fishing-port-application-main/Images/dataset/";
 
     // IMPORTANT: keep image accessible outside lambda
     QSharedPointer<QImage> currentImage = QSharedPointer<QImage>::create();
@@ -6479,7 +4995,6 @@ void SignIn::on_sort_stock_currentTextChanged(const QString &text)
     else if (text == "Status")
         proxyModel->sort(3);     // ETAT
 }
-
 //nour
 void SignIn::refreshEquipmentTable()
 {
@@ -6658,9 +5173,3 @@ void SignIn::on_deletebtnE_clicked()
         QMessageBox::critical(this, "Delete Equipment", "Failed to delete equipment.");
     }
 }
-
-
-
-
-
-
