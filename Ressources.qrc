@@ -11,5 +11,7 @@
         <file>Images/cvdash.png</file>
         <file>Images/bestresized.png</file>
         <file>Images/profile.jpg</file>
+        <file>Images/zoneimage.png</file>
+        <file>haarcascade_frontalface_default.xml</file>
     </qresource>
 </RCC>
